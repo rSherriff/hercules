@@ -1,0 +1,6 @@
+Windows
+ pyinstaller --add-data '.\data\pages.json;data' --add-data '.\fonts\polyducks_12x12.png;fonts' --add-data '.\images\*;images' -n 'Name' -w main.py
+
+
+pipMac
+pyinstaller --add-data 'data/pages.json;data' --add-data 'fonts/polyducks_12x12.png:fonts' --add-data 'images/*:images' --add-data 'sounds/*:sounds' -n 'Name' -w main.py

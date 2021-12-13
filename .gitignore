@@ -1,0 +1,11 @@
+.venv/*
+__pycache__/*
+.vscode/*
+
+sections/__pycache__/*
+
+*.pyc
+build/*
+*.spec
+
+dist/*
