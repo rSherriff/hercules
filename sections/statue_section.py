@@ -58,31 +58,38 @@ class StatueSection(Section):
         
 
     def update_spotting_line(self):
-        spotted_material_tiles = 0
+    
         mouse_pos = (self.engine.mouse_location[0], self.engine.mouse_location[1])
+
+        spotted_material_tiles = 0
         self.spotted_statue_tiles = 0
         self.spotted_tiles.clear()
-        if self.mousedown_point is not None and mouse_pos != self.mousedown_point:            
+        
+        if self.mousedown_point is not None and mouse_pos != self.mousedown_point:
+
+            #Figure out the normalised vector between the mouse and the button press point            
             spot_line_magnitude = sqrt((abs(mouse_pos[0]-self.mousedown_point[0])**2) + (abs(mouse_pos[1]-self.mousedown_point[1])**2))
             spot_line_normalised = ((mouse_pos[0]-self.mousedown_point[0])/spot_line_magnitude,  (mouse_pos[1]-self.mousedown_point[1])/spot_line_magnitude)
 
-            final_spot = (self.mousedown_point[0] + int(spot_line_normalised[0] * 100),self.mousedown_point[1] + int(spot_line_normalised[1] * 100))
+            #Extend the line along the vector between the mouse and the button press point           
+            final_spot = (self.mousedown_point[0] + int(spot_line_normalised[0] * 10),self.mousedown_point[1] + int(spot_line_normalised[1] * 10))
 
+            #Loop through all of the points in this line
             for tile in self.line_between(self.mousedown_point, final_spot):
                 if self.is_point_in_section(tile[0], tile[1]):
                     entities = self.get_entities_at_location(tile[0], tile[1])
-                    if len(entities) >= 1:
+                    if len(entities) >= 1: #If there are entites at this tile...
                         for entity in entities:
                             if isinstance(entity, Material):
-                                spotted_material_tiles += 1
+                                spotted_material_tiles += 1 #Track how much material we have seen, blocker or statue
                             
-                                if spotted_material_tiles > self.max_spotted_material_tiles:
+                                if spotted_material_tiles > self.max_spotted_material_tiles: #If we've seen as deep as the rules allow, return
                                     return
 
-                                if isinstance(entity, StatueMaterial):
+                                if isinstance(entity, StatueMaterial): #If its staute material, track it so we can display it on the UI
                                     self.spotted_statue_tiles += 1
 
-                    elif spotted_material_tiles > 0:
+                    elif spotted_material_tiles > 0: #If there are no entities, but we have seen material in the past, return
                         return
                         
                     self.spotted_tiles.append(tile)
