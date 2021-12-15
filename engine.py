@@ -9,14 +9,16 @@ from tcod.console import Console
 
 from application_path import get_app_path
 from effects.melt_effect import MeltWipeEffect, MeltWipeEffectType
-from entities.player import Player
 from input_handlers import EventHandler, MainGameEventHandler
+from sections.statue_section import StatueSection
 from utils.delta_time import DeltaTime
 
 
 class GameState(Enum):
     MENU = auto()
-    IN_GAME = auto()
+    FIRST_STAGE = auto()
+    FAILED_FIRST_STAGE = auto()
+    SECOND_STAGE = auto()
     GAME_OVER = auto()
     COMPLETE = auto()
 
@@ -39,11 +41,10 @@ class Engine:
         self.music_timer = Timer(77, self.play_music)
         self.play_music()
 
-        self.entities = []
         self.tick_length = 2
         self.time_since_last_tick = -2
 
-        self.state = GameState.IN_GAME
+        self.state = GameState.FIRST_STAGE
 
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """
@@ -51,15 +52,12 @@ class Engine:
             if section_key not in self.disabled_sections:
                 section_value.render(root_console)
 
-        if self.state == GameState.IN_GAME or self.state == GameState.GAME_OVER:
-            for entity in self.entities:
-                root_console.print(entity.x, entity.y,
-                                   entity.char, fg=entity.color)
-
         if self.full_screen_effect.in_effect == True:
             self.full_screen_effect.render(root_console)
         else:
             self.full_screen_effect.set_tiles(root_console.tiles_rgb)
+
+        root_console.print(18, 1, str(self.mouse_location), (255,255,255))
 
     def update(self):
         """ Engine update tick """
@@ -68,23 +66,26 @@ class Engine:
 
         self.delta_time.update_delta_time()
 
-        if self.state == GameState.IN_GAME:
+        if self.is_in_game():
             self.time_since_last_tick += self.get_delta_time()
 
             self.tick_length -= 0.0002
-            if self.time_since_last_tick > self.tick_length and self.state == GameState.IN_GAME:
+            if self.time_since_last_tick > self.tick_length and self.state == self.is_in_game():
                 self.time_since_last_tick = 0
 
-            for entity in self.entities:
-                entity.update()
+
+
+    def late_update(self):
+       for _, section in self.get_active_sections():
+            section.late_update()
+
+    def is_in_game(self):
+        return self.state == GameState.FIRST_STAGE or self.state == GameState.SECOND_STAGE or self.state == GameState.FAILED_FIRST_STAGE
 
     def handle_events(self, context: tcod.context.Context):
         self.event_handler.handle_events(context, discard_events=self.full_screen_effect.in_effect or self.state == GameState.GAME_OVER)
 
     def setup_game(self):
-        self.player = Player(self, 7, 4)
-        self.entities.clear()
-        self.entities.append(self.player)
         self.tick_length = 2
 
     def setup_effects(self):
@@ -93,6 +94,7 @@ class Engine:
     def setup_sections(self):
         self.menu_sections = {}
         self.game_sections = {}
+        self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height, "statue_section.xp" )
         self.completion_sections = {}
 
         self.disabled_sections = ["confirmationDialog", "notificationDialog"]
@@ -101,7 +103,7 @@ class Engine:
     def get_active_sections(self):
         if self.state == GameState.MENU:
             return self.menu_sections.items()
-        elif self.state == GameState.IN_GAME:
+        elif self.is_in_game():
             return self.game_sections.items()
         elif self.state == GameState.COMPLETE:
             return self.completion_sections.items()
@@ -109,7 +111,7 @@ class Engine:
     def get_active_ui_sections(self):
         if self.state == GameState.MENU:
             return self.menu_sections.items()
-        elif self.state == GameState.IN_GAME:
+        elif self.is_in_game():
             if "confirmationDialog" not in self.disabled_sections:
                 return {"confirmationDialog": self.game_sections["confirmationDialog"]}.items()
             if "notificationDialog" not in self.disabled_sections:
@@ -144,10 +146,6 @@ class Engine:
     def get_delta_time(self):
         return self.delta_time.get_delta_time()
 
-    def remove_entity(self, entity):
-        if entity in self.entities:
-            self.entities.remove(entity)
-
     def play_music(self):
         return
         playsound(get_app_path() + "/sounds/music.wav", False)
@@ -176,3 +174,16 @@ class Engine:
 
     def is_ui_paused(self):
         return self.full_screen_effect.in_effect
+
+    def check_completion(self):
+        if self.state == GameState.FIRST_STAGE:
+            if self.check_first_stage_completion():
+                print("Stage complete!")
+
+    def check_first_stage_completion(self):
+        self.game_sections["statueSection"].check_first_stage_completion()
+
+    def fail_stage(self):
+        if self.state == GameState.FIRST_STAGE:
+            print("Failed first stage!")
+            self.state = GameState.FAILED_FIRST_STAGE

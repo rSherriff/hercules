@@ -58,14 +58,23 @@ class GameOver(Action):
     def perform(self) -> None:
         self.engine.game_over()
 
-
-class DeleteEntity(Action):
-    def __init__(self, engine, entity):
+class AddEntity(Action):
+    def __init__(self, engine, section, entity):
         super().__init__(engine)
+        self.section = section
         self.entity = entity
 
     def perform(self):
-        self.engine.remove_entity(self.entity)
+        self.section.entities.append(self.entity)
+
+class DeleteEntity(Action):
+    def __init__(self, engine, section, entity):
+        super().__init__(engine)
+        self.section = section
+        self.entity = entity
+
+    def perform(self):
+        self.section.remove_entity(self.entity)
 
 
 class DisableSection(Action):
@@ -104,3 +113,16 @@ class OpenNotificationDialog(Action):
 class CloseNotificationDialog(Action):
     def perform(self) -> None:
         return self.engine.close_notification_dialog()
+
+
+class StatueMaterialChiseled(Action):
+    def perform(self) -> None:
+        return self.engine.fail_stage()
+
+class BlockMaterialChisled(Action):
+    def __init__(self, engine, entity) -> None:
+        super().__init__(engine)
+        self.entity = entity
+
+    def perform(self) -> None:
+        return self.entity.section.remove_entity(self.entity)

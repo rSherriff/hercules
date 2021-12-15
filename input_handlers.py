@@ -54,10 +54,8 @@ class MainGameEventHandler(EventHandler):
 
         key = event.sym
 
-        for entity in self.engine.entities:
-            entity.keydown(key)
-
         for _, section in self.engine.get_active_ui_sections():
+            section.keydown(key)
             if section.ui is not None:
                 section.ui.keydown(event)
 
@@ -82,6 +80,7 @@ class MainGameEventHandler(EventHandler):
         actions = []
 
         for _, section in self.engine.get_active_ui_sections():
+            section.mousedown(event.button, self.engine.mouse_location[0], self.engine.mouse_location[1])
             if section.ui is not None:
                 section.ui.mousedown(
                     self.engine.mouse_location[0], self.engine.mouse_location[1])

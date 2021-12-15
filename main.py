@@ -6,11 +6,11 @@ from engine import Engine
 
 
 def main() -> None:
-    screen_width = 70
-    screen_height = 50
+    screen_width = 50
+    screen_height = 30
 
-    terminal_height = screen_height
-    terminal_width = screen_width
+    terminal_height = screen_height * 2
+    terminal_width = screen_width * 2
 
     tileset = tcod.tileset.load_tilesheet(
         get_app_path() + "/fonts/polyducks_12x12.png", 16, 16, tcod.tileset.CHARMAP_CP437
@@ -30,6 +30,10 @@ def main() -> None:
 
         cycle = 0
         while True:
+            cycle += 1
+            if cycle % 2 == 0:
+                engine.update()
+
             root_console.clear()
 
             engine.event_handler.on_render(root_console=root_console)
@@ -38,9 +42,8 @@ def main() -> None:
 
             engine.handle_events(root_context)
 
-            cycle += 1
             if cycle % 2 == 0:
-                engine.update()
+                engine.late_update()
 
 
 if __name__ == "__main__":
