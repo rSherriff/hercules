@@ -36,14 +36,13 @@ class StatueSection(Section):
 
         temp_console = Console(width=console.width, height=console.height, order="F")
 
+        temp_console.print(1,1, "Spotted Blocks: " + str(self.spotted_statue_tiles), (255,255,255))
+        temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=1, width=17, height=1)           
+
         temp_console.print(1,1, "Remaining Blocks: " + str(self.remaining_blocks), (255,255,255))
         temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=2, width=22, height=1)
 
-        if self.mousedown_point:
-            
-            temp_console.print(1,1, str(self.spotted_statue_tiles), (255,255,255))
-            temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=1, width=1, height=1)           
-
+        if self.spotting:
             self.render_spotting_line(console)
 
 
