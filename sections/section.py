@@ -106,3 +106,6 @@ class Section:
 
     def add_entity(self, entity):
         self.entities.append(entity)
+
+    def is_point_in_section(self, x,y):
+        return (x >= 0) and (x < self.width) and (y >= 0) and (y < self.height)

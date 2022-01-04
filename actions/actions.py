@@ -126,3 +126,11 @@ class BlockMaterialChisled(Action):
 
     def perform(self) -> None:
         return self.entity.section.remove_entity(self.entity)
+
+class SelectLevelAction(Action):
+    def __init__(self, engine, level) -> None:
+        super().__init__(engine)
+        self.level = level
+
+    def perform(self) -> None:
+        return self.engine.select_level(self.level)

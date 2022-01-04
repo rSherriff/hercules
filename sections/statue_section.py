@@ -1,17 +1,29 @@
 
+from enum import Enum, auto
 from math import sqrt
 from typing import final
+
 import numpy as np
-from numpy.lib.arraysetops import isin
 import tcod
+from effects.brick_wall_effect import BrickWallEffect, BrickWallDirection
+from effects.vertical_wipe_effect import VerticalWipeEffect, VerticalWipeDirection
 from entities.anchor import Anchor
 from entities.blocker import Blocker
 from entities.material import BlockMaterial, Material, StatueMaterial
+from numpy.lib.arraysetops import isin
 from tcod import Console
-from utils.color import spot_line, black
+from utils.color import black, spot_line
 
 from sections.section import Section
 
+
+class StatueState(Enum):
+    INACTIVE = auto()
+    LOAD_HEADER = auto()
+    LOAD_FOOTER = auto()
+    LOAD_MATERIAL = auto()
+    IN_PROGRESS = auto()
+    ENDING = auto()
 
 class StatueSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = ""):
@@ -23,6 +35,20 @@ class StatueSection(Section):
         self.remaining_blocks = 0
         self.anchor = None
         self.graph = None
+        self.level = None
+        self.state = StatueState.INACTIVE
+
+        self.index_into_render = 1 
+        self.state_speed = 10
+        self.footer_y = 27
+        self.footer_height = 3
+        self.header_height = 3
+
+        self.load_header_effect = None
+        self.load_footer_effect = None
+        self.load_material_effect = None
+        
+
         super().__init__(engine, x, y, width, height, xp_filepath=xp_filepath)      
 
         self.update_graph()
@@ -32,6 +58,88 @@ class StatueSection(Section):
         self.update_spotting_line()
     
     def render(self, console):
+        if self.state == StatueState.LOAD_FOOTER:
+            self.render_load_footer(console)
+        elif self.state == StatueState.LOAD_HEADER:
+            self.render_load_header(console)
+        elif self.state == StatueState.LOAD_MATERIAL:
+            self.render_load_material(console)
+        elif self.state == StatueState.IN_PROGRESS:
+            self.render_in_progress(console)
+
+    def render_load_footer(self, console):
+        if self.load_footer_effect == None:
+            self.load_footer_effect = VerticalWipeEffect(self.engine, 0, self.footer_y, self.width, self.footer_height)
+
+        if not self.load_footer_effect.in_effect:
+            if self.load_footer_effect.time_alive > 0:
+                self.state = StatueState.LOAD_HEADER
+                self.render_load_header(console)
+                return
+
+            temp_console = Console(width=self.width, height=self.footer_height, order="F")
+            temp_console.tiles_rgb[0 :self.width, 0: self.footer_height] = self.tiles[0 :self.width, self.footer_y: self.footer_y + self.footer_height]["graphic"]
+
+            self.load_footer_effect.tiles = temp_console.tiles
+            self.load_footer_effect.start(VerticalWipeDirection.UP)
+
+        elif self.load_footer_effect.in_effect == True:
+            self.load_footer_effect.render(console)
+
+    def render_load_header(self, console):
+        if self.load_header_effect == None:
+            self.load_header_effect = VerticalWipeEffect(self.engine, 0, 0, self.width, self.header_height)
+
+        if not self.load_header_effect.in_effect:
+            if self.load_header_effect.time_alive > 0:
+                self.state = StatueState.LOAD_MATERIAL
+                self.render_load_material(console)
+                return
+
+            temp_console = Console(width=self.width, height=self.header_height, order="F")
+            temp_console.tiles_rgb[0 :self.width, 0: self.header_height] = self.tiles[0 :self.width, 0: self.header_height]["graphic"]
+
+            self.load_header_effect.tiles = temp_console.tiles
+            self.load_header_effect.start(VerticalWipeDirection.DOWN)
+
+        elif self.load_header_effect.in_effect == True:
+            self.load_header_effect.render(console)
+
+        temp_console = Console(width=self.width, height=self.footer_height, order="F")
+        temp_console.tiles_rgb[0 :self.width, 0: self.footer_height] = self.tiles[0 :self.width, self.footer_y: self.footer_y + self.footer_height]["graphic"]
+        temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=self.footer_y, width=self.width, height=self.footer_height)
+
+    def render_load_material(self, console):
+        if self.load_material_effect == None:
+            self.load_material_effect = BrickWallEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"])
+
+        if not self.load_material_effect.in_effect:
+
+            if self.load_material_effect.time_alive > 0:
+                self.state = StatueState.IN_PROGRESS
+                self.render_in_progress(console)
+                return
+
+            temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
+            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
+            for entity in self.entities:
+                temp_console.print(entity.x - self.level["x"], entity.y - self.level["y"],entity.char, fg=entity.fg_color, bg=entity.bg_color)
+
+            self.load_material_effect.tiles = temp_console.tiles            
+            self.load_material_effect.start(BrickWallDirection.UP)
+
+        elif self.load_material_effect.in_effect == True:
+            self.load_material_effect.render(console)
+
+        temp_console = Console(width=self.width, height=self.footer_height, order="F")
+        temp_console.tiles_rgb[0 :self.width, 0: self.footer_height] = self.tiles[0 :self.width, self.footer_y: self.footer_y + self.footer_height]["graphic"]
+        temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=self.footer_y, width=self.width, height=self.footer_height)
+
+        temp_console = Console(width=self.width, height=self.header_height, order="F")
+        temp_console.tiles_rgb[0 :self.width, 0: self.header_height] = self.tiles[0 :self.width, 0: self.header_height]["graphic"]
+        temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=0, width=self.width, height=self.header_height)
+
+    def render_in_progress(self, console):
         super().render(console)
 
         temp_console = Console(width=console.width, height=console.height, order="F")
@@ -39,12 +147,15 @@ class StatueSection(Section):
         temp_console.print(1,1, "Spotted Blocks: " + str(self.spotted_statue_tiles), (255,255,255))
         temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=1, width=17, height=1)           
 
-        temp_console.print(1,1, "Remaining Blocks: " + str(self.remaining_blocks), (255,255,255))
-        temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=2, width=22, height=1)
+        temp_console.print(1,2, "Remaining Blocks: " + str(self.remaining_blocks), (255,255,255))
+        temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
+
+        if self.level is not None:
+            temp_console.print(1,3, self.level["name"], (255,255,255))
+            temp_console.blit(console, src_x=1, src_y=3, dest_x=1, dest_y=3, width=28, height=1)
 
         if self.spotting:
             self.render_spotting_line(console)
-
 
     def render_spotting_line(self, console):
         temp_console = Console(width=console.width, height=console.height, order="F")
@@ -132,9 +243,6 @@ class StatueSection(Section):
                 return False
         return True
 
-    def is_point_in_section(self, x,y):
-        return (x >= 0) and (x < self.width) and (y >= 0) and (y < self.height)
-
     def add_entity(self, entity):
         if isinstance(entity, BlockMaterial):
             self.remaining_blocks += 1
@@ -148,3 +256,10 @@ class StatueSection(Section):
             self.remaining_blocks -= 1
         super().remove_entity(entity)
         self.update_graph()
+
+    def load_level(self, level):
+        xp_data = self.load_xp_data(level["file"])
+        self.load_tiles(level["file"], xp_data)
+        self.load_entities(level["file"], xp_data)
+        self.level = level
+        self.state = StatueState.LOAD_FOOTER

@@ -1,10 +1,11 @@
 
+from threading import Timer
 from typing import List, Tuple
 
 import tcod
 from actions.actions import (AddEntity, BlockMaterialChisled, DeleteEntity,
                              StatueMaterialChiseled)
-from utils.color import marble, marble_highlight, marble_marked
+from utils.color import marble, marble_highlight, marble_marked, black
 
 from entities.blocker import Blocker
 from entities.entity import Entity
@@ -93,7 +94,6 @@ class Material(Entity):
         else:
             self.fg_color = marble
 
-
 class StatueMaterial(Material):
     def __init__(self, engine, x: int, y: int, section):
         super().__init__(engine, x, y, section)
@@ -110,6 +110,10 @@ class BlockMaterial(Material):
 
     def chisel_material(self):
         super().chisel_material()
-        BlockMaterialChisled(self.engine, self).perform()
+        self.fg_color = marble
+        self.bg_color = black
+        self.char = chr(236)
+        action = BlockMaterialChisled(self.engine, self)
+        Timer(0.1, action.perform).start()
 
 

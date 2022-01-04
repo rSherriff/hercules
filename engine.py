@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from enum import Enum, auto
 from threading import Timer
 
@@ -12,13 +13,12 @@ from effects.melt_effect import MeltWipeEffect, MeltWipeEffectType
 from input_handlers import EventHandler, MainGameEventHandler
 from sections.statue_section import StatueSection
 from utils.delta_time import DeltaTime
+from sections.menu_section import MenuSection
 
 
 class GameState(Enum):
     MENU = auto()
-    FIRST_STAGE = auto()
-    FAILED_FIRST_STAGE = auto()
-    SECOND_STAGE = auto()
+    IN_GAME = auto()
     GAME_OVER = auto()
     COMPLETE = auto()
 
@@ -44,7 +44,7 @@ class Engine:
         self.tick_length = 2
         self.time_since_last_tick = -2
 
-        self.state = GameState.FIRST_STAGE
+        self.state = GameState.MENU
 
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """
@@ -80,21 +80,21 @@ class Engine:
             section.late_update()
 
     def is_in_game(self):
-        return self.state == GameState.FIRST_STAGE or self.state == GameState.SECOND_STAGE or self.state == GameState.FAILED_FIRST_STAGE
+        return self.state == GameState.IN_GAME
 
     def handle_events(self, context: tcod.context.Context):
         self.event_handler.handle_events(context, discard_events=self.full_screen_effect.in_effect or self.state == GameState.GAME_OVER)
 
-    def setup_game(self):
-        self.tick_length = 2
-
     def setup_effects(self):
-        self.full_screen_effect = MeltWipeEffect(self, 0, 0, self.screen_width, self.screen_height, MeltWipeEffectType.RANDOM, 40)
+        self.full_screen_effect = MeltWipeEffect(self, 0, 0, self.screen_width, self.screen_height, MeltWipeEffectType.RANDOM, 20)
 
     def setup_sections(self):
         self.menu_sections = {}
+        self.menu_sections["Menu"] = MenuSection(self,0,0,self.screen_width, self.screen_height)
+
         self.game_sections = {}
-        self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height, "statue_section.xp" )
+        self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height)
+
         self.completion_sections = {}
 
         self.disabled_sections = ["confirmationDialog", "notificationDialog"]
@@ -126,10 +126,14 @@ class Engine:
     def disable_section(self, section):
         self.disabled_sections.append(section)
 
-    def close_menu(self):
+    def load_level(self):
+        self.game_sections["statueSection"].load_level(self.level)
+
+    def select_level(self, level):
         self.state = GameState.IN_GAME
-        self.setup_game()
         self.full_screen_effect.start()
+        self.level = level
+        Timer(2,self.load_level).start()
 
     def open_menu(self):
         self.state = GameState.MENU
@@ -174,16 +178,3 @@ class Engine:
 
     def is_ui_paused(self):
         return self.full_screen_effect.in_effect
-
-    def check_completion(self):
-        if self.state == GameState.FIRST_STAGE:
-            if self.check_first_stage_completion():
-                print("Stage complete!")
-
-    def check_first_stage_completion(self):
-        self.game_sections["statueSection"].check_first_stage_completion()
-
-    def fail_stage(self):
-        if self.state == GameState.FIRST_STAGE:
-            print("Failed first stage!")
-            self.state = GameState.FAILED_FIRST_STAGE
