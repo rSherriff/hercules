@@ -75,7 +75,8 @@ class Section:
                 self.ui.render(console)
 
             for entity in self.entities:
-                console.print(entity.x, entity.y,entity.char, fg=entity.fg_color, bg=entity.bg_color)
+                if not entity.invisible:
+                    console.print(entity.x, entity.y,entity.char, fg=entity.fg_color, bg=entity.bg_color)
 
     def update(self):
         for entity in self.entities:
