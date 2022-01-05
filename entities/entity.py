@@ -13,6 +13,7 @@ class Entity:
         self.fg_color = fg_color
         self.bg_color = bg_color
         self.blocks_movement = False
+        self.invisible = False
 
     def move(self, dx: int, dy: int) -> None:
         # Move the entity by a given amount

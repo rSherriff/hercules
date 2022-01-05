@@ -57,7 +57,7 @@ class Engine:
         else:
             self.full_screen_effect.set_tiles(root_console.tiles_rgb)
 
-        root_console.print(40, 1, str(self.mouse_location), (255,255,255))
+        #root_console.print(40, 1, str(self.mouse_location), (255,255,255))
 
     def update(self):
         """ Engine update tick """

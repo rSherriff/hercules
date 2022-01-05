@@ -6,8 +6,11 @@ from typing import final
 
 import numpy as np
 import tcod
+from tcod.libtcodpy import sys_elapsed_milli
 from actions.actions import LevelCompleteAction
 from effects.brick_wall_effect import BrickWallDirection, BrickWallEffect
+from effects.horizontal_move_effect import (HorizontalMoveDirection,
+                                            HorizontalMoveEffect)
 from effects.vertical_wipe_effect import (VerticalWipeDirection,
                                           VerticalWipeEffect)
 from entities.anchor import Anchor
@@ -24,6 +27,7 @@ class StatueState(Enum):
     INACTIVE = auto()
     LOAD_HEADER = auto()
     LOAD_FOOTER = auto()
+    LOAD_SIDES = auto()
     LOAD_MATERIAL = auto()
     IN_PROGRESS = auto()
     ENDING = auto()
@@ -36,6 +40,10 @@ class StatueSection(Section):
         self.footer_y = 26
         self.footer_height = 4
         self.header_height = 4
+        
+        self.sides_y = 4
+        self.sides_width = 13
+        self.sides_height = 22
 
         self.reset()       
 
@@ -58,6 +66,8 @@ class StatueSection(Section):
         self.load_header_effect = None
         self.load_footer_effect = None
         self.load_material_effect = None
+        self.load_side_left_effect = None
+        self.load_side_right_effect = None
         self.ending_effect = None
 
 
@@ -69,6 +79,8 @@ class StatueSection(Section):
             self.render_load_footer(console)
         elif self.state == StatueState.LOAD_HEADER:
             self.render_load_header(console)
+        elif self.state == StatueState.LOAD_SIDES:
+            self.render_load_sides(console)
         elif self.state == StatueState.LOAD_MATERIAL:
             self.render_load_material(console)
         elif self.state == StatueState.IN_PROGRESS:
@@ -101,8 +113,8 @@ class StatueSection(Section):
 
         if not self.load_header_effect.in_effect:
             if self.load_header_effect.time_alive > 0:
-                self.state = StatueState.LOAD_MATERIAL
-                self.render_load_material(console)
+                self.state = StatueState.LOAD_SIDES
+                self.render_load_sides(console)
                 return
 
             temp_console = Console(width=self.width, height=self.header_height, order="F")
@@ -117,6 +129,41 @@ class StatueSection(Section):
         temp_console = Console(width=self.width, height=self.footer_height, order="F")
         temp_console.tiles_rgb[0 :self.width, 0: self.footer_height] = self.tiles[0 :self.width, self.footer_y: self.footer_y + self.footer_height]["graphic"]
         temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=self.footer_y, width=self.width, height=self.footer_height)
+
+    def render_load_sides(self, console):
+        if self.load_side_left_effect == None:
+            self.load_side_left_effect = HorizontalMoveEffect(self.engine, 0, self.sides_y, self.sides_width, self.sides_height)
+            self.load_side_right_effect = HorizontalMoveEffect(self.engine, self.width - self.sides_width, self.sides_y, self.sides_width, self.sides_height)
+
+        if not self.load_side_left_effect.in_effect:
+            if self.load_side_left_effect.time_alive > 0:
+                self.state = StatueState.LOAD_MATERIAL
+                self.render_load_material(console)
+                return
+
+            left_temp_console = Console(width=self.sides_width, height=self.sides_height, order="F")
+            left_temp_console.tiles_rgb[0 :self.sides_width, 0: self.sides_height] = self.tiles[0 :self.sides_width, self.sides_y: self.sides_y+ self.sides_height]["graphic"]
+
+            self.load_side_left_effect.tiles = left_temp_console.tiles
+            self.load_side_left_effect.start(HorizontalMoveDirection.LEFT)
+
+            right_temp_console = Console(width=self.sides_width, height=self.sides_height, order="F")
+            right_temp_console.tiles_rgb[0 :self.sides_width, 0: self.sides_height] = self.tiles[self.width - self.sides_width  -1 : (self.width - self.sides_width) + self.sides_width - 1, self.sides_y: self.sides_y+ self.sides_height]["graphic"]
+
+            self.load_side_right_effect.tiles = right_temp_console.tiles
+            self.load_side_right_effect.start(HorizontalMoveDirection.RIGHT)
+
+        elif self.load_side_left_effect.in_effect == True:
+            self.load_side_left_effect.render(console)
+            self.load_side_right_effect.render(console)
+
+        temp_console = Console(width=self.width, height=self.footer_height, order="F")
+        temp_console.tiles_rgb[0 :self.width, 0: self.footer_height] = self.tiles[0 :self.width, self.footer_y: self.footer_y + self.footer_height]["graphic"]
+        temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=self.footer_y, width=self.width, height=self.footer_height)
+
+        temp_console = Console(width=self.width, height=self.header_height, order="F")
+        temp_console.tiles_rgb[0 :self.width, 0: self.header_height] = self.tiles[0 :self.width, 0: self.header_height]["graphic"]
+        temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=0, width=self.width, height=self.header_height)
 
     def render_load_material(self, console):
         if self.load_material_effect == None:
@@ -147,6 +194,15 @@ class StatueSection(Section):
         temp_console = Console(width=self.width, height=self.header_height, order="F")
         temp_console.tiles_rgb[0 :self.width, 0: self.header_height] = self.tiles[0 :self.width, 0: self.header_height]["graphic"]
         temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=0, width=self.width, height=self.header_height)
+
+        temp_console = Console(width=self.sides_width, height=self.sides_height, order="F")
+        temp_console.tiles_rgb[0 :self.sides_width, 0: self.sides_height] = self.tiles[0 :self.sides_width, self.sides_y: self.sides_y+ self.sides_height]["graphic"]
+        temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=self.sides_y, width=self.sides_width, height=self.sides_height)
+
+        temp_console = Console(width=self.sides_width + 1, height=self.sides_height, order="F")
+        temp_console.tiles_rgb[0 :self.sides_width + 1, 0: self.sides_height] = self.tiles[self.width - self.sides_width -1: (self.width - self.sides_width - 1) + self.sides_width + 1, self.sides_y: self.sides_y+ self.sides_height]["graphic"]
+        temp_console.blit(console, src_x=0, src_y=0, dest_x=self.width - self.sides_width - 1, dest_y=self.sides_y, width=self.sides_width + 1, height=self.sides_height)
+
 
     def render_in_progress(self, console):
         super().render(console)
