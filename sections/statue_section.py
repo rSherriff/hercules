@@ -30,6 +30,7 @@ class StatueState(Enum):
 
 class StatueSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = ""):
+        self.max_spotted_material_tiles = 3
         self.index_into_render = 1 
         self.state_speed = 10
         self.footer_y = 26
@@ -243,12 +244,9 @@ class StatueSection(Section):
                 entity.mousedown(button)
                 processed_entity = True
 
-        if button == 1 and not processed_entity and len(self.get_entities_at_location(self.engine.mouse_location[0], self.engine.mouse_location[1])) < 1:
+        if button == 2 and not processed_entity:
             self.mousedown_point = (x,y)
-            self.spotting = True
-        elif button == 3:
-            self.mousedown_point = None
-            self.spotting = False
+            self.spotting = not self.spotting
 
     def keydown(self, key):
         #TEMP
