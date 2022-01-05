@@ -134,3 +134,11 @@ class SelectLevelAction(Action):
 
     def perform(self) -> None:
         return self.engine.select_level(self.level)
+
+class LevelCompleteAction(Action):
+    def __init__(self, engine, level) -> None:
+        super().__init__(engine)
+        self.level = level
+
+    def perform(self) -> None:
+        return self.engine.level_complete(self.level)

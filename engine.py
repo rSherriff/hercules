@@ -135,6 +135,11 @@ class Engine:
         self.level = level
         Timer(2,self.load_level).start()
 
+    def level_complete(self, level):
+        self.state = GameState.MENU
+        self.full_screen_effect.start()
+        print("Level Over!")
+
     def open_menu(self):
         self.state = GameState.MENU
         self.full_screen_effect.start()

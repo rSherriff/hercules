@@ -16,7 +16,7 @@ class VerticalWipeEffect(Effect):
     def start(self, direction: VerticalWipeDirection):
         super().start()
         self.direction = direction
-        self.current_wipe_height = 1
+        self.current_wipe_height = 0
         
     def render(self, console):
         if self.current_wipe_height > self.height:

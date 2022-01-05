@@ -1,12 +1,15 @@
 
 from enum import Enum, auto
 from math import sqrt
+from threading import Timer
 from typing import final
 
 import numpy as np
 import tcod
-from effects.brick_wall_effect import BrickWallEffect, BrickWallDirection
-from effects.vertical_wipe_effect import VerticalWipeEffect, VerticalWipeDirection
+from actions.actions import LevelCompleteAction
+from effects.brick_wall_effect import BrickWallDirection, BrickWallEffect
+from effects.vertical_wipe_effect import (VerticalWipeDirection,
+                                          VerticalWipeEffect)
 from entities.anchor import Anchor
 from entities.blocker import Blocker
 from entities.material import BlockMaterial, Material, StatueMaterial
@@ -27,31 +30,34 @@ class StatueState(Enum):
 
 class StatueSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = ""):
+        self.index_into_render = 1 
+        self.state_speed = 10
+        self.footer_y = 26
+        self.footer_height = 4
+        self.header_height = 4
+
+        self.reset()       
+
+        super().__init__(engine, x, y, width, height, xp_filepath=xp_filepath)      
+
+        self.update_graph()
+
+    def reset(self):
         self.mousedown_point = None
         self.spotting = False
         self.spotted_statue_tiles = 0
-        self.max_spotted_material_tiles = 3
         self.spotted_tiles = list()
         self.remaining_blocks = 0
         self.anchor = None
         self.graph = None
         self.level = None
         self.state = StatueState.INACTIVE
-
-        self.index_into_render = 1 
-        self.state_speed = 10
-        self.footer_y = 27
-        self.footer_height = 3
-        self.header_height = 3
+        self.level_ending = False
 
         self.load_header_effect = None
         self.load_footer_effect = None
         self.load_material_effect = None
-        
-
-        super().__init__(engine, x, y, width, height, xp_filepath=xp_filepath)      
-
-        self.update_graph()
+        self.ending_effect = None
 
 
     def update(self):
@@ -66,6 +72,8 @@ class StatueSection(Section):
             self.render_load_material(console)
         elif self.state == StatueState.IN_PROGRESS:
             self.render_in_progress(console)
+        elif self.state == StatueState.ENDING:
+            self.render_ending(console)
 
     def render_load_footer(self, console):
         if self.load_footer_effect == None:
@@ -145,18 +153,41 @@ class StatueSection(Section):
         temp_console = Console(width=console.width, height=console.height, order="F")
 
         temp_console.print(1,1, "Spotted Blocks: " + str(self.spotted_statue_tiles), (255,255,255))
-        temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=1, width=17, height=1)           
+        #temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=1, width=17, height=1)           
 
         temp_console.print(1,2, "Remaining Blocks: " + str(self.remaining_blocks), (255,255,255))
-        temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
+        #temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
 
         if self.level is not None:
             temp_console.print(1,3, self.level["name"], (255,255,255))
-            temp_console.blit(console, src_x=1, src_y=3, dest_x=1, dest_y=3, width=28, height=1)
+            #temp_console.blit(console, src_x=1, src_y=3, dest_x=1, dest_y=3, width=28, height=1)
 
         if self.spotting:
             self.render_spotting_line(console)
 
+    def render_ending(self, console):
+        super().render(console)
+        if self.ending_effect == None:
+            self.ending_effect = VerticalWipeEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"])
+
+        if not self.ending_effect.in_effect:
+
+            if self.ending_effect.time_alive > 0:
+                if not self.level_ending:
+                    self.level_ending = True
+                    Timer(2.0, self.end_level).start()
+                console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles["graphic"]
+                return
+
+            temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
+            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
+
+            self.ending_effect.tiles = temp_console.tiles
+            self.ending_effect.start(VerticalWipeDirection.DOWN)
+
+        elif self.ending_effect.in_effect == True:
+            self.ending_effect.render(console)
+   
     def render_spotting_line(self, console):
         temp_console = Console(width=console.width, height=console.height, order="F")
         
@@ -166,7 +197,6 @@ class StatueSection(Section):
             temp_console.tiles_rgb[tile[0], tile[1]] = (9632, black,spot_line)
             temp_console.blit(console, src_x=tile[0], src_y=tile[1], dest_x=tile[0], dest_y=tile[1], width=1, height=1)
         
-
     def update_spotting_line(self):
     
         mouse_pos = (self.engine.mouse_location[0], self.engine.mouse_location[1])
@@ -220,6 +250,13 @@ class StatueSection(Section):
             self.mousedown_point = None
             self.spotting = False
 
+    def keydown(self, key):
+        #TEMP
+        if key == tcod.event.K_p:
+            self.entities = [x for x in self.entities if not isinstance(x, BlockMaterial)]
+            self.remaining_blocks = 0
+            self.remove_entity(None)
+
     def line_between(self, start, end):
         """Return an line between these two points."""
         x1, y1 = start
@@ -237,11 +274,12 @@ class StatueSection(Section):
 
         self.graph = tcod.path.SimpleGraph(cost=self.cost, cardinal=1, diagonal=1)
                         
-    def check_first_stage_completion(self):
-        for e in self.entities:
-            if isinstance(e, BlockMaterial):
-                return False
-        return True
+    def complete_level(self):
+        self.state = StatueState.ENDING 
+
+    def end_level(self):
+        self.state = StatueState.INACTIVE
+        LevelCompleteAction(self.engine, self.level).perform()
 
     def add_entity(self, entity):
         if isinstance(entity, BlockMaterial):
@@ -254,12 +292,20 @@ class StatueSection(Section):
     def remove_entity(self, entity):
         if isinstance(entity, BlockMaterial):
             self.remaining_blocks -= 1
+
+        if self.remaining_blocks == 0:
+            self.complete_level()
+
         super().remove_entity(entity)
         self.update_graph()
 
     def load_level(self, level):
+        self.reset()
+
         xp_data = self.load_xp_data(level["file"])
         self.load_tiles(level["file"], xp_data)
         self.load_entities(level["file"], xp_data)
         self.level = level
         self.state = StatueState.LOAD_FOOTER
+
+        
