@@ -14,6 +14,7 @@ from input_handlers import EventHandler, MainGameEventHandler
 from sections.statue_section import StatueSection
 from utils.delta_time import DeltaTime
 from sections.menu_section import MenuSection
+from fonts.font_manager import FontManager
 
 
 class GameState(Enum):
@@ -45,6 +46,9 @@ class Engine:
         self.time_since_last_tick = -2
 
         self.state = GameState.MENU
+
+        self.font_manager = FontManager()
+        self.font_manager.add_font("number_font")
 
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """

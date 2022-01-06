@@ -11,7 +11,7 @@ class Font():
         self.char_width = 3
         self.char_height = 6
 
-        self.font_image = Image(self.width, self.height, "images/" + filepath + ".xp")
+        self.font_image = Image(self.width, self.height, "fonts/" + filepath + ".xp")
 
     def get_character(self, char):
         char = ord(char)

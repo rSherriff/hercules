@@ -1,5 +1,32 @@
 {
-  "hercules": { "name": "The Farnese Hercules", "file": "statue_section.xp", "x": 18, "y": 4, "width": 14, "height": 22 },
-  "test": { "name": "The Farnese Hercules", "file": "statue_section.xp", "x": 18, "y": 4, "width": 14, "height": 21 },
-  "another_test": { "name": "The Farnese Hercules", "file": "statue_section.xp", "x": 18, "y": 4, "width": 14, "height": 21 }
+  "hercules": {
+    "name": "The Farnese Hercules",
+    "file": "statue_section.xp",
+    "x": 18,
+    "y": 4,
+    "width": 14,
+    "height": 22,
+    "spotted_tiles_pos_x": [11, 37],
+    "spotted_tiles_pos_y": [20, 20]
+  },
+  "test": {
+    "name": "The Farnese Hercules",
+    "file": "statue_section.xp",
+    "x": 18,
+    "y": 4,
+    "width": 14,
+    "height": 22,
+    "spotted_tiles_pos_x": 9,
+    "spotted_tiles_pos_y": 9
+  },
+  "another_test": {
+    "name": "The Farnese Hercules",
+    "file": "statue_section.xp",
+    "x": 18,
+    "y": 4,
+    "width": 14,
+    "height": 22,
+    "spotted_tiles_pos_x": 9,
+    "spotted_tiles_pos_y": 9
+  }
 }
