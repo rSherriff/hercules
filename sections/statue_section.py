@@ -1,4 +1,5 @@
 
+import random
 from enum import Enum, auto
 from math import sqrt
 from threading import Timer
@@ -54,11 +55,14 @@ class StatueSection(Section):
         self.spotted_statue_tiles = 0
         self.spotted_tiles = list()
         self.remaining_blocks = 0
+        self.cleared_blocks = 0
         self.anchor = None
         self.graph = None
         self.level = None
         self.state = StatueState.INACTIVE
         self.level_ending = False
+
+        self.name_char_probabilites = []
 
         self.load_header_effect = None
         self.load_footer_effect = None
@@ -200,7 +204,6 @@ class StatueSection(Section):
         temp_console.tiles_rgb[0 :self.sides_width + 1, 0: self.sides_height] = self.tiles[self.width - self.sides_width -1: (self.width - self.sides_width - 1) + self.sides_width + 1, self.sides_y: self.sides_y+ self.sides_height]["graphic"]
         temp_console.blit(console, src_x=0, src_y=0, dest_x=self.width - self.sides_width - 1, dest_y=self.sides_y, width=self.sides_width + 1, height=self.sides_height)
 
-
     def render_in_progress(self, console):
         super().render(console)
 
@@ -210,11 +213,14 @@ class StatueSection(Section):
         #temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=1, width=17, height=1)           
 
         temp_console.print(1,2, "Remaining Blocks: " + str(self.remaining_blocks), (255,255,255))
-        #temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
+        temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
 
         if self.level is not None:
-            temp_console.print(1,3, self.level["name"], (255,255,255))
-            #temp_console.blit(console, src_x=1, src_y=3, dest_x=1, dest_y=3, width=28, height=1)
+
+            for i in range(0,len(self.level["name"])):
+                if self.cleared_blocks >= self.name_char_probabilites[i]:
+                    temp_console.print(i,0, self.level["name"][i], (255,255,255))
+                    temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
 
         if self.spotting:
             self.render_spotting_line(console)
@@ -355,6 +361,7 @@ class StatueSection(Section):
     def remove_entity(self, entity):
         if isinstance(entity, BlockMaterial):
             self.remaining_blocks -= 1
+            self.cleared_blocks += 1
 
         if self.remaining_blocks == 0:
             self.complete_level()
@@ -371,4 +378,7 @@ class StatueSection(Section):
         self.level = level
         self.state = StatueState.LOAD_FOOTER
 
+        probability_step = (self.remaining_blocks * 0.9)/len(self.level["name"])
+        self.name_char_probabilites = list(map(lambda num: int(num * probability_step), range(1, len(self.level["name"]) + 1)))
+        random.shuffle(self.name_char_probabilites)
         

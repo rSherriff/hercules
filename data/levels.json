@@ -6,8 +6,10 @@
     "y": 4,
     "width": 14,
     "height": 22,
-    "spotted_tiles_pos_x": [11, 37],
-    "spotted_tiles_pos_y": [20, 20]
+    "spotted_tiles_pos_x": [9, 39],
+    "spotted_tiles_pos_y": [21, 21],
+    "name_x": 15,
+    "name_y": 28
   },
   "test": {
     "name": "The Farnese Hercules",
