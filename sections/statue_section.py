@@ -2,11 +2,9 @@
 from enum import Enum, auto
 from math import sqrt
 from threading import Timer
-from typing import final
 
 import numpy as np
 import tcod
-from tcod.libtcodpy import sys_elapsed_milli
 from actions.actions import LevelCompleteAction
 from effects.brick_wall_effect import BrickWallDirection, BrickWallEffect
 from effects.horizontal_move_effect import (HorizontalMoveDirection,
@@ -16,7 +14,6 @@ from effects.vertical_wipe_effect import (VerticalWipeDirection,
 from entities.anchor import Anchor
 from entities.blocker import Blocker
 from entities.material import BlockMaterial, Material, StatueMaterial
-from numpy.lib.arraysetops import isin
 from tcod import Console
 from utils.color import black, spot_line
 
@@ -221,6 +218,7 @@ class StatueSection(Section):
 
         if self.spotting:
             self.render_spotting_line(console)
+            self.render_spotted_tiles(console)
 
     def render_ending(self, console):
         super().render(console)
@@ -253,6 +251,17 @@ class StatueSection(Section):
             tile = self.spotted_tiles[i]
             temp_console.tiles_rgb[tile[0], tile[1]] = (9632, black,spot_line)
             temp_console.blit(console, src_x=tile[0], src_y=tile[1], dest_x=tile[0], dest_y=tile[1], width=1, height=1)
+
+    def render_spotted_tiles(self, console):
+        font = self.engine.font_manager.get_font("number_font")
+
+        for i in range(0, len(self.level["spotted_tiles_pos_x"])):
+            temp_console = Console(width = font.char_width, height = font.char_height, order="F")
+            temp_console.tiles_rgb[0: font.char_width, 0:font.char_height] = font.get_character(str(self.spotted_statue_tiles))
+
+            x =self.level["spotted_tiles_pos_x"][i] - int(font.char_width / 2)
+            y =self.level["spotted_tiles_pos_y"][i] - int(font.char_height / 2)
+            temp_console.blit(console, src_x=0, src_y=0, dest_x = x, dest_y = y, width = font.char_width, height = font.char_height)
         
     def update_spotting_line(self):
     
@@ -300,7 +309,7 @@ class StatueSection(Section):
                 entity.mousedown(button)
                 processed_entity = True
 
-        if button == 2 and not processed_entity:
+        if button == 1 and not processed_entity:
             self.mousedown_point = (x,y)
             self.spotting = not self.spotting
 

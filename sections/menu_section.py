@@ -2,12 +2,10 @@
 import json
 from enum import Enum, auto
 from math import sqrt
-from typing import final
 
 import numpy as np
 import tcod
 from actions.actions import SelectLevelAction
-from numpy.lib.arraysetops import isin
 from tcod import Console
 
 from sections.section import Section
