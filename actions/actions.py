@@ -116,8 +116,12 @@ class CloseNotificationDialog(Action):
 
 
 class StatueMaterialChiseled(Action):
+    def __init__(self, engine, entity) -> None:
+        super().__init__(engine)
+        self.entity = entity
+        
     def perform(self) -> None:
-        return self.engine.fail_stage()
+        return self.entity.section.remove_entity(self.entity)
 
 class BlockMaterialChisled(Action):
     def __init__(self, engine, entity) -> None:

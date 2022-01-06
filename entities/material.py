@@ -98,10 +98,18 @@ class StatueMaterial(Material):
     def __init__(self, engine, x: int, y: int, section):
         super().__init__(engine, x, y, section)
         self.pickable = False
+
+    def mousedown(self, button):
+        if button == 3:
+            self.chisel_material()
     
     def chisel_material(self):
         super().chisel_material()
-        StatueMaterialChiseled(self.engine).perform()
+        self.fg_color = marble
+        self.bg_color = black
+        self.char = chr(236)
+        action = StatueMaterialChiseled(self.engine, self)
+        Timer(0.1, action.perform).start()
 
 class BlockMaterial(Material):
     def __init__(self, engine, x: int, y: int, section):
