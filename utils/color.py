@@ -14,6 +14,8 @@ marble = (222,222,222)
 marble_highlight = (191,191,191)
 marble_marked = (220,118,118)
 
+mistake = (200,50,50)
+
 spot_line = (245,245,245)
 
 colors = []

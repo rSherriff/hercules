@@ -56,6 +56,7 @@ class StatueSection(Section):
         self.spotted_tiles = list()
         self.remaining_blocks = 0
         self.cleared_blocks = 0
+        self.mistakes = 0
         self.anchor = None
         self.graph = None
         self.level = None
@@ -213,14 +214,33 @@ class StatueSection(Section):
         #temp_console.blit(console, src_x=1, src_y=1, dest_x=1, dest_y=1, width=17, height=1)           
 
         temp_console.print(1,2, "Remaining Blocks: " + str(self.remaining_blocks), (255,255,255))
-        temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
+        #temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
+
+        temp_console.print(1,3, "Mistakes: " + str(self.mistakes), (255,255,255))
+        #temp_console.blit(console, src_x=1, src_y=3, dest_x=1, dest_y=2, width=12, height=1)
 
         if self.level is not None:
-
             for i in range(0,len(self.level["name"])):
                 if self.cleared_blocks >= self.name_char_probabilites[i]:
                     temp_console.print(i,0, self.level["name"][i], (255,255,255))
                     temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
+
+            mistakes_to_render = min(99,self.mistakes)
+            mistakes_string = str(mistakes_to_render)
+            font = self.engine.font_manager.get_font("number_font")
+            mistakes_console = Console(width = font.char_width * len(mistakes_string) + 1, height = font.char_height, order="F")
+            for i in range(0, len(mistakes_string)):
+                start_x = i * font.char_width
+                if i > 0:
+                    start_x += 1
+                mistakes_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(mistakes_string[i])
+            final_width = font.char_width * len(mistakes_string)
+
+            final_x = self.level["mistakes_x"] + 2
+            if len(mistakes_string) > 1:
+                final_width += 1
+                final_x -= 2
+            mistakes_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["mistakes_y"], width = final_width, height = font.char_height)
 
         if self.spotting:
             self.render_spotting_line(console)
@@ -261,12 +281,12 @@ class StatueSection(Section):
     def render_spotted_tiles(self, console):
         font = self.engine.font_manager.get_font("number_font")
 
-        for i in range(0, len(self.level["spotted_tiles_pos_x"])):
+        for i in range(0, len(self.level["spotted_tiles_x"])):
             temp_console = Console(width = font.char_width, height = font.char_height, order="F")
             temp_console.tiles_rgb[0: font.char_width, 0:font.char_height] = font.get_character(str(self.spotted_statue_tiles))
 
-            x =self.level["spotted_tiles_pos_x"][i] - int(font.char_width / 2)
-            y =self.level["spotted_tiles_pos_y"][i] - int(font.char_height / 2)
+            x =self.level["spotted_tiles_x"][i] - int(font.char_width / 2)
+            y =self.level["spotted_tiles_y"][i] - int(font.char_height / 2)
             temp_console.blit(console, src_x=0, src_y=0, dest_x = x, dest_y = y, width = font.char_width, height = font.char_height)
         
     def update_spotting_line(self):
@@ -342,6 +362,9 @@ class StatueSection(Section):
                 self.cost[entity.x, entity.y] = 0
 
         self.graph = tcod.path.SimpleGraph(cost=self.cost, cardinal=1, diagonal=1)
+
+    def chisel_mistake(self):
+        self.mistakes += 1
                         
     def complete_level(self):
         self.state = StatueState.ENDING 

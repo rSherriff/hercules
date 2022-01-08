@@ -123,13 +123,21 @@ class StatueMaterialChiseled(Action):
     def perform(self) -> None:
         return self.entity.section.remove_entity(self.entity)
 
-class BlockMaterialChisled(Action):
+class BlockMaterialChiseled(Action):
     def __init__(self, engine, entity) -> None:
         super().__init__(engine)
         self.entity = entity
 
     def perform(self) -> None:
         return self.entity.section.remove_entity(self.entity)
+
+class ChiselMistakeAction(Action):
+    def __init__(self, engine, entity) -> None:
+        super().__init__(engine)
+        self.entity = entity
+        
+    def perform(self) -> None:
+        return self.entity.section.chisel_mistake()
 
 class SelectLevelAction(Action):
     def __init__(self, engine, level) -> None:
@@ -146,3 +154,4 @@ class LevelCompleteAction(Action):
 
     def perform(self) -> None:
         return self.engine.level_complete(self.level)
+

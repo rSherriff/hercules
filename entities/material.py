@@ -3,9 +3,9 @@ from threading import Timer
 from typing import List, Tuple
 
 import tcod
-from actions.actions import (AddEntity, BlockMaterialChisled, DeleteEntity,
+from actions.actions import (AddEntity, BlockMaterialChiseled, ChiselMistakeAction, DeleteEntity,
                              StatueMaterialChiseled)
-from utils.color import marble, marble_highlight, marble_marked, black
+from utils.color import marble, marble_highlight, marble_marked, black, mistake
 
 from entities.blocker import Blocker
 from entities.entity import Entity
@@ -97,12 +97,21 @@ class Material(Entity):
 class StatueMaterial(Material):
     def __init__(self, engine, x: int, y: int, section):
         super().__init__(engine, x, y, section)
-        self.pickable = False
+        self.pickable = True
 
     def mousedown(self, button):
-        if button == 3:
+        if button == 1 and self.is_path_to_anchor():
+            self.chisel_mistake()
+        elif button == 3:
             self.chisel_material()
     
+    def chisel_mistake(self):
+        self.fg_color = mistake
+        self.bg_color = black
+        self.char = chr(ord('X'))
+        ChiselMistakeAction(self.engine,self).perform()
+        Timer(0.3, self.reset_tile).start()
+
     def chisel_material(self):
         super().chisel_material()
         self.fg_color = marble
@@ -110,6 +119,11 @@ class StatueMaterial(Material):
         self.char = chr(236)
         action = StatueMaterialChiseled(self.engine, self)
         Timer(0.1, action.perform).start()
+
+    def reset_tile(self):
+        self.fg_color = marble
+        self.bg_color = marble_highlight
+        self.char =chr(9632)
 
 class BlockMaterial(Material):
     def __init__(self, engine, x: int, y: int, section):
@@ -121,7 +135,7 @@ class BlockMaterial(Material):
         self.fg_color = marble
         self.bg_color = black
         self.char = chr(236)
-        action = BlockMaterialChisled(self.engine, self)
+        action = BlockMaterialChiseled(self.engine, self)
         Timer(0.1, action.perform).start()
 
 

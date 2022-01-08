@@ -6,8 +6,10 @@
     "y": 4,
     "width": 14,
     "height": 22,
-    "spotted_tiles_pos_x": [9, 39],
-    "spotted_tiles_pos_y": [21, 21],
+    "spotted_tiles_x": [9, 39],
+    "spotted_tiles_y": [21, 21],
+    "mistakes_x": 37,
+    "mistakes_y": 6,
     "name_x": 15,
     "name_y": 28
   },
