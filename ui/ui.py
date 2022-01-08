@@ -12,7 +12,7 @@ from actions.actions import Action, CloseMenu, OpenMenu, EscapeAction
 from effects.horizontal_wipe_effect import HorizontalWipeEffect, HorizontalWipeDirection
 
 class UI:
-    def __init__(self, section, x, y):
+    def __init__(self, section, x=0, y=0):
         self.elements = list()
 
         self.x = x

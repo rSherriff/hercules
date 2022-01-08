@@ -148,10 +148,14 @@ class SelectLevelAction(Action):
         return self.engine.select_level(self.level)
 
 class LevelCompleteAction(Action):
-    def __init__(self, engine, level) -> None:
+    def __init__(self, engine, summary) -> None:
         super().__init__(engine)
-        self.level = level
+        self.summary = summary
 
     def perform(self) -> None:
-        return self.engine.level_complete(self.level)
+        return self.engine.level_complete(self.summary)
+
+class CloseSummarySectionAction(Action):
+    def perform(self) -> None:
+        return self.engine.close_summary_section()
 

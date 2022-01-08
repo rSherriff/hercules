@@ -10,11 +10,12 @@ from tcod.console import Console
 
 from application_path import get_app_path
 from effects.melt_effect import MeltWipeEffect, MeltWipeEffectType
-from input_handlers import EventHandler, MainGameEventHandler
-from sections.statue_section import StatueSection
-from utils.delta_time import DeltaTime
-from sections.menu_section import MenuSection
 from fonts.font_manager import FontManager
+from input_handlers import EventHandler, MainGameEventHandler
+from sections.menu_section import MenuSection
+from sections.statue_section import StatueSection
+from sections.statue_summary_section import StatueSummarySection
+from utils.delta_time import DeltaTime
 
 
 class GameState(Enum):
@@ -98,10 +99,11 @@ class Engine:
 
         self.game_sections = {}
         self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height)
+        self.game_sections["statueSummarySection"] = StatueSummarySection(self, 0,0,self.screen_width, self.screen_height)
 
         self.completion_sections = {}
 
-        self.disabled_sections = ["confirmationDialog", "notificationDialog"]
+        self.disabled_sections = ["confirmationDialog", "notificationDialog", "statueSummarySection"]
         self.solo_ui_section = ""
 
     def get_active_sections(self):
@@ -139,8 +141,8 @@ class Engine:
         self.level = level
         Timer(2,self.load_level).start()
 
-    def level_complete(self, level):
-        self.state = GameState.MENU
+    def level_complete(self, summary):
+        self.open_summary_section(summary)
         self.full_screen_effect.start()
         print("Level Over!")
 
@@ -184,6 +186,16 @@ class Engine:
 
     def close_notification_dialog(self):
         self.disable_section("notificationDialog")
+
+    def open_summary_section(self, summary):
+        self.game_sections["statueSummarySection"].setup(summary)
+        self.enable_section("statueSummarySection")
+
+    def close_summary_section(self):
+        self.disable_section("statueSummarySection")
+        self.state = GameState.MENU
+        self.full_screen_effect.start()
+
 
     def is_ui_paused(self):
         return self.full_screen_effect.in_effect

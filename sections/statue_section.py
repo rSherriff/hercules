@@ -7,6 +7,7 @@ from threading import Timer
 import numpy as np
 import tcod
 from actions.actions import LevelCompleteAction
+from data.statue_summary import StatueSummary
 from effects.brick_wall_effect import BrickWallDirection, BrickWallEffect
 from effects.horizontal_move_effect import (HorizontalMoveDirection,
                                             HorizontalMoveEffect)
@@ -371,7 +372,8 @@ class StatueSection(Section):
 
     def end_level(self):
         self.state = StatueState.INACTIVE
-        LevelCompleteAction(self.engine, self.level).perform()
+        summary = StatueSummary(self.level, self.mistakes)
+        LevelCompleteAction(self.engine, summary).perform()
 
     def add_entity(self, entity):
         if isinstance(entity, BlockMaterial):
