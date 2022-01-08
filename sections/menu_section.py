@@ -21,7 +21,7 @@ class MenuSection(Section):
         self.state = MenuState.MAIN
         self.levels = []
         self.selected_level = 0
-        with open ( "data/levels.json" ) as f:
+        with open ( "game_data/levels.json" ) as f:
             data = json.load(f)
             for level in data.values():
                 self.levels.append(level)
