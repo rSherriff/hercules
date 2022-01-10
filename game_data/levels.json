@@ -8,9 +8,9 @@
     "height": 22,
     "spotted_tiles_x": [9, 39],
     "spotted_tiles_y": [21, 21],
-    "mistakes_x": 37,
+    "mistakes_x": 40,
     "mistakes_y": 6,
-    "name_x": 15,
+    "name_x": 14,
     "name_y": 28
   },
   "test": {
