@@ -245,7 +245,8 @@ class StatueSection(Section):
 
         if self.spotting:
             self.render_spotting_line(console)
-            self.render_spotted_tiles(console)
+        
+        self.render_spotted_tiles(console)
 
     def render_ending(self, console):
         super().render(console)
@@ -282,9 +283,13 @@ class StatueSection(Section):
     def render_spotted_tiles(self, console):
         font = self.engine.font_manager.get_font("number_font")
 
+        num_to_render = '0'
+        if self.spotting:
+            num_to_render = str(self.spotted_statue_tiles)
+
         for i in range(0, len(self.level["spotted_tiles_x"])):
             temp_console = Console(width = font.char_width, height = font.char_height, order="F")
-            temp_console.tiles_rgb[0: font.char_width, 0:font.char_height] = font.get_character(str(self.spotted_statue_tiles))
+            temp_console.tiles_rgb[0: font.char_width, 0:font.char_height] = font.get_character(num_to_render)
 
             x =self.level["spotted_tiles_x"][i] - int(font.char_width / 2)
             y =self.level["spotted_tiles_y"][i] - int(font.char_height / 2)
