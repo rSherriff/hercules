@@ -263,6 +263,7 @@ class StatueSection(Section):
         if not self.ending_effect.in_effect: 
             if self.ending_effect.time_alive > 0:
                 self.end_level()
+                self.render_ended(console)
                 return
 
             super().render(console)
