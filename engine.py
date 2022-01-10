@@ -127,12 +127,15 @@ class Engine:
             return self.completion_sections.items()
 
     def enable_section(self, section):
-        self.disabled_sections.remove(section)
+        if section in self.disabled_sections:
+            self.disabled_sections.remove(section)
 
     def disable_section(self, section):
-        self.disabled_sections.append(section)
+        if section not in self.disabled_sections:
+            self.disabled_sections.append(section)
 
     def load_level(self):
+        self.enable_section("statueSection")
         self.game_sections["statueSection"].load_level(self.level)
 
     def select_level(self, level):
@@ -144,7 +147,6 @@ class Engine:
     def level_complete(self, summary):
         self.open_summary_section(summary)
         self.full_screen_effect.start()
-        print("Level Over!")
 
     def open_menu(self):
         self.state = GameState.MENU
@@ -190,6 +192,12 @@ class Engine:
     def open_summary_section(self, summary):
         self.game_sections["statueSummarySection"].setup(summary)
         self.enable_section("statueSummarySection")
+        self.disable_section("statueSection")
+
+    def hide_summary_section(self):
+        self.disable_section("statueSummarySection")
+        self.enable_section("statueSection")
+        self.full_screen_effect.start()
 
     def close_summary_section(self):
         self.disable_section("statueSummarySection")

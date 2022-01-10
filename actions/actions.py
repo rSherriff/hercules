@@ -159,3 +159,7 @@ class CloseSummarySectionAction(Action):
     def perform(self) -> None:
         return self.engine.close_summary_section()
 
+class HideSummarySectionAction(Action):
+    def perform(self) -> None:
+        return self.engine.hide_summary_section()
+
