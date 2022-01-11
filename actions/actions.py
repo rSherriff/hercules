@@ -137,7 +137,7 @@ class ChiselMistakeAction(Action):
         self.entity = entity
         
     def perform(self) -> None:
-        return self.entity.section.chisel_mistake()
+        return self.entity.section.chisel_fault()
 
 class SelectLevelAction(Action):
     def __init__(self, engine, level) -> None:

@@ -62,7 +62,7 @@ class StatueSection(Section):
         self.remaining_blocks = 0
         self.cleared_blocks = 0
         self.remaining_statue = 0
-        self.mistakes = 0
+        self.faults = 0
         self.anchor = None
         self.graph = None
         self.level = None
@@ -225,7 +225,7 @@ class StatueSection(Section):
         temp_console.print(1,2, "Remaining Blocks: " + str(self.remaining_blocks), (255,255,255))
         #temp_console.blit(console, src_x=1, src_y=2, dest_x=1, dest_y=2, width=22, height=1)
 
-        temp_console.print(1,3, "Mistakes: " + str(self.mistakes), (255,255,255))
+        temp_console.print(1,3, "Mistakes: " + str(self.faults), (255,255,255))
         #temp_console.blit(console, src_x=1, src_y=3, dest_x=1, dest_y=2, width=12, height=1)
 
         if self.level is not None:
@@ -234,22 +234,22 @@ class StatueSection(Section):
                     temp_console.print(i,0, self.level["name"][i], (255,255,255))
                     temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
 
-            mistakes_to_render = min(99,self.mistakes)
-            mistakes_string = str(mistakes_to_render)
+            faults_to_render = min(99,self.faults)
+            faults_string = str(faults_to_render)
             font = self.engine.font_manager.get_font("number_font")
-            mistakes_console = Console(width = font.char_width * len(mistakes_string) + 1, height = font.char_height, order="F")
-            for i in range(0, len(mistakes_string)):
+            faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
+            for i in range(0, len(faults_string)):
                 start_x = i * font.char_width
                 if i > 0:
                     start_x += 1
-                mistakes_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(mistakes_string[i])
-            final_width = font.char_width * len(mistakes_string)
+                faults_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(faults_string[i])
+            final_width = font.char_width * len(faults_string)
 
-            final_x = self.level["mistakes_x"] + 2
-            if len(mistakes_string) > 1:
+            final_x = self.level["faults_x"] + 2
+            if len(faults_string) > 1:
                 final_width += 1
                 final_x -= 2
-            mistakes_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["mistakes_y"], width = final_width, height = font.char_height)
+            faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
 
         if self.spotting:
             self.render_spotting_line(console)
@@ -375,6 +375,11 @@ class StatueSection(Section):
             self.remaining_blocks = 0
             self.remaining_statue = 0
             self.remove_entity(None)
+        if key == tcod.event.K_p:
+            self.end_level()
+
+        if key == tcod.event.K_RETURN and self.state == StatueState.ENDED:
+            LevelCompleteAction(self.engine, StatueSummary(self.level, self.faults)).perform()
 
     def line_between(self, start, end):
         """Return an line between these two points."""
@@ -393,15 +398,15 @@ class StatueSection(Section):
 
         self.graph = tcod.path.SimpleGraph(cost=self.cost, cardinal=1, diagonal=1)
 
-    def chisel_mistake(self):
-        self.mistakes += 1
+    def chisel_fault(self):
+        self.faults += 1
                         
     def complete_level(self):
         self.state = StatueState.ENDING 
 
     def end_level(self):
         self.ui = self.statue_ended_ui
-        self.ui.summary_button.set_action(LevelCompleteAction(self.engine, StatueSummary(self.level, self.mistakes)))
+        self.ui.summary_button.set_action(LevelCompleteAction(self.engine, StatueSummary(self.level, self.faults)))
         self.state = StatueState.ENDED
 
     def add_entity(self, entity):

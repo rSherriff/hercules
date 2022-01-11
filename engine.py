@@ -51,6 +51,8 @@ class Engine:
         self.font_manager = FontManager()
         self.font_manager.add_font("number_font")
 
+        self.crowns = 0
+
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """
         for section_key, section_value in self.get_active_sections():
@@ -99,7 +101,7 @@ class Engine:
 
         self.game_sections = {}
         self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height)
-        self.game_sections["statueSummarySection"] = StatueSummarySection(self, 0,0,self.screen_width, self.screen_height)
+        self.game_sections["statueSummarySection"] = StatueSummarySection(self, 0,0,self.screen_width, self.screen_height, "summary_section.xp")
 
         self.completion_sections = {}
 
@@ -156,6 +158,9 @@ class Engine:
         self.state = GameState.COMPLETE
         self.full_screen_effect.start()
 
+    def award_crowns(self, num_crowns):
+        self.crowns += num_crowns
+
     def get_delta_time(self):
         return self.delta_time.get_delta_time()
 
@@ -196,6 +201,7 @@ class Engine:
         self.full_screen_effect.start()
 
     def close_summary_section(self):
+        self.game_sections["statueSummarySection"].close()
         self.disable_section("statueSummarySection")
         self.state = GameState.MENU
         self.full_screen_effect.start()

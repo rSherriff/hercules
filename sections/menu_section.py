@@ -43,6 +43,9 @@ class MenuSection(Section):
             temp_console.blit(console, src_x=1, src_y=count+ 5, dest_x=4, dest_y=count+ 5, width=25, height=1)
             count += 1
 
+        temp_console.print(0,0, "Crowns: " + str(self.engine.crowns), (255,255,255))
+        temp_console.blit(console, dest_x=1, dest_y=1, width=25, height=1)
+
     def mousedown(self,button,x,y):
         pass
 

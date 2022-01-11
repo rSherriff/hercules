@@ -1,0 +1,19 @@
+{
+  "title_x": 5,
+  "title_y": 3,
+  "faults_x": 14,
+  "faults_y": 7,
+  "total_x": 37,
+  "total_y": 22,
+  "crown_start_x": 8,
+  "crown_start_y": 9,
+  "crown_width": 3,
+  "crown_height": 3,
+  "crown_unlocked_x": 8,
+  "crown_unlocked_y": 9,
+  "crown_empty_x": 11,
+  "crown_empty_y": 9,
+  "crown_locked_x": 14,
+  "crown_locked_y": 9,
+  "num_crown_col": 4
+}

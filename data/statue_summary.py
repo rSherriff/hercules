@@ -1,6 +1,6 @@
 
 
 class StatueSummary:
-    def __init__(self, level, mistakes) -> None:
+    def __init__(self, level, faults) -> None:
         self.level = level
-        self.mistakes=mistakes
+        self.faults=faults
