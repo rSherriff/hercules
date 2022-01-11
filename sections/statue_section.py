@@ -61,6 +61,7 @@ class StatueSection(Section):
         self.spotted_tiles = list()
         self.remaining_blocks = 0
         self.cleared_blocks = 0
+        self.remaining_statue = 0
         self.mistakes = 0
         self.anchor = None
         self.graph = None
@@ -258,7 +259,7 @@ class StatueSection(Section):
     def render_ending(self, console):
 
         if self.ending_effect == None:
-            self.ending_effect = VerticalWipeEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"], speed=(self.level["height"] / 10), border_tile=(ord('*'), marble, black))
+            self.ending_effect = VerticalWipeEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"], speed=max(2,(self.level["height"] / 10)), border_tile=(ord('*'), marble, black))
 
         if not self.ending_effect.in_effect: 
             if self.ending_effect.time_alive > 0:
@@ -370,8 +371,9 @@ class StatueSection(Section):
     def keydown(self, key):
         #TEMP
         if key == tcod.event.K_p:
-            self.entities = [x for x in self.entities if not isinstance(x, BlockMaterial)]
+            self.entities = [x for x in self.entities if not isinstance(x, BlockMaterial) and not isinstance(x, StatueMaterial)]
             self.remaining_blocks = 0
+            self.remaining_statue = 0
             self.remove_entity(None)
 
     def line_between(self, start, end):
@@ -407,6 +409,8 @@ class StatueSection(Section):
             self.remaining_blocks += 1
         elif isinstance(entity, Anchor):
             self.anchor = entity
+        elif isinstance(entity, StatueMaterial):
+            self.remaining_statue += 1
         self.entities.append(entity)
         self.update_graph()
     
@@ -414,12 +418,18 @@ class StatueSection(Section):
         if isinstance(entity, BlockMaterial):
             self.remaining_blocks -= 1
             self.cleared_blocks += 1
+        if isinstance(entity, StatueMaterial):
+            self.remaining_statue -= 1
+            self.cleared_blocks += 1
 
-        if self.remaining_blocks == 0:
+        if self.total_remaining_blocks() == 0:
             Timer(2.0,self.complete_level).start()
 
         super().remove_entity(entity)
         self.update_graph()
+
+    def total_remaining_blocks(self):
+        return self.remaining_statue + self.remaining_blocks
 
     def load_level(self, level):
         self.reset()
@@ -430,7 +440,7 @@ class StatueSection(Section):
         self.level = level
         self.state = StatueState.LOAD_FOOTER
 
-        probability_step = (self.remaining_blocks * 0.9)/len(self.level["name"])
+        probability_step = (self.total_remaining_blocks() * 0.9)/len(self.level["name"])
         self.name_char_probabilites = list(map(lambda num: int(num * probability_step), range(1, len(self.level["name"]) + 1)))
         random.shuffle(self.name_char_probabilites)
         
