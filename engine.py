@@ -116,15 +116,11 @@ class Engine:
 
     def get_active_ui_sections(self):
         if self.state == GameState.MENU:
-            return self.menu_sections.items()
+            return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.menu_sections.items())).items()
         elif self.is_in_game():
-            if "confirmationDialog" not in self.disabled_sections:
-                return {"confirmationDialog": self.game_sections["confirmationDialog"]}.items()
-            if "notificationDialog" not in self.disabled_sections:
-                return {"notificationDialog": self.game_sections["notificationDialog"]}.items()
-            return self.game_sections.items()
+            return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.game_sections.items())).items()
         elif self.state == GameState.COMPLETE:
-            return self.completion_sections.items()
+            return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.completion_sections.items())).items()
 
     def enable_section(self, section):
         if section in self.disabled_sections:
