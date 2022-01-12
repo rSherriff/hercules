@@ -446,6 +446,6 @@ class StatueSection(Section):
         self.state = StatueState.LOAD_FOOTER
 
         probability_step = (self.total_remaining_blocks() * 0.9)/len(self.level["name"])
-        self.name_char_probabilites = list(map(lambda num: int(num * probability_step), range(1, len(self.level["name"]) + 1)))
+        self.name_char_probabilites = list(map(lambda num: max(1,int(num * probability_step)), range(1, len(self.level["name"]) + 1)))
         random.shuffle(self.name_char_probabilites)
         
