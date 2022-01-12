@@ -9,3 +9,5 @@ build/*
 *.spec
 
 dist/*
+
+game_data/game_save.json
