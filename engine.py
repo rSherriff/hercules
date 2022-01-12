@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from enum import Enum, auto
 from threading import Timer
 
@@ -52,8 +53,12 @@ class Engine:
         self.font_manager.add_font("number_font")
 
         self.save_data = None
-        with open("game_data/game_save.json") as f:
-            self.save_data = json.load(f)
+        if os.path.isfile("game_data/game_save.json"):
+            with open("game_data/game_save.json") as f:
+                self.save_data = json.load(f)
+        else:
+            self.save_data = dict()
+            self.save_data["total_crowns"] = 0
 
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """
