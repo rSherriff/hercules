@@ -36,6 +36,7 @@ class StatueSummarySection(Section):
     def reset(self):
         self.state = SummaryState.INACTIVE
         self.crowns_awarded = 0
+        self.new_crowns = 0
         self.scoring_time = 0
         self.time_in_scoring = 0
         self.time_each_scoring = 1
@@ -53,8 +54,8 @@ class StatueSummarySection(Section):
 
     def render_begining(self, console):
         self.render_static_info(console)
-        self.render_crowns(console, 0)
-        self.render_total(console, self.engine.crowns - self.crowns_awarded)             
+        self.render_crowns(console, self.crowns_awarded - self.new_crowns)
+        self.render_total(console, self.engine.get_total_awarded_crowns() - self.new_crowns, 0)             
 
     def render_scoring(self, console):
         self.render_static_info(console)
@@ -65,7 +66,7 @@ class StatueSummarySection(Section):
             self.render_end(console)
             return
 
-        num_empty = math.ceil(self.time_in_scoring)
+        num_empty = math.ceil(self.time_in_scoring) + (self.crowns_awarded - self.new_crowns)
         num_crown = self.crowns_awarded - num_empty
         x,y= self.get_crown_position(num_crown)
         
@@ -75,12 +76,12 @@ class StatueSummarySection(Section):
         self.crown_unlocked_console.blit(console, dest_x=point_to_print[0], dest_y=point_to_print[1], width=self.layout["crown_width"], height=self.layout["crown_height"])
 
         self.render_crowns(console, num_empty)
-        self.render_total(console, (self.engine.crowns - self.crowns_awarded) + num_empty - 1)
+        self.render_total(console, (self.engine.get_total_awarded_crowns() - self.crowns_awarded) + num_empty - 1, math.ceil(self.time_in_scoring) - 1)
 
     def render_end(self, console):
         self.render_static_info(console)
         self.render_crowns(console, self.crowns_awarded)
-        self.render_total(console, self.engine.crowns)
+        self.render_total(console, self.engine.get_total_awarded_crowns(), self.new_crowns)
 
     def render_static_info(self, console):
         super().render(console)
@@ -116,10 +117,15 @@ class StatueSummarySection(Section):
             else:
                 self.crown_unlocked_console.blit(console, dest_x=x, dest_y=y, width=cw, height=ch)
 
-    def render_total(self, console, total):
+    def render_total(self, console, total, new):
         temp_console = Console(width=5, height=1, order="F")
+
         temp_console.print(0,0, str(total), (255,255,255))  
         temp_console.blit(console, dest_x=self.layout["total_x"], dest_y=self.layout["total_y"], width=5, height=1)   
+
+        temp_console.clear()
+        temp_console.print(0,0, str(new), (255,255,255))  
+        temp_console.blit(console, dest_x=self.layout["new_x"], dest_y=self.layout["new_y"], width=5, height=1)   
 
     def setup(self, summary):
         if self.state == SummaryState.INACTIVE:
@@ -132,10 +138,13 @@ class StatueSummarySection(Section):
                     self.crowns_awarded -= 1
                 else:
                     break
-            self.scoring_time = self.crowns_awarded * self.time_each_scoring
+            self.crowns_awarded = max(self.crowns_awarded, self.engine.get_awarded_crowns(self.summary.level["name"]))
+
+            self.new_crowns = max(0,self.crowns_awarded - self.engine.get_awarded_crowns(self.summary.level["name"]))
+            self.scoring_time = self.new_crowns * self.time_each_scoring
             self.time_in_scoring = 0
 
-            self.engine.award_crowns(self.crowns_awarded)
+            self.engine.award_crowns(self.new_crowns, self.crowns_awarded, self.summary.level["name"])
 
             Timer(2.0, self.display_scores).start()
 

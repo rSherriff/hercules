@@ -51,7 +51,9 @@ class Engine:
         self.font_manager = FontManager()
         self.font_manager.add_font("number_font")
 
-        self.crowns = 0
+        self.save_data = None
+        with open("game_data/game_save.json") as f:
+            self.save_data = json.load(f)
 
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """
@@ -158,8 +160,22 @@ class Engine:
         self.state = GameState.COMPLETE
         self.full_screen_effect.start()
 
-    def award_crowns(self, num_crowns):
-        self.crowns += num_crowns
+    def award_crowns(self, num_crowns, total_level_crowns, level_name):
+        with open("game_data/game_save.json", "w") as f:
+            self.save_data["total_crowns"] += num_crowns
+            if not level_name in self.save_data or self.save_data[level_name] < total_level_crowns:
+                self.save_data[level_name] = total_level_crowns
+            
+            json.dump(self.save_data, f, indent=2)
+
+    def get_awarded_crowns(self, level_name):
+        if level_name in self.save_data:
+            return self.save_data[level_name]
+        else:
+            return 0
+    
+    def get_total_awarded_crowns(self):
+        return self.save_data["total_crowns"]
 
     def get_delta_time(self):
         return self.delta_time.get_delta_time()

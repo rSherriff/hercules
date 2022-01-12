@@ -35,16 +35,21 @@ class MenuSection(Section):
 
         temp_console = Console(width=console.width, height=console.height, order="F")
 
+        total_crowns_drawn = 0
         count = 0
         for level in self.levels:
             if count == self.selected_level:
                 temp_console.print(1,count+ 5, "->", (255,255,255))
-            temp_console.print(4,count+ 5, level["name"], (255,255,255))
-            temp_console.blit(console, src_x=1, src_y=count+ 5, dest_x=4, dest_y=count+ 5, width=25, height=1)
+            total_crowns_drawn += self.engine.get_awarded_crowns(level["name"])
+            temp_console.print(4,count+ 5, level["name"] + " " + str(self.engine.get_awarded_crowns(level["name"])) + "/" + str(level["num_crowns"]), (255,255,255))
+            temp_console.blit(console, src_x=1, src_y=count+ 5, dest_x=4, dest_y=count+ 5, width=40, height=1)
             count += 1
 
-        temp_console.print(0,0, "Crowns: " + str(self.engine.crowns), (255,255,255))
+        temp_console.print(0,0, "Crowns: " + str(self.engine.get_total_awarded_crowns()), (255,255,255))
         temp_console.blit(console, dest_x=1, dest_y=1, width=25, height=1)
+
+        if total_crowns_drawn != self.engine.get_total_awarded_crowns():
+            print("ERROR: Crowns awarded per level does not match the total number saved!")
 
     def mousedown(self,button,x,y):
         pass
