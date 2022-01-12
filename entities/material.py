@@ -47,6 +47,7 @@ class Material(Entity):
 
     def is_path_to_anchor(self):
         if self.section.graph is None or self.section.anchor is None:
+            print("Trying to find path but no anchor set!")
             return False
 
         pathfinder = tcod.path.Pathfinder(self.section.graph)
