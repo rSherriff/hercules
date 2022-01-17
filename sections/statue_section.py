@@ -38,14 +38,6 @@ class StatueSection(Section):
         self.max_spotted_material_tiles = 3
         self.index_into_render = 1 
         self.state_speed = 10
-        self.footer_y = 26
-        self.footer_height = 4
-        self.header_height = 4
-        
-        self.sides_y = 4
-        self.sides_width = 13
-        self.sides_height = 22
-
         self.reset()       
 
         super().__init__(engine, x, y, width, height, xp_filepath=xp_filepath)      
@@ -69,6 +61,13 @@ class StatueSection(Section):
         self.state = StatueState.INACTIVE
         self.summary = None
         self.ui = None
+
+        self.footer_y = 0
+        self.footer_height = 0
+        self.header_height = 0
+        self.sides_y = 0
+        self.sides_width = 0
+        self.sides_height = 0
 
         self.name_char_probabilites = []
 
@@ -444,6 +443,14 @@ class StatueSection(Section):
         self.load_entities(level["file"], xp_data)
         self.level = level
         self.state = StatueState.LOAD_FOOTER
+
+        self.footer_y = level["footer_y"]
+        self.footer_height = level["footer_height"]
+        self.header_height = level["header_height"]
+        
+        self.sides_y = level["sides_y"]
+        self.sides_width = level["sides_width"]
+        self.sides_height = level["sides_height"]
 
         probability_step = (self.total_remaining_blocks() * 0.9)/len(self.level["name"])
         self.name_char_probabilites = list(map(lambda num: max(1,int(num * probability_step)), range(1, len(self.level["name"]) + 1)))
