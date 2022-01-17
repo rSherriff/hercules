@@ -61,6 +61,7 @@ class StatueSection(Section):
         self.state = StatueState.INACTIVE
         self.summary = None
         self.ui = None
+        self.finished_setup = False
 
         self.footer_y = 0
         self.footer_height = 0
@@ -179,11 +180,11 @@ class StatueSection(Section):
         if self.load_material_effect == None:
             self.load_material_effect = BrickWallEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"])
 
-        if not self.load_material_effect.in_effect:
+        if not self.load_material_effect.in_effect and not self.finished_setup:
 
             if self.load_material_effect.time_alive > 0:
-                self.state = StatueState.IN_PROGRESS
-                self.render_in_progress(console)
+                self.finish_setup()
+                self.render_static(console)
                 return
 
             temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
@@ -196,6 +197,17 @@ class StatueSection(Section):
 
         elif self.load_material_effect.in_effect == True:
             self.load_material_effect.render(console)
+
+        self.render_static(console)
+       
+
+    def render_static(self, console):
+        if self.finished_setup:
+            temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
+            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
+            for entity in self.entities:
+                temp_console.print(entity.x - self.level["x"], entity.y - self.level["y"],entity.char, fg=entity.fg_color, bg=entity.bg_color)
+            temp_console.blit(console, dest_x=self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
 
         temp_console = Console(width=self.width, height=self.footer_height, order="F")
         temp_console.tiles_rgb[0 :self.width, 0: self.footer_height] = self.tiles[0 :self.width, self.footer_y: self.footer_y + self.footer_height]["graphic"]
@@ -399,6 +411,13 @@ class StatueSection(Section):
 
     def chisel_fault(self):
         self.faults += 1
+
+    def change_state(self, new_state):
+        self.state = new_state
+
+    def finish_setup(self):
+        self.finished_setup = True
+        Timer(1.0, self.change_state, [StatueState.IN_PROGRESS]).start()
                         
     def complete_level(self):
         self.state = StatueState.ENDING 
