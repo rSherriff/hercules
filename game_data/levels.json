@@ -18,8 +18,8 @@
     "sides_y": 6,
     "sides_width": 12,
     "sides_height": 22,
-    "num_crowns": 3,
-    "allowed_faults": [2, 3, 4]
+    "num_crowns": 2,
+    "allowed_faults": [2, 3]
   },
   "level1-2": {
     "name": "Venus of Willendorf",
@@ -64,6 +64,28 @@
     "sides_height": 22,
     "num_crowns": 3,
     "allowed_faults": [2, 3, 4]
+  },
+  "level1-4": {
+    "name": "Creeping Hyena",
+    "file": "level1-4.xp",
+    "x": 14,
+    "y": 11,
+    "width": 21,
+    "height": 8,
+    "spotted_tiles_x": [9, 39],
+    "spotted_tiles_y": [20, 20],
+    "faults_x": 40,
+    "faults_y": 7,
+    "name_x": 18,
+    "name_y": 28,
+    "footer_height": 4,
+    "footer_y": 26,
+    "header_height": 5,
+    "sides_y": 5,
+    "sides_width": 12,
+    "sides_height": 22,
+    "num_crowns": 4,
+    "allowed_faults": [2, 3, 4, 5]
   },
   "hercules": {
     "name": "The Farnese Hercules",
