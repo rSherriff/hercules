@@ -35,13 +35,6 @@ class Material(Entity):
     def late_update(self):
         self.stress = 0
 
-    def mousedown(self, button):
-        if button == 1:
-            if self.pickable and self.is_path_to_anchor():
-                self.chisel_material()
-        elif button == 3:
-            self.mark()
-
     def chisel_material(self):
         pass
 
@@ -94,6 +87,19 @@ class Material(Entity):
             self.fg_color = marble_marked
         else:
             self.fg_color = marble
+    
+    def chisel_mistake(self):
+        self.fg_color = mistake
+        self.bg_color = black
+        self.char = chr(ord('X'))
+        ChiselMistakeAction(self.engine,self).perform()
+        Timer(0.3, self.reset_tile).start()
+    
+    def reset_tile(self):
+        self.fg_color = marble
+        self.bg_color = marble_highlight
+        self.char =chr(9632)
+
 
 class StatueMaterial(Material):
     def __init__(self, engine, x: int, y: int, section):
@@ -106,13 +112,6 @@ class StatueMaterial(Material):
         elif button == 3:
             self.chisel_material()
     
-    def chisel_mistake(self):
-        self.fg_color = mistake
-        self.bg_color = black
-        self.char = chr(ord('X'))
-        ChiselMistakeAction(self.engine,self).perform()
-        Timer(0.3, self.reset_tile).start()
-
     def chisel_material(self):
         super().chisel_material()
         self.fg_color = marble
@@ -121,10 +120,6 @@ class StatueMaterial(Material):
         action = StatueMaterialChiseled(self.engine, self)
         Timer(0.1, action.perform).start()
 
-    def reset_tile(self):
-        self.fg_color = marble
-        self.bg_color = marble_highlight
-        self.char =chr(9632)
 
 class BlockMaterial(Material):
     def __init__(self, engine, x: int, y: int, section):
@@ -138,5 +133,14 @@ class BlockMaterial(Material):
         self.char = chr(236)
         action = BlockMaterialChiseled(self.engine, self)
         Timer(0.1, action.perform).start()
+
+    def mousedown(self, button):
+        if button == 1:
+            if self.pickable and self.is_path_to_anchor():
+                self.chisel_material()
+        elif button == 3:
+            self.chisel_mistake()
+
+    
 
 
