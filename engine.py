@@ -16,6 +16,7 @@ from input_handlers import EventHandler, MainGameEventHandler
 from sections.menu_section import MenuSection
 from sections.statue_section import StatueSection
 from sections.statue_summary_section import StatueSummarySection
+from sections.confirmation import Confirmation
 from utils.delta_time import DeltaTime
 
 
@@ -109,6 +110,7 @@ class Engine:
         self.game_sections = {}
         self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height)
         self.game_sections["statueSummarySection"] = StatueSummarySection(self, 0,0,self.screen_width, self.screen_height, "summary_section.xp")
+        self.game_sections["confirmationDialog"] = Confirmation(self, 0, 0, 50, 10)
 
         self.completion_sections = {}
 
@@ -152,6 +154,12 @@ class Engine:
     def level_complete(self, summary):
         self.open_summary_section(summary)
         self.full_screen_effect.start()
+
+    def leave_level(self):
+        self.state = GameState.MENU
+        self.full_screen_effect.start()
+        self.disable_section("statueSection")
+        self.game_sections["statueSection"].reset()
 
     def open_menu(self):
         self.state = GameState.MENU

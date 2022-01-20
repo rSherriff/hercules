@@ -155,6 +155,10 @@ class LevelCompleteAction(Action):
     def perform(self) -> None:
         return self.engine.level_complete(self.summary)
 
+class LevelLeaveAction(Action):
+    def perform(self) -> None:
+        return self.engine.leave_level()
+
 class CloseSummarySectionAction(Action):
     def perform(self) -> None:
         return self.engine.close_summary_section()

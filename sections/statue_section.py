@@ -6,7 +6,8 @@ from threading import Timer
 
 import numpy as np
 import tcod
-from actions.actions import LevelCompleteAction
+from actions.actions import (LevelCompleteAction, LevelLeaveAction,
+                             OpenConfirmationDialog)
 from data.statue_summary import StatueSummary
 from effects.brick_wall_effect import BrickWallDirection, BrickWallEffect
 from effects.horizontal_move_effect import (HorizontalMoveDirection,
@@ -388,6 +389,9 @@ class StatueSection(Section):
             self.remove_entity(None)
         if key == tcod.event.K_p:
             self.end_level()
+
+        if key == tcod.event.K_ESCAPE:
+            OpenConfirmationDialog(self.engine, "Return to menu (progress will not be saved)?", LevelLeaveAction(self.engine)).perform()
 
         if key == tcod.event.K_RETURN and self.state == StatueState.ENDED:
             LevelCompleteAction(self.engine, StatueSummary(self.level, self.faults)).perform()

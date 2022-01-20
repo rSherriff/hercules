@@ -59,9 +59,6 @@ class MainGameEventHandler(EventHandler):
             if section.ui is not None:
                 section.ui.keydown(event)
 
-        if key == tcod.event.K_ESCAPE:
-            EscapeAction(self.engine).perform()
-
     def ev_mousemotion(self, event: tcod.event.MouseMotion) -> None:
 
         self.engine.mouse_location = self.current_context.pixel_to_tile(

@@ -54,17 +54,18 @@ class Section:
 
     def load_entities(self, data_name, xp_data):
         if xp_data is not None:
-            self.loaded_tiles = data_name
-            for h in range(0, self.height):
-                if h < xp_data['height']:
-                    for w in range(0, self.width):
-                        if w < xp_data['width']:
-                            self.entity_loader.load_entity(xp_data['layer_data'][1]['cells'][w][h][0], w, h, self)
-                            pass
-                        else:
-                            break
-                else:
-                    break
+            if len(xp_data['layer_data']) > 1 is not None:
+                self.loaded_tiles = data_name
+                for h in range(0, self.height):
+                    if h < xp_data['height']:
+                        for w in range(0, self.width):
+                            if w < xp_data['width']:
+                                self.entity_loader.load_entity(xp_data['layer_data'][1]['cells'][w][h][0], w, h, self)
+                                pass
+                            else:
+                                break
+                    else:
+                        break
 
     def render(self, console):
         if len(self.tiles) > 0:
@@ -86,7 +87,7 @@ class Section:
         for entity in self.entities:
             entity.late_update()
 
-    def mousedown(self,x,y):
+    def mousedown(self,button,x,y):
         pass
 
     def keydown(self, key):

@@ -5,7 +5,7 @@ from math import sqrt
 
 import numpy as np
 import tcod
-from actions.actions import SelectLevelAction
+from actions.actions import SelectLevelAction, EscapeAction
 from tcod import Console
 
 from sections.section import Section
@@ -63,3 +63,5 @@ class MenuSection(Section):
             self.selected_level = min(len(self.levels) - 1, self.selected_level)
         elif key == tcod.event.K_RETURN:
             SelectLevelAction(self.engine, self.levels[self.selected_level]).perform()
+        elif key == tcod.event.K_ESCAPE:
+            EscapeAction(self.engine).perform()
