@@ -54,7 +54,7 @@ class Section:
 
     def load_entities(self, data_name, xp_data):
         if xp_data is not None:
-            if len(xp_data['layer_data']) > 1 is not None:
+            if len(xp_data['layer_data']) > 1 != None:
                 self.loaded_tiles = data_name
                 for h in range(0, self.height):
                     if h < xp_data['height']:
