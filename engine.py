@@ -110,7 +110,7 @@ class Engine:
         self.game_sections = {}
         self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height)
         self.game_sections["statueSummarySection"] = StatueSummarySection(self, 0,0,self.screen_width, self.screen_height, "summary_section.xp")
-        self.game_sections["confirmationDialog"] = Confirmation(self, 0, 0, 50, 10)
+        self.game_sections["confirmationDialog"] = Confirmation(self, 7, 9, 36, 10)
 
         self.completion_sections = {}
 

@@ -391,7 +391,7 @@ class StatueSection(Section):
             self.end_level()
 
         if key == tcod.event.K_ESCAPE:
-            OpenConfirmationDialog(self.engine, "Return to menu (progress will not be saved)?", LevelLeaveAction(self.engine)).perform()
+            OpenConfirmationDialog(self.engine, "       Return to menu?\n(progress will not be saved)", LevelLeaveAction(self.engine)).perform()
 
         if key == tcod.event.K_RETURN and self.state == StatueState.ENDED:
             LevelCompleteAction(self.engine, StatueSummary(self.level, self.faults)).perform()
