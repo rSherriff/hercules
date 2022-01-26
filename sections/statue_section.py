@@ -27,6 +27,7 @@ from sections.section import Section
 
 
 class StatueState(Enum):
+    NONE = auto()
     INACTIVE = auto()
     LOAD_HEADER = auto()
     LOAD_FOOTER = auto()
@@ -65,6 +66,8 @@ class StatueSection(Section):
         self.summary = None
         self.ui = None
         self.finished_setup = False
+        self.finished_ending = False
+        self.transistioning_to_state = StatueState.NONE
 
         self.footer_y = 0
         self.footer_height = 0
@@ -273,18 +276,22 @@ class StatueSection(Section):
     def render_ending(self, console):
 
         if self.ending_effect == None:
-            self.ending_effect = VerticalWipeEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"], speed=max(2,(self.level["height"] / 10)), border_tile=(ord('*'), marble, black))
+            self.ending_effect = VerticalWipeEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"]+1, speed=max(2,(self.level["height"] / 10)), border_tile=(ord('*'), marble, black))
 
-        if not self.ending_effect.in_effect: 
+        if not self.ending_effect.in_effect and self.transistioning_to_state != StatueState.ENDED: 
             if self.ending_effect.time_alive > 0:
-                self.end_level()
-                self.render_ended(console)
+                self.change_state(StatueState.ENDED)
+                self.render_statue(console)
+                temp_console = Console(width=self.level["width"], height=1, order="F")
+                for i in range(0,self.level["width"]):
+                    temp_console.tiles_rgb[i,0]=(ord('*'), marble, black)
+                    temp_console.blit(console, dest_x=self.level["x"], dest_y=self.level["y"] + self.level["height"], width=self.width, height=1)
                 return
 
             super().render(console)
 
-            temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
-            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
+            temp_console = Console(width=self.level["width"], height=self.level["height"] + 1, order="F")
+            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height+1] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"]+1 ]["graphic"]
 
             self.ending_effect.tiles = temp_console.tiles
             self.ending_effect.start(VerticalWipeDirection.DOWN)
@@ -295,10 +302,15 @@ class StatueSection(Section):
             temp_console.blit(console, src_x= 0, src_y=0, dest_x = self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
             self.ending_effect.render(console)
 
+        else:
+            self.render_statue(console)
+            temp_console = Console(width=self.level["width"], height=1, order="F")
+            for i in range(0,self.level["width"]):
+                temp_console.tiles_rgb[i,0]=(ord('*'), marble, black)
+                temp_console.blit(console, dest_x=self.level["x"], dest_y=self.level["y"] + self.level["height"], width=self.width, height=1)
+ 
     def render_ended(self, console):
-        temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
-        temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
-        temp_console.blit(console, src_x= 0, src_y=0, dest_x = self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
+        self.render_statue(console)
  
         button_width = self.ui.summary_button.width
         button_height = self.ui.summary_button.height
@@ -331,7 +343,12 @@ class StatueSection(Section):
             x =self.level["spotted_tiles_x"][i] - int(font.char_width / 2)
             y =self.level["spotted_tiles_y"][i] - int(font.char_height / 2)
             temp_console.blit(console, src_x=0, src_y=0, dest_x = x, dest_y = y, width = font.char_width, height = font.char_height)
-        
+
+    def render_statue(self, console):
+        temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
+        temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
+        temp_console.blit(console, src_x= 0, src_y=0, dest_x = self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
+
     def update_spotting_line(self):
     
         mouse_pos = (self.engine.mouse_location[0], self.engine.mouse_location[1])
@@ -389,8 +406,7 @@ class StatueSection(Section):
             self.remaining_blocks = 0
             self.remaining_statue = 0
             self.remove_entity(None)
-        if key == tcod.event.K_p:
-            self.end_level()
+
 
         if key == tcod.event.K_ESCAPE:
             OpenConfirmationDialog(self.engine, "       Return to menu?\n(progress will not be saved)", LevelLeaveAction(self.engine)).perform()
@@ -419,7 +435,13 @@ class StatueSection(Section):
         self.faults += 1
 
     def change_state(self, new_state):
-        self.state = new_state
+        
+        if new_state == StatueState.ENDED:
+            self.transistioning_to_state = StatueState.ENDED
+            print("Changing to ENDED")
+            Timer(1.0, self.end_level).start()   
+        else:
+            self.state = new_state
 
     def finish_setup(self):
         self.finished_setup = True
@@ -432,6 +454,8 @@ class StatueSection(Section):
         self.ui = self.statue_ended_ui
         self.ui.summary_button.set_action(LevelCompleteAction(self.engine, StatueSummary(self.level, self.faults)))
         self.state = StatueState.ENDED
+        self.transistioning_to_state = StatueState.NONE
+             
 
     def add_entity(self, entity):
         if isinstance(entity, BlockMaterial):

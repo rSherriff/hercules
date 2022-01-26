@@ -20,9 +20,10 @@ class VerticalWipeEffect(Effect):
         self.current_wipe_height = 0
         
     def render(self, console):
+        
         if self.current_wipe_height > self.height:
             self.stop()
-        
+            
         self.current_wipe_height += self.speed * self.engine.get_delta_time()
 
         temp_console = Console(width=self.width, height=self.height, order="F")
