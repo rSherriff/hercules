@@ -38,6 +38,6 @@ class VerticalWipeEffect(Effect):
         if(self.direction == VerticalWipeDirection.UP):
             temp_console.blit(console, src_x=0, src_y=0, dest_x=self.x, dest_y=self.y + self.height -  int(self.current_wipe_height), width=self.width, height=max(int(self.current_wipe_height),1))
         elif(self.direction == VerticalWipeDirection.DOWN):
-            temp_console.blit(console, src_x=0, src_y=0, dest_x=self.x, dest_y=self.y, width=self.width, height=max(int(self.current_wipe_height),1))
+            temp_console.blit(console, src_x=0, src_y=self.height-int(self.current_wipe_height), dest_x=self.x, dest_y=self.y, width=self.width, height=max(int(self.current_wipe_height),1))
 
         self.time_alive += self.engine.get_delta_time()
