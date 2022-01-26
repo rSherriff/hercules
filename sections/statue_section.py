@@ -14,6 +14,8 @@ from effects.horizontal_move_effect import (HorizontalMoveDirection,
                                             HorizontalMoveEffect)
 from effects.vertical_wipe_effect import (VerticalWipeDirection,
                                           VerticalWipeEffect)
+from effects.vertical_move_effect import (VerticalMoveDirection,
+                                          VerticalMoveEffect)
 from entities.anchor import Anchor
 from entities.blocker import Blocker
 from entities.material import BlockMaterial, Material, StatueMaterial
@@ -121,7 +123,7 @@ class StatueSection(Section):
 
     def render_load_header(self, console):
         if self.load_header_effect == None:
-            self.load_header_effect = VerticalWipeEffect(self.engine, 0, 0, self.width, self.header_height)
+            self.load_header_effect = VerticalMoveEffect(self.engine, 0, 0, self.width, self.header_height)
 
         if not self.load_header_effect.in_effect:
             if self.load_header_effect.time_alive > 0:
@@ -133,7 +135,7 @@ class StatueSection(Section):
             temp_console.tiles_rgb[0 :self.width, 0: self.header_height] = self.tiles[0 :self.width, 0: self.header_height]["graphic"]
 
             self.load_header_effect.tiles = temp_console.tiles
-            self.load_header_effect.start(VerticalWipeDirection.DOWN)
+            self.load_header_effect.start(VerticalMoveDirection.DOWN)
 
         elif self.load_header_effect.in_effect == True:
             self.load_header_effect.render(console)
