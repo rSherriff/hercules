@@ -39,12 +39,12 @@ class StatueState(Enum):
 
 class StatueSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = ""):
+        super().__init__(engine, x, y, width, height, xp_filepath=xp_filepath)      
+
         self.max_spotted_material_tiles = 3
         self.index_into_render = 1 
         self.state_speed = 10
-        self.reset()       
-
-        super().__init__(engine, x, y, width, height, xp_filepath=xp_filepath)      
+        self.reset()              
 
         self.update_graph()
 
@@ -77,6 +77,8 @@ class StatueSection(Section):
         self.sides_height = 0
 
         self.name_char_probabilites = []
+
+        self.entities.clear()
 
         self.load_header_effect = None
         self.load_footer_effect = None
