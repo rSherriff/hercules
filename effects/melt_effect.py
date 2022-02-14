@@ -40,7 +40,7 @@ class MeltWipeEffect(Effect):
         
         for col in range(0, self.width):
             if self.time_alive > self.col_trigger_times[col]:
-                self.current_wipe_heights[col] += self.height / self.lifespan
+                self.current_wipe_heights[col] += (self.height / self.lifespan) * (self.engine.get_delta_time() * 10)
 
             if self.current_wipe_heights[col] < self.height:
                 columns_finished = False
