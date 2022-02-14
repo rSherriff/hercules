@@ -25,6 +25,7 @@ def main() -> None:
         sdl_window_flags=tcod.context.SDL_WINDOW_RESIZABLE
     ) as root_context:
 
+        tcod.lib.SDL_SetHint(b"SDL_RENDER_SCALE_QUALITY", b"0")
         root_console = tcod.Console(screen_width, screen_height, order="F")
         engine = Engine(screen_width, screen_height)
 
