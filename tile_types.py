@@ -24,5 +24,4 @@ def new_tile(walkable, graphic) -> np.ndarray:
     return np.array((walkable, graphic), dtype=tile_dt)
 
 
-background_tile = new_tile(False, (ord(" "), (255, 255, 255), (0, 0, 0)))
-playground_tile = new_tile(True, (ord("."), (255, 255, 255), (128, 128, 128)))
+background_tile = new_tile(False, (0x00, (255, 255, 255), (0, 0, 0)))
