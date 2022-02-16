@@ -26,12 +26,14 @@ class MeltWipeEffect(Effect):
         self.current_wipe_heights = np.empty(self.width)
         self.current_wipe_heights.fill(0)
         for col in range(0,self.width):
-            wave_step = 0.25
             if self.type == MeltWipeEffectType.WAVE_LEFT:
+                wave_step = 1 / self.lifespan
                 self.col_trigger_times[col] = wave_step * col
             elif self.type == MeltWipeEffectType.WAVE_RIGHT:
+                wave_step = 1 / self.lifespan
                 self.col_trigger_times[-col - 1] = wave_step * col
             elif self.type == MeltWipeEffectType.RANDOM:
+                wave_step = 0.25
                 self.col_trigger_times[col] = wave_step * randrange(int(self.lifespan / 3))
         
     def render(self, console):

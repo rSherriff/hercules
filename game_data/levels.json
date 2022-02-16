@@ -2,13 +2,19 @@
   "stages": [
     {
       "name": "Tutorial",
+      "music": ["cave.mp3"],
+      "start_music": "start_t.wav",
+      "ending_music": "completion_t.wav",
+      "music_volume": 0.5,
+      "start_length": 2,
+      "end_length": 3,
       "levels": [
         {
           "name": "Venus of Hohle Fels",
           "file": "level1-1.xp",
-          "x": 13,
+          "x": 17,
           "y": 13,
-          "width": 23,
+          "width": 15,
           "height": 4,
           "spotted_tiles_x": [9, 39],
           "spotted_tiles_y": [20, 20],
@@ -95,6 +101,12 @@
     },
     {
       "name": "Near East",
+      "music": ["desert.mp3"],
+      "start_music": "start_rb.wav",
+      "ending_music": "completion_rb.wav",
+      "music_volume": 0.4,
+      "start_length": 1,
+      "end_length": 9.4,
       "levels": [
         {
           "name": "Statue of Ebih-Il",
@@ -210,6 +222,12 @@
     },
     {
       "name": "Greece",
+      "music": ["market.mp3"],
+      "start_music": "start_rb.wav",
+      "ending_music": "completion_rb.wav",
+      "music_volume": 1,
+      "start_length": 1,
+      "end_length": 9.4,
       "levels": [
         {
           "name": "The Lyons Kore",
@@ -347,6 +365,12 @@
     },
     {
       "name": "Romanesque + Gothic",
+      "music": ["spanishmass.mp3"],
+      "start_music": "start_rg.wav",
+      "ending_music": "completion_rg.wav",
+      "music_volume": 0.1,
+      "start_length": 3.5,
+      "end_length": 6.4,
       "levels": [
         {
           "name": "Tympanum at Conques",
@@ -461,7 +485,13 @@
       ]
     },
     {
-      "name": "Renaisance + Baroque",
+      "name": "Renaissance + Baroque",
+      "music": ["cantate.mp3", "witchesdance.mp3", "scarlettisonata.mp3", "passamezzo.mp3", "ricercar.mp3", "vaghifiori.mp3"],
+      "start_music": "start_rb.wav",
+      "ending_music": "completion_rb.wav",
+      "music_volume": 0.2,
+      "start_length": 2.5,
+      "end_length": 8.4,
       "levels": [
         {
           "name": "Donatello's David",
@@ -598,7 +628,68 @@
       ]
     },
     {
+      "name": "Neoclassical + Romantic",
+      "music": ["concertovivaldi.mp3", "brandenburg.mp3", "suitefrancaise.mp3", "concertobach1.mp3"],
+      "start_music": "start_ncr.wav",
+      "ending_music": "completion_ncr.wav",
+      "music_volume": 0.3,
+      "start_length": 2.5,
+      "end_length": 6.5,
+      "levels": [
+        {
+          "name": "Bust of Wren",
+          "file": "level6-1.xp",
+          "x": 19,
+          "y": 6,
+          "width": 13,
+          "height": 18,
+          "spotted_tiles_x": [8, 42],
+          "spotted_tiles_y": [21, 21],
+          "faults_x": 41,
+          "faults_y": 6,
+          "name_x": 19,
+          "name_y": 27,
+          "footer_height": 4,
+          "footer_y": 26,
+          "header_height": 4,
+          "sides_y": 4,
+          "sides_width": 15,
+          "sides_height": 26,
+          "num_crowns": 16,
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        },
+        {
+          "name": "Cupid Cutting His Bow",
+          "file": "level6-2.xp",
+          "x": 19,
+          "y": 6,
+          "width": 13,
+          "height": 17,
+          "spotted_tiles_x": [8, 42],
+          "spotted_tiles_y": [21, 21],
+          "faults_x": 41,
+          "faults_y": 6,
+          "name_x": 19,
+          "name_y": 27,
+          "footer_height": 4,
+          "footer_y": 26,
+          "header_height": 4,
+          "sides_y": 4,
+          "sides_width": 15,
+          "sides_height": 26,
+          "num_crowns": 16,
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+        }
+      ]
+    },
+    {
       "name": "Modern",
+      "music": ["factory.mp3"],
+      "start_music": "start_rb.wav",
+      "ending_music": "completion_rb.wav",
+      "music_volume": 0.5,
+      "start_length": 1,
+      "end_length": 9.4,
       "levels": [
         {
           "name": "Little Dancer of Fourteen Years",

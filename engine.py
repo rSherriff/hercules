@@ -2,21 +2,23 @@ from __future__ import annotations
 
 import json
 import os
+import random
 from enum import Enum, auto
 from threading import Timer
 
 import tcod
 from playsound import playsound
+from pygame import mixer
 from tcod.console import Console
 
 from application_path import get_app_path
 from effects.melt_effect import MeltWipeEffect, MeltWipeEffectType
 from fonts.font_manager import FontManager
 from input_handlers import EventHandler, MainGameEventHandler
+from sections.confirmation import Confirmation
 from sections.menu_section import MenuSection
 from sections.statue_section import StatueSection
 from sections.statue_summary_section import StatueSummarySection
-from sections.confirmation import Confirmation
 from utils.delta_time import DeltaTime
 
 
@@ -30,6 +32,9 @@ class GameState(Enum):
 class Engine:
     def __init__(self, teminal_width: int, terminal_height: int):
 
+        mixer.init()
+        mixer.music.set_volume(0.5)
+
         self.screen_width = teminal_width
         self.screen_height = terminal_height
         self.delta_time = DeltaTime()
@@ -42,9 +47,6 @@ class Engine:
         self.setup_effects()
         self.setup_sections()
 
-        self.music_timer = Timer(77, self.play_music)
-        self.play_music()
-
         self.tick_length = 2
         self.time_since_last_tick = -2
 
@@ -53,6 +55,8 @@ class Engine:
         self.font_manager = FontManager()
         self.font_manager.add_font("number_font")
 
+        self.in_music_queue = False
+
         self.save_data = None
         if os.path.isfile("game_data/game_save.json"):
             with open("game_data/game_save.json") as f:
@@ -60,6 +64,15 @@ class Engine:
         else:
             self.save_data = dict()
             self.save_data["total_crowns"] = 0
+
+        self.stage_music = {}
+        with open ( "game_data/levels.json" ) as f:
+            data = json.load(f)
+            for stage in data["stages"]:
+                self.stage_music[stage["name"]] = {}
+                self.stage_music[stage["name"]]["music"] = stage["music"]
+                self.stage_music[stage["name"]]["music_volume"] = stage["music_volume"]
+
 
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """
@@ -88,6 +101,8 @@ class Engine:
             if self.time_since_last_tick > self.tick_length and self.state == self.is_in_game():
                 self.time_since_last_tick = 0
 
+        if self.in_music_queue and not mixer.music.get_busy():
+            self.advance_music_queue()
 
 
     def late_update(self):
@@ -115,7 +130,6 @@ class Engine:
         self.completion_sections = {}
 
         self.disabled_sections = ["confirmationDialog", "notificationDialog", "statueSummarySection"]
-        self.solo_ui_section = ""
 
     def get_active_sections(self):
         if self.state == GameState.MENU:
@@ -143,11 +157,12 @@ class Engine:
 
     def load_level(self):
         self.enable_section("statueSection")
-        self.game_sections["statueSection"].load_level(self.level)
+        self.game_sections["statueSection"].load_level(self.stage, self.level)
 
-    def select_level(self, level):
+    def select_level(self, stage, level):
         self.state = GameState.IN_GAME
         self.full_screen_effect.start()
+        self.stage = stage
         self.level = level
         Timer(2,self.load_level).start()
 
@@ -160,6 +175,35 @@ class Engine:
         self.full_screen_effect.start()
         self.disable_section("statueSection")
         self.game_sections["statueSection"].reset()
+        self.end_music_queue(2000)
+
+    def queue_music(self, stage):
+        music = self.stage_music[stage]["music"]
+        volume = self.stage_music[stage]["music_volume"]
+        if len(music) > 0:
+            random.shuffle(music)
+            mixer.music.set_volume(volume)
+            self.current_music_index = 0
+            self.music_queue = music
+            self.advance_music_queue()
+            self.in_music_queue = True
+        
+    def advance_music_queue(self):
+        print("Playing: " + self.music_queue[self.current_music_index])
+        mixer.music.load("sounds/music/" + self.music_queue[self.current_music_index])
+        self.current_music_index += 1
+
+        if self.current_music_index >= len(self.music_queue):
+            self.current_music_index = 0
+
+        self.play_music()
+
+    def play_music(self):
+        mixer.music.play()
+
+    def end_music_queue(self, fadeout_time):
+        mixer.music.fadeout(fadeout_time)
+        self.in_music_queue = False
 
     def open_menu(self):
         self.state = GameState.MENU
@@ -193,15 +237,7 @@ class Engine:
     def get_delta_time(self):
         return self.delta_time.get_delta_time()
 
-    def play_music(self):
-        return
-        playsound(get_app_path() + "/sounds/music.wav", False)
-        self.music_timer = Timer(77, self.play_music)
-        self.music_timer.start()
-
     def quit(self):
-        if self.music_timer.is_alive():
-            self.music_timer.cancel()
         raise SystemExit()
 
     def open_confirmation_dialog(self, text, confirmation_action):
@@ -211,6 +247,9 @@ class Engine:
 
     def close_confirmation_dialog(self):
         self.disable_section("confirmationDialog")
+
+    def is_confirmation_dialog_open(self):
+        return "confirmationDialog" not in self.disabled_sections
 
     def open_notification_dialog(self, text):
         self.game_sections["notificationDialog"].setup(text)

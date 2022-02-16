@@ -82,8 +82,15 @@ class MenuSection(Section):
                 self.selected_stage = list(self.stages.values())[self.selected_stage_index]["name"]
                 self.state = MenuState.LEVEL_SELECT
             elif self.state == MenuState.LEVEL_SELECT:
-                SelectLevelAction(self.engine, self.stages[self.selected_stage]["levels"][self.selected_level]).perform()
+                stage = {}
+                stage["name"] = self.selected_stage
+                stage["ending_music"] = self.stages[self.selected_stage]["ending_music"]
+                stage["start_music"] = self.stages[self.selected_stage]["start_music"]
+                stage["start_length"] = self.stages[self.selected_stage]["start_length"]
+                stage["end_length"] = self.stages[self.selected_stage]["end_length"]
+                SelectLevelAction(self.engine, stage, self.stages[self.selected_stage]["levels"][self.selected_level]).perform()
         elif key == tcod.event.K_BACKSPACE:
             self.state = MenuState.STAGE_SELECT
+            self.selected_level = 0
         elif key == tcod.event.K_ESCAPE:
             EscapeAction(self.engine).perform()

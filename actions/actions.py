@@ -140,12 +140,13 @@ class ChiselMistakeAction(Action):
         return self.entity.section.chisel_fault()
 
 class SelectLevelAction(Action):
-    def __init__(self, engine, level) -> None:
+    def __init__(self, engine, stage, level) -> None:
         super().__init__(engine)
         self.level = level
+        self.stage = stage
 
     def perform(self) -> None:
-        return self.engine.select_level(self.level)
+        return self.engine.select_level(self.stage, self.level)
 
 class LevelCompleteAction(Action):
     def __init__(self, engine, summary) -> None:
@@ -166,4 +167,20 @@ class CloseSummarySectionAction(Action):
 class HideSummarySectionAction(Action):
     def perform(self) -> None:
         return self.engine.hide_summary_section()
+
+class QueueMusicAction(Action):
+    def __init__(self, engine, stage) -> None:
+        super().__init__(engine)
+        self.stage = stage
+
+    def perform(self) -> None:
+        self.engine.queue_music(self.stage)
+
+class EndMusicQueueAction(Action):
+    def __init__(self, engine, fadeout_time) -> None:
+        super().__init__(engine)
+        self.fadeout_time = fadeout_time
+
+    def perform(self) -> None:
+        self.engine.end_music_queue( self.fadeout_time)
 

@@ -2,14 +2,17 @@
 import json
 import math
 from enum import Enum, auto
+from random import randrange
 from threading import Timer
 
 import numpy as np
 import tcod
+from pygame import mixer
 from tcod import Console
 from ui.statue_summary_ui import StatueSummaryUI
 
 from sections.section import Section
+
 
 class SummaryState(Enum):
     INACTIVE = auto()
@@ -31,6 +34,13 @@ class StatueSummarySection(Section):
 
         self.ui = StatueSummaryUI(self)
 
+        self.crown_award_sounds = list()
+        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel1.wav'))
+        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel2.wav'))
+        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel3.wav'))
+        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel4.wav'))
+        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel5.wav'))
+
         self.reset()
 
     def reset(self):
@@ -40,6 +50,7 @@ class StatueSummarySection(Section):
         self.scoring_time = 0
         self.time_in_scoring = 0
         self.time_each_scoring = 1
+        self.sounds_to_play = 0
 
     def update(self):
         pass
@@ -72,6 +83,10 @@ class StatueSummarySection(Section):
         
         line = tcod.los.bresenham((x, y), (self.layout["total_x"], self.layout["total_y"])).tolist()
         point_to_print = line[int(len(line) * (self.time_in_scoring - math.floor(self.time_in_scoring)))]
+
+        if self.sounds_to_play != num_crown:
+            self.sounds_to_play -= 1
+            self.crown_award_sounds[randrange(0,len(self.crown_award_sounds))].play()
 
         self.crown_unlocked_console.blit(console, dest_x=point_to_print[0], dest_y=point_to_print[1], width=self.layout["crown_width"], height=self.layout["crown_height"])
 
@@ -145,6 +160,8 @@ class StatueSummarySection(Section):
             self.time_in_scoring = 0
 
             self.engine.award_crowns(self.new_crowns, self.crowns_awarded, self.summary.level["name"])
+
+            self.sounds_to_play = self.crowns_awarded
 
             Timer(2.0, self.display_scores).start()
 

@@ -8,7 +8,7 @@ class VerticalWipeDirection(Enum):
     DOWN = auto()
 
 class VerticalWipeEffect(Effect):
-    def __init__(self, engine, x, y, width, height, speed = 6, border_tile = ""):
+    def __init__(self, engine, x, y, width, height, speed = 6, border_tile = None):
         super().__init__(engine,x,y,width,height)
         self.current_wipe_height = 0
         self.speed = speed
@@ -32,9 +32,10 @@ class VerticalWipeEffect(Effect):
             for y in range(0, self.height):
                 temp_console.tiles_rgb[x,y] = self.tiles[x,y]
 
-        if not self.border_tile == "":
+        if not self.border_tile == None:
             for i in range(0,self.width):
                 temp_console.tiles_rgb[i, min(self.height,int(self.current_wipe_height -1))] = self.border_tile
+                
 
         if(self.direction == VerticalWipeDirection.UP):
             temp_console.blit(console, src_x=0, src_y=0, dest_x=self.x, dest_y=self.y + self.height -  int(self.current_wipe_height), width=self.width, height=max(int(self.current_wipe_height),1))

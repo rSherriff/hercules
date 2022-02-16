@@ -6,19 +6,20 @@ from threading import Timer
 
 import numpy as np
 import tcod
-from actions.actions import (LevelCompleteAction, LevelLeaveAction,
-                             OpenConfirmationDialog)
+from actions.actions import (EndMusicQueueAction, LevelCompleteAction,
+                             LevelLeaveAction, OpenConfirmationDialog, QueueMusicAction)
 from data.statue_summary import StatueSummary
 from effects.brick_wall_effect import BrickWallDirection, BrickWallEffect
 from effects.horizontal_move_effect import (HorizontalMoveDirection,
                                             HorizontalMoveEffect)
-from effects.vertical_wipe_effect import (VerticalWipeDirection,
-                                          VerticalWipeEffect)
 from effects.vertical_move_effect import (VerticalMoveDirection,
                                           VerticalMoveEffect)
+from effects.vertical_wipe_effect import (VerticalWipeDirection,
+                                          VerticalWipeEffect)
 from entities.anchor import Anchor
 from entities.blocker import Blocker
 from entities.material import BlockMaterial, Material, StatueMaterial
+from pygame import mixer
 from tcod import Console
 from ui.statue_ended_ui import StatueEndedUI
 from utils.color import black, marble, spot_line
@@ -50,6 +51,10 @@ class StatueSection(Section):
 
         self.statue_ended_ui = StatueEndedUI(self)
 
+        self.left_click_sound = mixer.Sound('Sounds/left_click.wav')
+        self.right_click_sound = mixer.Sound('Sounds/right_click.wav')
+        self.fault_sound = mixer.Sound('Sounds/fault.wav')
+
     def reset(self):
         self.mousedown_point = None
         self.spotting = False
@@ -79,6 +84,10 @@ class StatueSection(Section):
         self.name_char_probabilites = []
 
         self.entities.clear()
+
+        self.stage = None
+
+        self.complete_sound = None
 
         self.load_header_effect = None
         self.load_footer_effect = None
@@ -110,6 +119,7 @@ class StatueSection(Section):
     def render_load_footer(self, console):
         if self.load_footer_effect == None:
             self.load_footer_effect = VerticalWipeEffect(self.engine, 0, self.footer_y, self.width, self.footer_height)
+
 
         if not self.load_footer_effect.in_effect:
             if self.load_footer_effect.time_alive > 0:
@@ -276,40 +286,9 @@ class StatueSection(Section):
         self.render_spotted_tiles(console)
 
     def render_ending(self, console):
-
-        if self.ending_effect == None:
-            self.ending_effect = VerticalWipeEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"]+1, speed=max(2,(self.level["height"] / 10)), border_tile=(ord('*'), marble, black))
-
-        if not self.ending_effect.in_effect and self.transistioning_to_state != StatueState.ENDED: 
-            if self.ending_effect.time_alive > 0:
-                self.change_state(StatueState.ENDED)
-                self.render_statue(console)
-                temp_console = Console(width=self.level["width"], height=1, order="F")
-                for i in range(0,self.level["width"]):
-                    temp_console.tiles_rgb[i,0]=(ord('*'), marble, black)
-                    temp_console.blit(console, dest_x=self.level["x"], dest_y=self.level["y"] + self.level["height"], width=self.width, height=1)
-                return
-
-            super().render(console)
-
-            temp_console = Console(width=self.level["width"], height=self.level["height"] + 1, order="F")
-            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height+1] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"]+1 ]["graphic"]
-
-            self.ending_effect.tiles = temp_console.tiles
-            self.ending_effect.start(VerticalWipeDirection.DOWN)
-
-        elif self.ending_effect.in_effect == True:
-            temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
-            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
-            temp_console.blit(console, src_x= 0, src_y=0, dest_x = self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
-            self.ending_effect.render(console)
-
-        else:
-            self.render_statue(console)
-            temp_console = Console(width=self.level["width"], height=1, order="F")
-            for i in range(0,self.level["width"]):
-                temp_console.tiles_rgb[i,0]=(ord('*'), marble, black)
-                temp_console.blit(console, dest_x=self.level["x"], dest_y=self.level["y"] + self.level["height"], width=self.width, height=1)
+        temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
+        temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
+        temp_console.blit(console, src_x= 0, src_y=0, dest_x = self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
  
     def render_ended(self, console):
         self.render_statue(console)
@@ -391,15 +370,16 @@ class StatueSection(Section):
             self.spotted_tiles.append([mouse_pos[0], mouse_pos[1]])
 
     def mousedown(self,button,x,y):
-        processed_entity = False
-        if not self.spotting:
-            for entity in self.get_entities_at_location(self.engine.mouse_location[0], self.engine.mouse_location[1]):
-                entity.mousedown(button)
-                processed_entity = True
+        if not self.engine.is_confirmation_dialog_open():
+            processed_entity = False
+            if not self.spotting:
+                for entity in self.get_entities_at_location(self.engine.mouse_location[0], self.engine.mouse_location[1]):
+                    entity.mousedown(button)
+                    processed_entity = True
 
-        if button == 1 and not processed_entity:
-            self.mousedown_point = (x,y)
-            self.spotting = not self.spotting
+            if button == 1 and not processed_entity:
+                self.mousedown_point = (x,y)
+                self.spotting = not self.spotting
 
     def keydown(self, key):
         #TEMP
@@ -434,6 +414,7 @@ class StatueSection(Section):
         self.graph = tcod.path.SimpleGraph(cost=self.cost, cardinal=1, diagonal=1)
 
     def chisel_fault(self):
+        self.fault_sound.play()
         self.faults += 1
 
     def change_state(self, new_state):
@@ -442,15 +423,20 @@ class StatueSection(Section):
             self.transistioning_to_state = StatueState.ENDED
             print("Changing to ENDED")
             Timer(1.0, self.end_level).start()   
+        elif new_state == StatueState.IN_PROGRESS:
+            self.state = StatueState.IN_PROGRESS
+            QueueMusicAction(self.engine, self.stage["name"] ).perform()
         else:
             self.state = new_state
 
     def finish_setup(self):
         self.finished_setup = True
-        Timer(1.0, self.change_state, [StatueState.IN_PROGRESS]).start()
+        Timer(self.stage["start_length"], self.change_state, [StatueState.IN_PROGRESS]).start()
                         
     def complete_level(self):
+        self.complete_sound.play()
         self.state = StatueState.ENDING 
+        Timer(self.stage["end_length"],self.change_state,[StatueState.ENDED]).start()
 
     def end_level(self):
         self.ui = self.statue_ended_ui
@@ -473,11 +459,14 @@ class StatueSection(Section):
         if isinstance(entity, BlockMaterial):
             self.remaining_blocks -= 1
             self.cleared_blocks += 1
+            self.left_click_sound.play()
         if isinstance(entity, StatueMaterial):
             self.remaining_statue -= 1
             self.cleared_blocks += 1
+            self.right_click_sound.play()
 
         if self.total_remaining_blocks() == 0:
+            EndMusicQueueAction(self.engine, 500).perform()
             Timer(2.0,self.complete_level).start()
 
         super().remove_entity(entity)
@@ -486,8 +475,13 @@ class StatueSection(Section):
     def total_remaining_blocks(self):
         return self.remaining_statue + self.remaining_blocks
 
-    def load_level(self, level):
+    def load_level(self, stage, level):
         self.reset()
+
+        self.stage = stage
+        self.complete_sound = mixer.Sound('Sounds/' + stage["ending_music"])
+        self.start_sound = mixer.Sound('Sounds/' + stage["start_music"])
+        self.start_sound.play()
 
         xp_data = self.load_xp_data(level["file"])
         self.load_tiles(level["file"], xp_data)
