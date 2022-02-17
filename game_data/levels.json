@@ -664,7 +664,7 @@
           "x": 19,
           "y": 6,
           "width": 13,
-          "height": 17,
+          "height": 18,
           "spotted_tiles_x": [8, 42],
           "spotted_tiles_y": [21, 21],
           "faults_x": 41,
@@ -706,12 +706,12 @@
     },
     {
       "name": "Modern",
-      "music": ["factory.mp3"],
-      "start_music": "start_rb.wav",
-      "ending_music": "completion_rb.wav",
-      "music_volume": 0.5,
+      "music": ["schpiano.mp3", "gurrelieder.mp3", "riteofspring1.mp3","riteofspring2.mp3"],
+      "start_music": "start_m.wav",
+      "ending_music": "completion_m.wav",
+      "music_volume": 0.3,
       "start_length": 1,
-      "end_length": 9.4,
+      "end_length": 6,
       "levels": [
         {
           "name": "Little Dancer of Fourteen Years",
