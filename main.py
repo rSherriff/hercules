@@ -6,7 +6,7 @@ from engine import Engine
 
 
 def main() -> None:
-    screen_width = 50
+    screen_width = 51
     screen_height = 30
 
     terminal_height = screen_height * 2
