@@ -20,7 +20,7 @@ def main() -> None:
         terminal_width,
         terminal_height,
         tileset=tileset,
-        title="Folk2D",
+        title="The Farnese Hercules",
         vsync=True,
         sdl_window_flags=tcod.context.SDL_WINDOW_RESIZABLE
     ) as root_context:
