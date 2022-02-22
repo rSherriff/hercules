@@ -54,6 +54,7 @@ class StatueSection(Section):
         self.left_click_sound = mixer.Sound('Sounds/left_click.wav')
         self.right_click_sound = mixer.Sound('Sounds/right_click.wav')
         self.fault_sound = mixer.Sound('Sounds/fault.wav')
+        self.curtain_sound =  mixer.Sound('Sounds/curtains.wav')
 
     def reset(self):
         self.mousedown_point = None
@@ -482,6 +483,7 @@ class StatueSection(Section):
         self.complete_sound = mixer.Sound('Sounds/' + stage["ending_music"])
         self.start_sound = mixer.Sound('Sounds/' + stage["start_music"])
         self.start_sound.play()
+        self.curtain_sound.play()
 
         xp_data = self.load_xp_data(level["file"])
         self.load_tiles(level["file"], xp_data)

@@ -102,11 +102,11 @@
     {
       "name": "Near East",
       "music": ["desert.mp3"],
-      "start_music": "start_rb.wav",
-      "ending_music": "completion_rb.wav",
+      "start_music": "start_ne.wav",
+      "ending_music": "completion_ne.wav",
       "music_volume": 0.4,
       "start_length": 1,
-      "end_length": 9.4,
+      "end_length": 4,
       "levels": [
         {
           "name": "Statue of Ebih-Il",
@@ -223,8 +223,8 @@
     {
       "name": "Greece",
       "music": ["market.mp3"],
-      "start_music": "start_rb.wav",
-      "ending_music": "completion_rb.wav",
+      "start_music": "start_g.wav",
+      "ending_music": "completion_g.wav",
       "music_volume": 1,
       "start_length": 1,
       "end_length": 9.4,
@@ -246,7 +246,7 @@
           "footer_y": 26,
           "header_height": 4,
           "sides_y": 4,
-          "sides_width": 13,
+          "sides_width": 14,
           "sides_height": 22,
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
