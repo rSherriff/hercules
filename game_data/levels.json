@@ -629,7 +629,7 @@
     },
     {
       "name": "Neoclassical + Romantic",
-      "music": ["concertovivaldi.mp3", "brandenburg.mp3", "suitefrancaise.mp3", "concertobach1.mp3"],
+      "music": ["concertovivaldi.mp3", "brandenburg.mp3", "suitefrancaise.mp3", "concertobach1.mp3", "concertobach2.mp3", "concertobach3.mp3"],
       "start_music": "start_ncr.wav",
       "ending_music": "completion_ncr.wav",
       "music_volume": 0.3,
