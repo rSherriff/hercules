@@ -184,3 +184,7 @@ class EndMusicQueueAction(Action):
     def perform(self) -> None:
         self.engine.end_music_queue( self.fadeout_time)
 
+class IntroEndAction(Action):
+    def perform(self) -> None:
+        self.engine.end_intro()
+

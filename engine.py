@@ -16,6 +16,7 @@ from effects.melt_effect import MeltWipeEffect, MeltWipeEffectType
 from fonts.font_manager import FontManager
 from input_handlers import EventHandler, MainGameEventHandler
 from sections.confirmation import Confirmation
+from sections.intro_section import IntroSection
 from sections.menu_section import MenuSection
 from sections.statue_section import StatueSection
 from sections.statue_summary_section import StatueSummarySection
@@ -23,11 +24,9 @@ from utils.delta_time import DeltaTime
 
 
 class GameState(Enum):
+    INTRO = auto()
     MENU = auto()
     IN_GAME = auto()
-    GAME_OVER = auto()
-    COMPLETE = auto()
-
 
 class Engine:
     def __init__(self, teminal_width: int, terminal_height: int):
@@ -50,7 +49,7 @@ class Engine:
         self.tick_length = 2
         self.time_since_last_tick = -2
 
-        self.state = GameState.MENU
+        self.state = GameState.INTRO
 
         self.font_manager = FontManager()
         self.font_manager.add_font("number_font")
@@ -113,12 +112,15 @@ class Engine:
         return self.state == GameState.IN_GAME
 
     def handle_events(self, context: tcod.context.Context):
-        self.event_handler.handle_events(context, discard_events=self.full_screen_effect.in_effect or self.state == GameState.GAME_OVER)
+        self.event_handler.handle_events(context, discard_events=self.full_screen_effect.in_effect)
 
     def setup_effects(self):
         self.full_screen_effect = MeltWipeEffect(self, 0, 0, self.screen_width, self.screen_height, MeltWipeEffectType.RANDOM, 20)
 
     def setup_sections(self):
+        self.intro_sections = {}
+        self.intro_sections["intro"] = IntroSection(self,0,0,self.screen_width, self.screen_height)
+
         self.menu_sections = {}
         self.menu_sections["Menu"] = MenuSection(self,0,0,self.screen_width, self.screen_height)
 
@@ -132,7 +134,9 @@ class Engine:
         self.disabled_sections = ["confirmationDialog", "notificationDialog", "statueSummarySection"]
 
     def get_active_sections(self):
-        if self.state == GameState.MENU:
+        if self.state == GameState.INTRO:
+            return self.intro_sections.items()
+        elif self.state == GameState.MENU:
             return self.menu_sections.items()
         elif self.is_in_game():
             return self.game_sections.items()
@@ -140,7 +144,9 @@ class Engine:
             return self.completion_sections.items()
 
     def get_active_ui_sections(self):
-        if self.state == GameState.MENU:
+        if self.state == GameState.INTRO:
+            return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.intro_sections.items())).items()
+        elif self.state == GameState.MENU:
             return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.menu_sections.items())).items()
         elif self.is_in_game():
             return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.game_sections.items())).items()
@@ -160,7 +166,7 @@ class Engine:
         self.game_sections["statueSection"].load_level(self.stage, self.level)
 
     def select_level(self, stage, level):
-        self.state = GameState.IN_GAME
+        self.change_state(GameState.IN_GAME)
         self.full_screen_effect.start()
         self.stage = stage
         self.level = level
@@ -171,7 +177,7 @@ class Engine:
         self.full_screen_effect.start()
 
     def leave_level(self):
-        self.state = GameState.MENU
+        self.change_state(GameState.MENU)
         self.full_screen_effect.start()
         self.disable_section("statueSection")
         self.game_sections["statueSection"].reset()
@@ -206,15 +212,7 @@ class Engine:
         self.in_music_queue = False
 
     def open_menu(self):
-        self.state = GameState.MENU
-        self.full_screen_effect.start()
-
-    def game_over(self):
-        self.state = GameState.GAME_OVER
-        Timer(3, self.open_menu).start()
-
-    def complete_game(self):
-        self.state = GameState.COMPLETE
+        self.change_state(GameState.MENU)
         self.full_screen_effect.start()
 
     def award_crowns(self, num_crowns, total_level_crowns, level_name):
@@ -230,7 +228,12 @@ class Engine:
             return self.save_data[level_name]
         else:
             return 0
-    
+
+    def change_state(self, new_state):
+        old_state = self.state
+
+        self.state = new_state
+   
     def get_total_awarded_crowns(self):
         return self.save_data["total_crowns"]
 
@@ -277,3 +280,7 @@ class Engine:
 
     def is_ui_paused(self):
         return self.full_screen_effect.in_effect
+
+    def end_intro(self):
+        self.change_state(GameState.MENU)
+        self.full_screen_effect.start()
