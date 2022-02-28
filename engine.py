@@ -220,7 +220,7 @@ class Engine:
             mixer.music.load("sounds/music/" + file)
             mixer.music.play()
 
-    def play_menu_music(self, file):
+    def play_menu_music(self, file=""):
         if len(file) > 0:
             self.menu_music = file
         mixer.music.load("sounds/music/" + self.menu_music)
@@ -291,7 +291,7 @@ class Engine:
         self.disable_section("statueSummarySection")
         self.state = GameState.MENU
         self.full_screen_effect.start()
-        self.play_menu_music(self)
+        self.play_menu_music()
 
     def is_ui_paused(self):
         return self.full_screen_effect.in_effect
