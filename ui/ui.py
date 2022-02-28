@@ -108,6 +108,9 @@ class Button(UIElement):
         self.normal_bg= (255,255,255)
 
     def render(self, console: Console):
+        if self.tiles is None:
+            return
+
         temp_console = Console(width=self.width, height=self.height, order="F")
 
         for h in range(0,self.height):

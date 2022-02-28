@@ -188,3 +188,7 @@ class IntroEndAction(Action):
     def perform(self) -> None:
         self.engine.end_intro()
 
+class EnterStageSelectAction(Action):
+    def perform(self) -> None:
+        self.engine.menu_sections["Menu"].enter_stage_select()
+
