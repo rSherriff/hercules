@@ -4,7 +4,7 @@ from enum import Enum, auto
 
 import numpy as np
 import tcod
-from actions.actions import IntroEndAction
+from actions.actions import IntroEndAction, PlayMusicFileAction, PlayMenuMusicAction
 from image import Image
 from tcod import Console
 import copy
@@ -16,6 +16,7 @@ class IntroSplashType(Enum):
     TEXT = auto()
     IMAGE = auto() 
     BLANK = auto()
+    SOUND = auto()
 
 class IntroSplash():
     def __init__(self, type, intro, hang, outro) -> None:
@@ -42,6 +43,12 @@ class BlankIntroSplash(IntroSplash):
     def __init__(self, length) -> None:
         super().__init__(IntroSplashType.BLANK, 0, length, 0)
 
+class SoundIntroSplash(IntroSplash):
+    def __init__(self, file, keep_into_menu) -> None:
+        super().__init__(IntroSplashType.SOUND, 0, 0, 0)
+        self.file = file
+        self.keep_into_menu = keep_into_menu
+
 class IntroSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = "") -> None:
         super().__init__(engine, x, y, width, height, xp_filepath)
@@ -54,6 +61,7 @@ class IntroSection(Section):
         { "type": "TEXT", "intro": 2, "hang": 3, "outro": 2, "text": "A Game by Richard Sherriff" }
         { "type": "BLANK", "length": 2 }
         { "type": "IMAGE", "intro": 2, "hang": 3, "outro": 0, "file": "images/logo.xp", "width": -1, "height": -1 }
+        { "type": "SOUND", "file": "filepath"}
         """
         for splash in splahes:
             if splash["type"] == "TEXT":
@@ -64,11 +72,21 @@ class IntroSection(Section):
                 width = splash["width"] if splash["width"] > 0 else self.width
                 height = splash["height"] if splash["height"] > 0 else self.height
                 self.splash_list.append(ImageIntroSplash(splash["intro"],splash["hang"],splash["outro"], width, height, splash["file"]))
+            elif splash["type"] == "SOUND":
+                self.splash_list.append(SoundIntroSplash(splash["file"], splash["keep_into_menu"]))
 
     def update(self):
         self.time_into_splash += self.engine.get_delta_time()
 
         if len(self.splash_list) > 0:
+            
+            splash = self.splash_list[0]
+            if splash.type == IntroSplashType.SOUND:
+                if splash.keep_into_menu:
+                    PlayMenuMusicAction(self.engine,splash.file).perform()
+                else:
+                    PlayMusicFileAction(self.engine,splash.file).perform()
+
             if self.time_into_splash > self.splash_list[0].length:
                 self.splash_list = self.splash_list[1:]
                 self.time_into_splash = 0
@@ -111,6 +129,8 @@ class IntroSection(Section):
             
     def keydown(self, key):
         if key == tcod.event.K_RETURN or key == tcod.event.K_ESCAPE:
+            #HACK! 
+            PlayMenuMusicAction(self.engine,"menu.mp3").perform()
             self.end()
 
     def end(self):

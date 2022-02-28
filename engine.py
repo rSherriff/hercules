@@ -54,7 +54,7 @@ class Engine:
         self.font_manager = FontManager()
         self.font_manager.add_font("number_font")
 
-        self.in_music_queue = False
+        self.in_stage_music_queue = False
 
         self.save_data = None
         if os.path.isfile("game_data/game_save.json"):
@@ -103,7 +103,7 @@ class Engine:
             if self.time_since_last_tick > self.tick_length and self.state == self.is_in_game():
                 self.time_since_last_tick = 0
 
-        if self.in_music_queue and not mixer.music.get_busy():
+        if self.in_stage_music_queue and not mixer.music.get_busy():
             self.advance_music_queue()
 
 
@@ -169,6 +169,7 @@ class Engine:
         self.game_sections["statueSection"].load_level(self.stage, self.level)
 
     def select_level(self, stage, level):
+        mixer.music.fadeout(1000)
         self.change_state(GameState.IN_GAME)
         self.full_screen_effect.start()
         self.stage = stage
@@ -195,7 +196,7 @@ class Engine:
             self.current_music_index = 0
             self.music_queue = music
             self.advance_music_queue()
-            self.in_music_queue = True
+            self.in_stage_music_queue = True
         
     def advance_music_queue(self):
         print("Playing: " + self.music_queue[self.current_music_index])
@@ -212,7 +213,18 @@ class Engine:
 
     def end_music_queue(self, fadeout_time):
         mixer.music.fadeout(fadeout_time)
-        self.in_music_queue = False
+        self.in_stage_music_queue = False
+
+    def play_music_file(self, file):
+        if not self.in_stage_music_queue:
+            mixer.music.load("sounds/music/" + file)
+            mixer.music.play()
+
+    def play_menu_music(self, file):
+        if len(file) > 0:
+            self.menu_music = file
+        mixer.music.load("sounds/music/" + self.menu_music)
+        mixer.music.play()
 
     def open_menu(self):
         self.change_state(GameState.MENU)
@@ -279,7 +291,7 @@ class Engine:
         self.disable_section("statueSummarySection")
         self.state = GameState.MENU
         self.full_screen_effect.start()
-
+        self.play_menu_music(self)
 
     def is_ui_paused(self):
         return self.full_screen_effect.in_effect

@@ -4,6 +4,7 @@
     { "type": "BLANK", "length": 2 },
     { "type": "TEXT", "intro": 2, "hang": 3, "outro": 2, "text": "A Game by Richard Sherriff" },
     { "type": "BLANK", "length": 2 },
+    { "type": "SOUND", "file": "menu.mp3", "keep_into_menu": true },
     { "type": "IMAGE", "intro": 2, "hang": 3, "outro": 0, "file": "images/logo.xp", "width": -1, "height": -1 },
     { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_0.xp", "width": -1, "height": -1 },
     { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_1.xp", "width": -1, "height": -1 },

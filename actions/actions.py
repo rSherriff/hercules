@@ -192,3 +192,18 @@ class EnterStageSelectAction(Action):
     def perform(self) -> None:
         self.engine.menu_sections["Menu"].enter_stage_select()
 
+class PlayMusicFileAction(Action):
+    def __init__(self, engine, file) -> None:
+        super().__init__(engine)
+        self.file = file
+
+    def perform(self) -> None:
+        self.engine.play_music_file(self.file)
+
+class PlayMenuMusicAction(Action):
+    def __init__(self, engine, file="") -> None:
+        super().__init__(engine)
+        self.file = file
+
+    def perform(self) -> None:
+        self.engine.play_menu_music(self.file)
