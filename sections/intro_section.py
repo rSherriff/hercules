@@ -45,26 +45,25 @@ class BlankIntroSplash(IntroSplash):
 class IntroSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = "") -> None:
         super().__init__(engine, x, y, width, height, xp_filepath)
-
-        anim_frame_length = 0.075
+        
         self.splash_list = list()
-        self.splash_list.append(TextIntroSplash(2,3,2, "The Folk2D Engine"))
-        self.splash_list.append(BlankIntroSplash(2))
-        self.splash_list.append(TextIntroSplash(2,3,2, "A Game by Richard Sherriff"))
-        self.splash_list.append(BlankIntroSplash(2))
-        self.splash_list.append(ImageIntroSplash(2,3,0, self.width, self.height, "images/logo.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_1.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_2.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_3.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_4.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_5.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_6.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_7.xp"))
-        self.splash_list.append(ImageIntroSplash(0,anim_frame_length,0, self.width, self.height, "images/logo_anim_8.xp"))
-        self.splash_list.append(ImageIntroSplash(0,0,2, self.width, self.height, "images/logo.xp"))
-        self.splash_list.append(BlankIntroSplash(2))
-
         self.time_into_splash = 0
+
+    def load_splashes(self, splahes):
+        """
+        { "type": "TEXT", "intro": 2, "hang": 3, "outro": 2, "text": "A Game by Richard Sherriff" }
+        { "type": "BLANK", "length": 2 }
+        { "type": "IMAGE", "intro": 2, "hang": 3, "outro": 0, "file": "images/logo.xp", "width": -1, "height": -1 }
+        """
+        for splash in splahes:
+            if splash["type"] == "TEXT":
+                self.splash_list.append(TextIntroSplash(splash["intro"],splash["hang"],splash["outro"], splash["text"]))
+            elif splash["type"] == "BLANK":
+                self.splash_list.append(BlankIntroSplash(splash["length"]))
+            elif splash["type"] == "IMAGE":
+                width = splash["width"] if splash["width"] > 0 else self.width
+                height = splash["height"] if splash["height"] > 0 else self.height
+                self.splash_list.append(ImageIntroSplash(splash["intro"],splash["hang"],splash["outro"], width, height, splash["file"]))
 
     def update(self):
         self.time_into_splash += self.engine.get_delta_time()

@@ -1,4 +1,22 @@
 {
+  "intro_splashes": [
+    { "type": "TEXT", "intro": 2, "hang": 3, "outro": 2, "text": "The Folk2D Engine" },
+    { "type": "BLANK", "length": 2 },
+    { "type": "TEXT", "intro": 2, "hang": 3, "outro": 2, "text": "A Game by Richard Sherriff" },
+    { "type": "BLANK", "length": 2 },
+    { "type": "IMAGE", "intro": 2, "hang": 3, "outro": 0, "file": "images/logo.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_0.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_1.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_2.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_3.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_4.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_5.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_6.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_7.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_8.xp", "width": -1, "height": -1 },
+    { "type": "IMAGE", "intro": 0, "hang": 0, "outro": 2, "file": "images/logo.xp", "width": -1, "height": -1 },
+    { "type": "BLANK", "length": 2 }
+  ],
   "stages": [
     {
       "name": "Tutorial",
@@ -276,10 +294,10 @@
         {
           "name": "Bust of Pericles",
           "file": "level3-3.xp",
-          "x": 19,
-          "y": 6,
-          "width": 14,
-          "height": 17,
+          "x": 20,
+          "y": 5,
+          "width": 10,
+          "height": 20,
           "spotted_tiles_x": [9, 41],
           "spotted_tiles_y": [21, 21],
           "faults_x": 41,

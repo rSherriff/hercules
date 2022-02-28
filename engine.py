@@ -67,6 +67,9 @@ class Engine:
         self.stage_music = {}
         with open ( "game_data/levels.json" ) as f:
             data = json.load(f)
+
+            self.intro_sections["introSection"].load_splashes(data["intro_splashes"])
+
             for stage in data["stages"]:
                 self.stage_music[stage["name"]] = {}
                 self.stage_music[stage["name"]]["music"] = stage["music"]
@@ -119,7 +122,7 @@ class Engine:
 
     def setup_sections(self):
         self.intro_sections = {}
-        self.intro_sections["intro"] = IntroSection(self,0,0,self.screen_width, self.screen_height)
+        self.intro_sections["introSection"] = IntroSection(self,0,0,self.screen_width, self.screen_height)
 
         self.menu_sections = {}
         self.menu_sections["Menu"] = MenuSection(self,0,0,self.screen_width, self.screen_height)
