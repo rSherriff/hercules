@@ -724,9 +724,9 @@
         {
           "name": "Shephard Boy",
           "file": "level6-4.xp",
-          "x": 19,
+          "x": 18,
           "y": 7,
-          "width": 13,
+          "width": 14,
           "height": 17,
           "spotted_tiles_x": [8, 42],
           "spotted_tiles_y": [21, 21],
