@@ -22,6 +22,8 @@
     {
       "name": "Tutorial",
       "background": "menu_t.xp",
+      "level_names_pos": [6, 13],
+      "crowns_awarded_pos": [40, 13],
       "music": ["cave.mp3"],
       "start_music": "start_t.wav",
       "ending_music": "completion_t.wav",
@@ -31,6 +33,7 @@
       "levels": [
         {
           "name": "Venus of Hohle Fels",
+          "number": 1,
           "file": "level1-1.xp",
           "x": 17,
           "y": 13,
@@ -53,6 +56,7 @@
         },
         {
           "name": "Venus of Willendorf",
+          "number": 2,
           "file": "level1-2.xp",
           "x": 13,
           "y": 12,
@@ -75,6 +79,7 @@
         },
         {
           "name": "The Lowenmensch Figure",
+          "number": 3,
           "file": "level1-3.xp",
           "x": 14,
           "y": 8,
@@ -97,6 +102,7 @@
         },
         {
           "name": "Creeping Hyena",
+          "number": 4,
           "file": "level1-4.xp",
           "x": 14,
           "y": 11,
@@ -123,6 +129,8 @@
       "name": "Near East",
       "music": ["desert.mp3"],
       "background": "menu_ne.xp",
+      "level_names_pos": [6, 13],
+      "crowns_awarded_pos": [40, 13],
       "start_music": "start_ne.wav",
       "ending_music": "completion_ne.wav",
       "music_volume": 0.4,
@@ -131,6 +139,7 @@
       "levels": [
         {
           "name": "Statue of Ebih-Il",
+          "number": 5,
           "file": "level2-1.xp",
           "x": 18,
           "y": 6,
@@ -153,6 +162,7 @@
         },
         {
           "name": "Assyrian Lion Weight",
+          "number": 6,
           "file": "level2-2.xp",
           "x": 14,
           "y": 9,
@@ -175,6 +185,7 @@
         },
         {
           "name": "Lamassu",
+          "number": 7,
           "file": "level2-3.xp",
           "x": 16,
           "y": 7,
@@ -197,6 +208,7 @@
         },
         {
           "name": "Younger Memnon",
+          "number": 8,
           "file": "level2-4.xp",
           "x": 17,
           "y": 4,
@@ -219,6 +231,7 @@
         },
         {
           "name": "Neferiti Bust",
+          "number": 10,
           "file": "level2-5.xp",
           "x": 20,
           "y": 4,
@@ -244,6 +257,8 @@
     {
       "name": "Greece",
       "background": "menu_g.xp",
+      "level_names_pos": [6, 11],
+      "crowns_awarded_pos": [40, 11],
       "music": ["market.mp3"],
       "start_music": "start_g.wav",
       "ending_music": "completion_g.wav",
@@ -253,6 +268,7 @@
       "levels": [
         {
           "name": "The Lyons Kore",
+          "number": 11,
           "file": "level3-1.xp",
           "x": 20,
           "y": 5,
@@ -275,6 +291,7 @@
         },
         {
           "name": "Attican Korous",
+          "number": 13,
           "file": "level3-2.xp",
           "x": 17,
           "y": 4,
@@ -297,6 +314,7 @@
         },
         {
           "name": "Bust of Pericles",
+          "number": 14,
           "file": "level3-3.xp",
           "x": 20,
           "y": 5,
@@ -319,6 +337,7 @@
         },
         {
           "name": "Parthenon Pediment",
+          "number": 15,
           "file": "level3-4.xp",
           "x": 14,
           "y": 6,
@@ -341,6 +360,7 @@
         },
         {
           "name": "The Farnese Hercules",
+          "number": 16,
           "file": "level3-5.xp",
           "x": 18,
           "y": 4,
@@ -363,6 +383,7 @@
         },
         {
           "name": "Apollo Belvedere",
+          "number": 17,
           "file": "level3-6.xp",
           "x": 14,
           "y": 4,
@@ -388,6 +409,8 @@
     {
       "name": "Romanesque + Gothic",
       "background": "menu_rg.xp",
+      "level_names_pos": [6, 11],
+      "crowns_awarded_pos": [40, 11],
       "music": ["spanishmass.mp3"],
       "start_music": "start_rg.wav",
       "ending_music": "completion_rg.wav",
@@ -397,6 +420,7 @@
       "levels": [
         {
           "name": "Tympanum at Conques",
+          "number": 18,
           "file": "level4-1.xp",
           "x": 15,
           "y": 7,
@@ -419,6 +443,7 @@
         },
         {
           "name": "Porch Figures",
+          "number": 19,
           "file": "level4-2.xp",
           "x": 16,
           "y": 9,
@@ -441,6 +466,7 @@
         },
         {
           "name": "Virgin and Child",
+          "number": 20,
           "file": "level4-3.xp",
           "x": 18,
           "y": 7,
@@ -463,6 +489,7 @@
         },
         {
           "name": "Gargoyle",
+          "number": 21,
           "file": "level4-4.xp",
           "x": 17,
           "y": 7,
@@ -485,6 +512,7 @@
         },
         {
           "name": "The Binding of Isaac",
+          "number": 22,
           "file": "level4-5.xp",
           "x": 16,
           "y": 8,
@@ -510,6 +538,8 @@
     {
       "name": "Renaissance + Baroque",
       "background": "menu_rb.xp",
+      "level_names_pos": [6, 11],
+      "crowns_awarded_pos": [40, 11],
       "music": ["cantate.mp3", "witchesdance.mp3", "scarlettisonata.mp3", "passamezzo.mp3", "ricercar.mp3", "vaghifiori.mp3"],
       "start_music": "start_rb.wav",
       "ending_music": "completion_rb.wav",
@@ -519,6 +549,7 @@
       "levels": [
         {
           "name": "Donatello's David",
+          "number": 23,
           "file": "level5-1.xp",
           "x": 17,
           "y": 2,
@@ -541,6 +572,7 @@
         },
         {
           "name": "The Fall of Adam and Eve",
+          "number": 24,
           "file": "level5-2.xp",
           "x": 16,
           "y": 4,
@@ -563,6 +595,7 @@
         },
         {
           "name": "Michelangelo's David",
+          "number": 25,
           "file": "level5-3.xp",
           "x": 16,
           "y": 2,
@@ -585,6 +618,7 @@
         },
         {
           "name": "The Dying Slave",
+          "number": 26,
           "file": "level5-4.xp",
           "x": 18,
           "y": 3,
@@ -607,6 +641,7 @@
         },
         {
           "name": "Apollo and Daphne",
+          "number": 27,
           "file": "level5-5.xp",
           "x": 16,
           "y": 1,
@@ -629,6 +664,7 @@
         },
         {
           "name": "The Ecstasy of Saint Teresa",
+          "number": 28,
           "file": "level5-6.xp",
           "x": 15,
           "y": 6,
@@ -654,6 +690,8 @@
     {
       "name": "Neoclassical + Romantic",
       "background": "menu_ncr.xp",
+      "level_names_pos": [6, 11],
+      "crowns_awarded_pos": [40, 11],
       "music": ["concertovivaldi.mp3", "brandenburg.mp3", "suitefrancaise.mp3", "concertobach1.mp3", "concertobach2.mp3", "concertobach3.mp3"],
       "start_music": "start_ncr.wav",
       "ending_music": "completion_ncr.wav",
@@ -663,6 +701,7 @@
       "levels": [
         {
           "name": "Bust of Wren",
+          "number": 29,
           "file": "level6-1.xp",
           "x": 19,
           "y": 6,
@@ -685,6 +724,7 @@
         },
         {
           "name": "Cupid Cutting His Bow",
+          "number": 30,
           "file": "level6-2.xp",
           "x": 19,
           "y": 6,
@@ -707,6 +747,7 @@
         },
         {
           "name": "The Three Graces",
+          "number": 31,
           "file": "level6-3.xp",
           "x": 19,
           "y": 6,
@@ -729,6 +770,7 @@
         },
         {
           "name": "Shephard Boy",
+          "number": 32,
           "file": "level6-4.xp",
           "x": 18,
           "y": 7,
@@ -751,6 +793,7 @@
         },
         {
           "name": "Ugolino and His Sons",
+          "number": 33,
           "file": "level6-5.xp",
           "x": 19,
           "y": 7,
@@ -776,6 +819,8 @@
     {
       "name": "Modern",
       "background": "menu_m.xp",
+      "level_names_pos": [6, 11],
+      "crowns_awarded_pos": [40, 11],
       "music": ["schpiano.mp3", "gurrelieder.mp3", "riteofspring1.mp3", "riteofspring2.mp3"],
       "start_music": "start_m.wav",
       "ending_music": "completion_m.wav",
@@ -785,6 +830,7 @@
       "levels": [
         {
           "name": "Little Dancer of Fourteen Years",
+          "number": 34,
           "file": "level7-1.xp",
           "x": 17,
           "y": 5,
@@ -807,6 +853,7 @@
         },
         {
           "name": "Inner Voice",
+          "number": 35,
           "file": "level7-2.xp",
           "x": 15,
           "y": 3,
@@ -829,6 +876,7 @@
         },
         {
           "name": "Head",
+          "number": 36,
           "file": "level7-3.xp",
           "x": 17,
           "y": 4,
@@ -851,6 +899,7 @@
         },
         {
           "name": "Figure",
+          "number": 37,
           "file": "level7-4.xp",
           "x": 16,
           "y": 6,
@@ -873,6 +922,7 @@
         },
         {
           "name": "Pieta",
+          "number": 38,
           "file": "level7-5.xp",
           "x": 17,
           "y": 3,

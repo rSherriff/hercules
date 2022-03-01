@@ -31,8 +31,13 @@ class GameState(Enum):
 class Engine:
     def __init__(self, teminal_width: int, terminal_height: int):
 
+        self.debug_music_disabled = False
+
         mixer.init()
-        mixer.music.set_volume(0.5)
+        if not self.debug_music_disabled:
+            mixer.music.set_volume(0.5)
+        else:
+             mixer.music.set_volume(0)
 
         self.screen_width = teminal_width
         self.screen_height = terminal_height
@@ -192,7 +197,10 @@ class Engine:
         volume = self.stage_music[stage]["music_volume"]
         if len(music) > 0:
             random.shuffle(music)
-            mixer.music.set_volume(volume)
+
+            if not self.debug_music_disabled:
+                mixer.music.set_volume(volume)
+
             self.current_music_index = 0
             self.music_queue = music
             self.advance_music_queue()
@@ -235,6 +243,11 @@ class Engine:
             self.save_data["total_crowns"] += num_crowns
             if not level_name in self.save_data or self.save_data[level_name] < total_level_crowns:
                 self.save_data[level_name] = total_level_crowns
+
+            if not "levels_completed" in self.save_data:
+                self.save_data["levels_completed"] = 0
+            
+            self.save_data["levels_completed"] += 1
             
             json.dump(self.save_data, f, indent=2)
 

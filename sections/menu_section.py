@@ -1,14 +1,16 @@
 
+import copy
 import json
 from enum import Enum, auto
 from math import sqrt
 
 import numpy as np
 import tcod
-from actions.actions import SelectLevelAction, EscapeAction
+from actions.actions import EscapeAction, SelectLevelAction
+from effects.horizontal_wipe_effect import (HorizontalWipeDirection,
+                                            HorizontalWipeEffect)
 from tcod import Console
 from ui.menu_main_ui import MenuMainUI
-from effects.horizontal_wipe_effect import HorizontalWipeDirection, HorizontalWipeEffect
 
 from sections.section import Section
 
@@ -25,6 +27,9 @@ class MenuSection(Section):
         self.stages = []
         self.selected_stage_index = 0
         self.selected_level = 0
+
+        self.enabled_level_colour = (255,255,255)
+        self.disabled_level_colour = (40,40,40)
 
         self.main_tiles = self.load_xp_data("menu_main.xp")
         self.load_tiles("main", self.main_tiles)
@@ -45,18 +50,29 @@ class MenuSection(Section):
     
     def render(self, console):
         super().render(console)
-
-        temp_console = Console(width=console.width, height=console.height, order="F")
     
         if self.state == MenuState.STAGE_SCREEN:
+            """
             temp_console.print(0,0, "Crowns: " + str(self.engine.get_total_awarded_crowns()), (255,255,255))
             temp_console.blit(console, dest_x=1, dest_y=25, width=25, height=1)
+            """
+
+            level_name_pos = copy.copy(self.stages[self.selected_stage_index]["level_names_pos"])
+            crowns_awarded_pos = copy.copy(self.stages[self.selected_stage_index]["crowns_awarded_pos"])
             count = 0
             for level in self.stages[self.selected_stage_index]["levels"]:
+                level_colour = self.enabled_level_colour if self.engine.save_data["levels_completed"] >= level["number"] else self.disabled_level_colour
+                level_indicator = "->" if self.engine.save_data["levels_completed"] >= level["number"] else " x"
+
                 if count == self.selected_level:
-                    temp_console.print(1,count+ 5, "->", (255,255,255))
-                temp_console.print(4,count+ 5, level["name"] + " " + str(self.engine.get_awarded_crowns(level["name"])) + "/" + str(level["num_crowns"]), (255,255,255))
-                temp_console.blit(console, src_x=1, src_y=count+ 5, dest_x=4, dest_y=count+ 15, width=40, height=1)
+                    console.print(level_name_pos[0] - 3,level_name_pos[1], level_indicator, level_colour)
+                
+                console.print(level_name_pos[0],level_name_pos[1], level["name"], level_colour)
+                crowns_text = str(self.engine.get_awarded_crowns(level["name"])) + "/" + str(level["num_crowns"])
+                console.print(crowns_awarded_pos[0],crowns_awarded_pos[1], crowns_text, level_colour)
+                
+                level_name_pos[1] += 2
+                crowns_awarded_pos[1] += 2
                 count += 1
 
         if self.transition_effect.in_effect == True:
@@ -87,13 +103,14 @@ class MenuSection(Section):
                     self.change_stage(self.selected_stage_index - 1)
         elif key == tcod.event.K_RETURN:
             if self.state == MenuState.STAGE_SCREEN:
-                stage = {}
-                stage["name"] = self.stages[self.selected_stage_index]["name"]
-                stage["ending_music"] = self.stages[self.selected_stage_index]["ending_music"]
-                stage["start_music"] = self.stages[self.selected_stage_index]["start_music"]
-                stage["start_length"] = self.stages[self.selected_stage_index]["start_length"]
-                stage["end_length"] = self.stages[self.selected_stage_index]["end_length"]
-                SelectLevelAction(self.engine, stage, self.stages[self.selected_stage_index]["levels"][self.selected_level]).perform()
+                if self.engine.save_data["levels_completed"] >= self.stages[self.selected_stage_index]["levels"][self.selected_level]["number"]:
+                    stage = {}
+                    stage["name"] = self.stages[self.selected_stage_index]["name"]
+                    stage["ending_music"] = self.stages[self.selected_stage_index]["ending_music"]
+                    stage["start_music"] = self.stages[self.selected_stage_index]["start_music"]
+                    stage["start_length"] = self.stages[self.selected_stage_index]["start_length"]
+                    stage["end_length"] = self.stages[self.selected_stage_index]["end_length"]
+                    SelectLevelAction(self.engine, stage, self.stages[self.selected_stage_index]["levels"][self.selected_level]).perform()
         elif key == tcod.event.K_BACKSPACE:
             if self.state == MenuState.STAGE_SCREEN:
                 self.change_state(MenuState.MAIN)
@@ -112,6 +129,7 @@ class MenuSection(Section):
 
         self.selected_stage_index = new_stage
         self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
+        self.selected_level = 0
 
     def change_state(self, new_state):
         if new_state == MenuState.MAIN:
