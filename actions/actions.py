@@ -207,3 +207,11 @@ class PlayMenuMusicAction(Action):
 
     def perform(self) -> None:
         self.engine.play_menu_music(self.file)
+
+class ChangeMenuStageAction(Action):
+    def __init__(self, engine, stage) -> None:
+        super().__init__(engine)
+        self.stage = stage
+
+    def perform(self) -> None:
+        self.engine.menu_sections["Menu"].delta_change_stage(self.stage)

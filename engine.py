@@ -31,7 +31,7 @@ class GameState(Enum):
 class Engine:
     def __init__(self, teminal_width: int, terminal_height: int):
 
-        self.debug_music_disabled = False
+        self.debug_music_disabled = True
 
         mixer.init()
         if not self.debug_music_disabled:

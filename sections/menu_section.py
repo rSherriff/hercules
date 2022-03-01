@@ -11,6 +11,7 @@ from effects.horizontal_wipe_effect import (HorizontalWipeDirection,
                                             HorizontalWipeEffect)
 from tcod import Console
 from ui.menu_main_ui import MenuMainUI
+from ui.menu_stage_ui import MenuStageUI
 
 from sections.section import Section
 
@@ -31,19 +32,23 @@ class MenuSection(Section):
         self.enabled_level_colour = (255,255,255)
         self.disabled_level_colour = (40,40,40)
 
-        self.main_tiles = self.load_xp_data("menu_main.xp")
-        self.load_tiles("main", self.main_tiles)
-
-        self.main_ui = MenuMainUI(self, self.tiles["graphic"])
-        self.ui = self.main_ui
-        self.transition_effect = HorizontalWipeEffect(self.engine,0,0,self.width, self.height)
-        
         self.stage_tiles = []
         with open ( "game_data/levels.json" ) as f:
             data = json.load(f)
             for stage in data["stages"]:
                 self.stages.append(stage)
                 self.stage_tiles.append(self.load_xp_data(stage["background"]))
+
+        self.load_tiles("main", self.stage_tiles[0])
+        self.stage_ui = MenuStageUI(self, self.tiles["graphic"])
+
+        self.main_tiles = self.load_xp_data("menu_main.xp")
+        self.load_tiles("main", self.main_tiles)
+        self.main_ui = MenuMainUI(self, self.tiles["graphic"])
+        self.ui = self.main_ui
+
+        self.transition_effect = HorizontalWipeEffect(self.engine,0,0,self.width, self.height)
+        
 
     def update(self):
         pass
@@ -97,10 +102,7 @@ class MenuSection(Section):
                     self.change_stage(self.selected_stage_index + 1)
         elif key == tcod.event.K_LEFT:
             if self.state == MenuState.STAGE_SCREEN:
-                if self.selected_stage_index == 0:
-                    self.change_state(MenuState.MAIN)
-                else:
-                    self.change_stage(self.selected_stage_index - 1)
+                self.change_stage(self.selected_stage_index - 1)
         elif key == tcod.event.K_RETURN:
             if self.state == MenuState.STAGE_SCREEN:
                 if self.engine.save_data["levels_completed"] >= self.stages[self.selected_stage_index]["levels"][self.selected_level]["number"]:
@@ -118,9 +120,17 @@ class MenuSection(Section):
         elif key == tcod.event.K_ESCAPE:
             EscapeAction(self.engine).perform()
 
+    def delta_change_stage(self, delta):
+        self.change_stage(self.selected_stage_index + delta)
+
     def change_stage(self, new_stage):
+        if new_stage == -1:
+            self.change_state(MenuState.MAIN)
+            return
+        if new_stage >= len(self.stages):
+            return
+
         self.transition_effect.set_tiles(self.tiles["graphic"])
-        self.ui = None
 
         if new_stage > self.selected_stage_index:
             self.transition_effect.start(HorizontalWipeDirection.LEFT)
@@ -140,7 +150,8 @@ class MenuSection(Section):
         elif new_state == MenuState.STAGE_SCREEN:
             self.transition_effect.set_tiles(self.tiles["graphic"])
             self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
-            self.ui = None
+            self.ui = self.stage_ui
+            self.selected_stage_index = 0
 
             if self.state == MenuState.MAIN:
                 self.transition_effect.start(HorizontalWipeDirection.LEFT)
