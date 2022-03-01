@@ -21,6 +21,7 @@
   "stages": [
     {
       "name": "Tutorial",
+      "background": "menu_t.xp",
       "music": ["cave.mp3"],
       "start_music": "start_t.wav",
       "ending_music": "completion_t.wav",
@@ -121,6 +122,7 @@
     {
       "name": "Near East",
       "music": ["desert.mp3"],
+      "background": "menu_ne.xp",
       "start_music": "start_ne.wav",
       "ending_music": "completion_ne.wav",
       "music_volume": 0.4,
@@ -241,6 +243,7 @@
     },
     {
       "name": "Greece",
+      "background": "menu_g.xp",
       "music": ["market.mp3"],
       "start_music": "start_g.wav",
       "ending_music": "completion_g.wav",
@@ -384,6 +387,7 @@
     },
     {
       "name": "Romanesque + Gothic",
+      "background": "menu_rg.xp",
       "music": ["spanishmass.mp3"],
       "start_music": "start_rg.wav",
       "ending_music": "completion_rg.wav",
@@ -505,6 +509,7 @@
     },
     {
       "name": "Renaissance + Baroque",
+      "background": "menu_rb.xp",
       "music": ["cantate.mp3", "witchesdance.mp3", "scarlettisonata.mp3", "passamezzo.mp3", "ricercar.mp3", "vaghifiori.mp3"],
       "start_music": "start_rb.wav",
       "ending_music": "completion_rb.wav",
@@ -648,6 +653,7 @@
     },
     {
       "name": "Neoclassical + Romantic",
+      "background": "menu_ncr.xp",
       "music": ["concertovivaldi.mp3", "brandenburg.mp3", "suitefrancaise.mp3", "concertobach1.mp3", "concertobach2.mp3", "concertobach3.mp3"],
       "start_music": "start_ncr.wav",
       "ending_music": "completion_ncr.wav",
@@ -769,6 +775,7 @@
     },
     {
       "name": "Modern",
+      "background": "menu_m.xp",
       "music": ["schpiano.mp3", "gurrelieder.mp3", "riteofspring1.mp3", "riteofspring2.mp3"],
       "start_music": "start_m.wav",
       "ending_music": "completion_m.wav",
