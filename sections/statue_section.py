@@ -435,7 +435,8 @@ class StatueSection(Section):
         Timer(self.stage["start_length"], self.change_state, [StatueState.IN_PROGRESS]).start()
                         
     def complete_level(self):
-        self.complete_sound.play()
+        if self.complete_sound is not None:
+            self.complete_sound.play()
         self.state = StatueState.ENDING 
         Timer(self.stage["end_length"],self.change_state,[StatueState.ENDED]).start()
 
@@ -480,10 +481,12 @@ class StatueSection(Section):
         self.reset()
 
         self.stage = stage
-        self.complete_sound = mixer.Sound('Sounds/' + stage["ending_music"])
-        self.start_sound = mixer.Sound('Sounds/' + stage["start_music"])
-        self.start_sound.play()
-        self.curtain_sound.play()
+        
+        if stage["ending_music"] != "" and stage["start_music"] != "":
+            self.complete_sound = mixer.Sound('Sounds/' + stage["ending_music"])
+            self.start_sound = mixer.Sound('Sounds/' + stage["start_music"])
+            self.start_sound.play()
+            self.curtain_sound.play()
 
         xp_data = self.load_xp_data(level["file"])
         self.load_tiles(level["file"], xp_data)
