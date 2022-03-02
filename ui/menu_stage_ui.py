@@ -22,7 +22,6 @@ class MenuStageUI(UI):
 
     def setup_level_buttons(self, start_pos):
         self.elements = self.elements[:1]
-        print(start_pos)
 
         bd = [start_pos[0], start_pos[1], 34, 1]
         for i in range(0,6):
