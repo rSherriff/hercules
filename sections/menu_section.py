@@ -105,20 +105,32 @@ class MenuSection(Section):
                 self.change_stage(self.selected_stage_index - 1)
         elif key == tcod.event.K_RETURN:
             if self.state == MenuState.STAGE_SCREEN:
-                if self.engine.save_data["levels_completed"] >= self.stages[self.selected_stage_index]["levels"][self.selected_level]["number"]:
-                    stage = {}
-                    stage["name"] = self.stages[self.selected_stage_index]["name"]
-                    stage["ending_music"] = self.stages[self.selected_stage_index]["ending_music"]
-                    stage["start_music"] = self.stages[self.selected_stage_index]["start_music"]
-                    stage["start_length"] = self.stages[self.selected_stage_index]["start_length"]
-                    stage["end_length"] = self.stages[self.selected_stage_index]["end_length"]
-                    SelectLevelAction(self.engine, stage, self.stages[self.selected_stage_index]["levels"][self.selected_level]).perform()
+                self.select_level(self.selected_level)
         elif key == tcod.event.K_BACKSPACE:
             if self.state == MenuState.STAGE_SCREEN:
                 self.change_state(MenuState.MAIN)
             self.selected_level = 0
         elif key == tcod.event.K_ESCAPE:
             EscapeAction(self.engine).perform()
+
+    def hover_over_level(self, level_index):
+        if level_index >= len( self.stages[self.selected_stage_index]["levels"]):
+            return
+
+        self.selected_level = level_index
+
+    def select_level(self,level_index):
+        if level_index >= len( self.stages[self.selected_stage_index]["levels"]):
+            return
+
+        if self.engine.save_data["levels_completed"] >= self.stages[self.selected_stage_index]["levels"][level_index]["number"]:
+            stage = {}
+            stage["name"] = self.stages[self.selected_stage_index]["name"]
+            stage["ending_music"] = self.stages[self.selected_stage_index]["ending_music"]
+            stage["start_music"] = self.stages[self.selected_stage_index]["start_music"]
+            stage["start_length"] = self.stages[self.selected_stage_index]["start_length"]
+            stage["end_length"] = self.stages[self.selected_stage_index]["end_length"]
+            SelectLevelAction(self.engine, stage, self.stages[self.selected_stage_index]["levels"][level_index]).perform()
 
     def delta_change_stage(self, delta):
         self.change_stage(self.selected_stage_index + delta)
@@ -141,6 +153,9 @@ class MenuSection(Section):
         self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
         self.selected_level = 0
 
+        self.ui.tiles = self.tiles["graphic"]
+        self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"])
+
     def change_state(self, new_state):
         if new_state == MenuState.MAIN:
             self.transition_effect.set_tiles(self.tiles["graphic"])
@@ -151,6 +166,7 @@ class MenuSection(Section):
             self.transition_effect.set_tiles(self.tiles["graphic"])
             self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
             self.ui = self.stage_ui
+            self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"])
             self.selected_stage_index = 0
 
             if self.state == MenuState.MAIN:

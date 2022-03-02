@@ -104,6 +104,8 @@ class Button(UIElement):
         self.click_action = click_action
         self.tiles = tiles
 
+        self.hover_action = None
+
         self.highlight_bg = (128,128,128)
         self.normal_bg= (255,255,255)
 
@@ -128,9 +130,16 @@ class Button(UIElement):
     def on_mousedown(self):
         if self.click_action is not None:
             self.click_action.perform()
-    
+
+    def on_mouseenter(self):
+        if self.hover_action is not None:
+            self.hover_action.perform()
+
     def set_action(self, action):
         self.click_action = action
+    
+    def set_hover_action(self, action):
+        self.hover_action = action
 
 class ShapedButton(Button):
     def __init__(self, x: int, y: int, width: int, height: int, click_action: Action, tiles, active_tiles):

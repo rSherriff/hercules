@@ -215,3 +215,19 @@ class ChangeMenuStageAction(Action):
 
     def perform(self) -> None:
         self.engine.menu_sections["Menu"].delta_change_stage(self.stage)
+
+class MenuHoverLevelAction(Action):
+    def __init__(self, engine, level_index) -> None:
+        super().__init__(engine)
+        self.level_index = level_index
+
+    def perform(self) -> None:
+        self.engine.menu_sections["Menu"].hover_over_level(self.level_index)
+
+class MenuSelectLevelAction(Action):
+    def __init__(self, engine, level_index) -> None:
+        super().__init__(engine)
+        self.level_index = level_index
+
+    def perform(self) -> None:
+        self.engine.menu_sections["Menu"].select_level(self.level_index)
