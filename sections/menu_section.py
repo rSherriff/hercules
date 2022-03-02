@@ -66,8 +66,8 @@ class MenuSection(Section):
             crowns_awarded_pos = copy.copy(self.stages[self.selected_stage_index]["crowns_awarded_pos"])
             count = 0
             for level in self.stages[self.selected_stage_index]["levels"]:
-                level_colour = self.enabled_level_colour if self.engine.save_data["levels_completed"] >= level["number"] else self.disabled_level_colour
-                level_indicator = "->" if self.engine.save_data["levels_completed"] >= level["number"] else " x"
+                level_colour = self.enabled_level_colour if self.can_play_level(count) else self.disabled_level_colour
+                level_indicator = "->" if self.can_play_level(count) else " x"
 
                 if count == self.selected_level:
                     console.print(level_name_pos[0] - 3,level_name_pos[1], level_indicator, level_colour)
@@ -88,30 +88,25 @@ class MenuSection(Section):
         pass
 
     def keydown(self, key):
-        if key == tcod.event.K_UP:
-            if self.state == MenuState.STAGE_SCREEN:
-                self.selected_level -= 1
-                self.selected_level = max(0, self.selected_level)
-        elif key == tcod.event.K_DOWN:
-            if self.state == MenuState.STAGE_SCREEN:
-                self.selected_level += 1
-                self.selected_level = min(len(self.stages[self.selected_stage_index]["levels"]) - 1, self.selected_level)
-        elif key == tcod.event.K_RIGHT:
-            if self.state == MenuState.STAGE_SCREEN:
-                if self.selected_stage_index < len(self.stages) - 1:
-                    self.change_stage(self.selected_stage_index + 1)
-        elif key == tcod.event.K_LEFT:
-            if self.state == MenuState.STAGE_SCREEN:
-                self.change_stage(self.selected_stage_index - 1)
-        elif key == tcod.event.K_RETURN:
-            if self.state == MenuState.STAGE_SCREEN:
-                self.select_level(self.selected_level)
-        elif key == tcod.event.K_BACKSPACE:
-            if self.state == MenuState.STAGE_SCREEN:
+        if self.state == MenuState.STAGE_SCREEN:
+            if key == tcod.event.K_UP:
+                    self.selected_level -= 1
+                    self.selected_level = max(0, self.selected_level)
+            elif key == tcod.event.K_DOWN:
+                    self.selected_level += 1
+                    self.selected_level = min(len(self.stages[self.selected_stage_index]["levels"]) - 1, self.selected_level)
+            elif key == tcod.event.K_RIGHT:
+                    if self.selected_stage_index < len(self.stages) - 1:
+                        self.change_stage(self.selected_stage_index + 1)
+            elif key == tcod.event.K_LEFT:
+                    self.change_stage(self.selected_stage_index - 1)
+            elif key == tcod.event.K_RETURN:
+                    self.select_level(self.selected_level)
+            elif key == tcod.event.K_BACKSPACE:
                 self.change_state(MenuState.MAIN)
-            self.selected_level = 0
-        elif key == tcod.event.K_ESCAPE:
-            EscapeAction(self.engine).perform()
+                self.selected_level = 0
+            elif key == tcod.event.K_ESCAPE:
+                EscapeAction(self.engine).perform()
 
     def hover_over_level(self, level_index):
         if level_index >= len( self.stages[self.selected_stage_index]["levels"]):
@@ -123,7 +118,7 @@ class MenuSection(Section):
         if level_index >= len( self.stages[self.selected_stage_index]["levels"]):
             return
 
-        if self.engine.save_data["levels_completed"] >= self.stages[self.selected_stage_index]["levels"][level_index]["number"]:
+        if self.can_play_level(level_index):
             stage = {}
             stage["name"] = self.stages[self.selected_stage_index]["name"]
             stage["ending_music"] = self.stages[self.selected_stage_index]["ending_music"]
@@ -178,3 +173,6 @@ class MenuSection(Section):
 
     def enter_stage_select(self):
         self.change_state(MenuState.STAGE_SCREEN)
+
+    def can_play_level(self, level_index):
+        return self.engine.save_data["levels_completed"] >= self.stages[self.selected_stage_index]["levels"][level_index]["number"] - 1
