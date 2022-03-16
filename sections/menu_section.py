@@ -175,4 +175,10 @@ class MenuSection(Section):
         self.change_state(MenuState.STAGE_SCREEN)
 
     def can_play_level(self, level_index):
+        if "levels_completed" not in self.engine.save_data:
+            if  self.selected_stage_index == 0 and level_index == 0:
+                return True
+            else:
+                return False
+        
         return self.engine.save_data["levels_completed"] >= self.stages[self.selected_stage_index]["levels"][level_index]["number"] - 1
