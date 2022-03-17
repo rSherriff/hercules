@@ -411,7 +411,7 @@ class StatueSection(Section):
             self.remove_entity(None)
 
 
-        if key == tcod.event.K_ESCAPE:
+        if key == tcod.event.K_ESCAPE and self.state == StatueState.IN_PROGRESS and self.total_remaining_blocks() > 0:
             OpenConfirmationDialog(self.engine, "       Return to menu?\n(progress will not be saved)", LevelLeaveAction(self.engine)).perform()
 
         if key == tcod.event.K_RETURN and self.state == StatueState.ENDED:
