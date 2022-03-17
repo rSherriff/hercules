@@ -1,5 +1,6 @@
 import gzip
 import random
+from math import sqrt
 
 import numpy as np
 import tile_types
@@ -111,3 +112,19 @@ class Section:
 
     def is_point_in_section(self, x,y):
         return (x >= 0) and (x < self.width) and (y >= 0) and (y < self.height)
+
+    def get_moore_surrounding_tiles(self,x,y):
+        tiles = list()
+        tiles.append((x-1,y-1))
+        tiles.append((x,y-1))
+        tiles.append((x+1,y-1))
+        tiles.append((x-1,y))
+        tiles.append((x+1,y))
+        tiles.append((x-1,y+1))
+        tiles.append((x,y+1))
+        tiles.append((x+1,y+1))
+
+        return tiles
+
+    def get_distance_between_tiles(self, a, b):
+        return sqrt((abs(a[0]-b[0])**2) + (abs(a[1]-b[1])**2))

@@ -1,4 +1,5 @@
 
+import enum
 import random
 from enum import Enum, auto
 from math import sqrt
@@ -38,6 +39,10 @@ class StatueState(Enum):
     ENDING = auto()
     ENDED = auto()
 
+class SpottingLineType(Enum):
+    FREE = auto()
+    EIGHT_POINTS = auto()
+
 class StatueSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = ""):
         super().__init__(engine, x, y, width, height, xp_filepath=xp_filepath)      
@@ -55,6 +60,8 @@ class StatueSection(Section):
         self.right_click_sound = mixer.Sound('Sounds/right_click.wav')
         self.fault_sound = mixer.Sound('Sounds/fault.wav')
         self.curtain_sound =  mixer.Sound('Sounds/curtains.wav')
+
+        self.spotting_line_type = SpottingLineType.EIGHT_POINTS
 
     def reset(self):
         self.mousedown_point = None
@@ -341,12 +348,25 @@ class StatueSection(Section):
         
         if self.mousedown_point is not None and mouse_pos != self.mousedown_point:
 
+            final_line_point = (0,0)
+            if self.spotting_line_type == SpottingLineType.FREE:
+               final_line_point = mouse_pos
+            elif self.spotting_line_type == SpottingLineType.EIGHT_POINTS:
+                final_line_point = mouse_pos
+                nearest_distance = self.get_distance_between_tiles(mouse_pos, self.mousedown_point)
+                for tile in self.get_moore_surrounding_tiles(self.mousedown_point[0], self.mousedown_point[1]):
+                    distance = self.get_distance_between_tiles(mouse_pos, tile)
+                    if distance < nearest_distance:
+                        nearest_distance = distance
+                        final_line_point = tile
+                        
             #Figure out the normalised vector between the mouse and the button press point            
-            spot_line_magnitude = sqrt((abs(mouse_pos[0]-self.mousedown_point[0])**2) + (abs(mouse_pos[1]-self.mousedown_point[1])**2))
-            spot_line_normalised = ((mouse_pos[0]-self.mousedown_point[0])/spot_line_magnitude,  (mouse_pos[1]-self.mousedown_point[1])/spot_line_magnitude)
+            spot_line_magnitude = sqrt((abs(final_line_point[0]-self.mousedown_point[0])**2) + (abs(final_line_point[1]-self.mousedown_point[1])**2))
+            spot_line_normalised = ((final_line_point[0]-self.mousedown_point[0])/spot_line_magnitude,  (final_line_point[1]-self.mousedown_point[1])/spot_line_magnitude)
 
             #Extend the line along the vector between the mouse and the button press point           
             final_spot = (self.mousedown_point[0] + int(spot_line_normalised[0] * 10),self.mousedown_point[1] + int(spot_line_normalised[1] * 10))
+
 
             #Loop through all of the points in this line
             for tile in self.line_between(self.mousedown_point, final_spot):
