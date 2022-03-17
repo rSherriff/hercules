@@ -22,7 +22,7 @@ from entities.material import BlockMaterial, Material, StatueMaterial
 from pygame import mixer
 from tcod import Console
 from ui.statue_ended_ui import StatueEndedUI
-from utils.color import black, marble, spot_line
+from utils.color import black, spot_line
 
 from sections.section import Section
 
@@ -491,6 +491,12 @@ class StatueSection(Section):
         xp_data = self.load_xp_data(level["file"])
         self.load_tiles(level["file"], xp_data)
         self.load_entities(level["file"], xp_data)
+
+        if "fg_color" in level and "bg_color" in level:
+            self.colour_material(level["fg_color"], level["bg_color"])
+        else:
+            self.colour_material((255,0,0), (0,255,0))
+
         self.level = level
         self.state = StatueState.LOAD_FOOTER
 
@@ -506,3 +512,9 @@ class StatueSection(Section):
         self.name_char_probabilites = list(map(lambda num: max(1,int(num * probability_step)), range(1, len(self.level["name"]) + 1)))
         random.shuffle(self.name_char_probabilites)
         
+    def colour_material(self, fg_color, bg_color):
+        for entity in self.entities:
+            if isinstance(entity, Material):
+                entity.set_initial_colors(bg_color, fg_color)
+
+

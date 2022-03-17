@@ -5,7 +5,7 @@ from typing import List, Tuple
 import tcod
 from actions.actions import (AddEntity, BlockMaterialChiseled, ChiselMistakeAction, DeleteEntity,
                              StatueMaterialChiseled)
-from utils.color import marble, marble_highlight, marble_marked, black, mistake
+from utils.color import marble, marble_highlight, black, mistake
 
 from entities.blocker import Blocker
 from entities.entity import Entity
@@ -18,9 +18,10 @@ class Material(Entity):
         self.stress = 0
         self.max_stress = 75
         self.pickable = False
-        self.marked = False
         self.blocks_movement = True
         self.terminators = []
+        self.initial_bg = marble
+        self.initial_fg = marble_highlight
         for i in range(12,27):
             self.terminators.append([i,24,((abs(self.x - i) + abs(self.y - 24)))])
 
@@ -80,13 +81,6 @@ class Material(Entity):
                         entity.stress += 1
         else:
             self.chisel_material()
-
-    def mark(self):
-        self.marked = not self.marked 
-        if self.marked:
-            self.fg_color = marble_marked
-        else:
-            self.fg_color = marble
     
     def chisel_mistake(self):
         self.fg_color = mistake
@@ -96,9 +90,16 @@ class Material(Entity):
         Timer(0.3, self.reset_tile).start()
     
     def reset_tile(self):
-        self.fg_color = marble
-        self.bg_color = marble_highlight
+        self.fg_color = self.initial_fg
+        self.bg_color = self.initial_bg
         self.char =chr(9632)
+
+    def set_initial_colors(self, initial_bg, initial_fg):
+        self.bg_color = initial_bg
+        self.fg_color = initial_fg
+
+        self.initial_bg = initial_bg
+        self.initial_fg = initial_fg
 
 
 class StatueMaterial(Material):

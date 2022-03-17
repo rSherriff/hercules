@@ -52,7 +52,9 @@
           "sides_width": 13,
           "sides_height": 22,
           "num_crowns": 2,
-          "allowed_faults": [2, 3]
+          "allowed_faults": [2, 3],
+          "fg_color": [191, 171, 143],
+          "bg_color": [128, 102, 64]
         },
         {
           "name": "Venus of Willendorf",
@@ -75,7 +77,9 @@
           "sides_width": 13,
           "sides_height": 22,
           "num_crowns": 3,
-          "allowed_faults": [2, 3, 4]
+          "allowed_faults": [2, 3, 4],
+          "fg_color": [191, 171, 143],
+          "bg_color": [158, 134, 100]
         },
         {
           "name": "The Lowenmensch Figure",
@@ -98,7 +102,9 @@
           "sides_width": 13,
           "sides_height": 22,
           "num_crowns": 3,
-          "allowed_faults": [2, 3, 4]
+          "allowed_faults": [2, 3, 4],
+          "fg_color": [191, 171, 143],
+          "bg_color": [158, 134, 100]
         },
         {
           "name": "Creeping Hyena",
@@ -121,7 +127,9 @@
           "sides_width": 11,
           "sides_height": 22,
           "num_crowns": 4,
-          "allowed_faults": [2, 3, 4, 5]
+          "allowed_faults": [2, 3, 4, 5],
+          "fg_color": [222, 211, 195],
+          "bg_color": [191, 171, 143]
         }
       ]
     },
@@ -158,7 +166,9 @@
           "sides_width": 16,
           "sides_height": 25,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [191, 171, 143],
+          "bg_color": [128, 102, 64]
         },
         {
           "name": "Assyrian Lion Weight",
@@ -181,7 +191,9 @@
           "sides_width": 13,
           "sides_height": 25,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [102, 102, 102],
+          "bg_color": [158, 158, 158]
         },
         {
           "name": "Lamassu",
@@ -204,7 +216,9 @@
           "sides_width": 13,
           "sides_height": 25,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [102, 82, 51],
+          "bg_color": [158, 134, 100]
         },
         {
           "name": "Younger Memnon",
@@ -227,7 +241,9 @@
           "sides_width": 16,
           "sides_height": 25,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [102, 82, 51],
+          "bg_color": [128, 102, 64]
         },
         {
           "name": "Neferiti Bust",
@@ -250,7 +266,9 @@
           "sides_width": 16,
           "sides_height": 25,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [191, 171, 143],
+          "bg_color": [158, 134, 100]
         }
       ]
     },
@@ -272,7 +290,7 @@
           "file": "level3-1.xp",
           "x": 20,
           "y": 5,
-          "width": 9,
+          "width": 10,
           "height": 19,
           "spotted_tiles_x": [10, 40],
           "spotted_tiles_y": [21, 21],
@@ -287,7 +305,9 @@
           "sides_width": 14,
           "sides_height": 22,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 211, 195],
+          "bg_color": [191, 171, 143]
         },
         {
           "name": "Attican Korous",
@@ -310,7 +330,9 @@
           "sides_width": 13,
           "sides_height": 22,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 211, 195],
+          "bg_color": [191, 171, 143]
         },
         {
           "name": "Bust of Pericles",
@@ -333,7 +355,9 @@
           "sides_width": 13,
           "sides_height": 22,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [128, 128, 128],
+          "bg_color": [158, 158, 158]
         },
         {
           "name": "Parthenon Pediment",
@@ -341,7 +365,7 @@
           "file": "level3-4.xp",
           "x": 14,
           "y": 6,
-          "width": 20,
+          "width": 21,
           "height": 15,
           "spotted_tiles_x": [9, 41],
           "spotted_tiles_y": [21, 21],
@@ -356,7 +380,9 @@
           "sides_width": 13,
           "sides_height": 22,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [128, 128, 128],
+          "bg_color": [158, 158, 158]
         },
         {
           "name": "The Farnese Hercules",
@@ -379,7 +405,9 @@
           "sides_width": 14,
           "sides_height": 22,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [128, 128, 128],
+          "bg_color": [158, 158, 158]
         },
         {
           "name": "Apollo Belvedere",
@@ -402,7 +430,9 @@
           "sides_width": 13,
           "sides_height": 22,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [128, 128, 128],
+          "bg_color": [158, 158, 158]
         }
       ]
     },
@@ -439,7 +469,9 @@
           "sides_width": 13,
           "sides_height": 19,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 134, 100],
+          "bg_color": [191, 171, 143]
         },
         {
           "name": "Porch Figures",
@@ -462,7 +494,9 @@
           "sides_width": 15,
           "sides_height": 19,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 134, 100],
+          "bg_color": [191, 171, 143]
         },
         {
           "name": "Virgin and Child",
@@ -485,7 +519,9 @@
           "sides_width": 15,
           "sides_height": 19,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 134, 100],
+          "bg_color": [191, 171, 143]
         },
         {
           "name": "Gargoyle",
@@ -508,7 +544,9 @@
           "sides_width": 15,
           "sides_height": 19,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [128, 128, 128],
+          "bg_color": [158, 158, 158]
         },
         {
           "name": "The Binding of Isaac",
@@ -517,7 +555,7 @@
           "x": 16,
           "y": 8,
           "width": 18,
-          "height": 15,
+          "height": 16,
           "spotted_tiles_x": [9, 41],
           "spotted_tiles_y": [21, 21],
           "faults_x": 41,
@@ -531,7 +569,9 @@
           "sides_width": 16,
           "sides_height": 19,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 134, 100],
+          "bg_color": [191, 171, 143]
         }
       ]
     },
@@ -568,7 +608,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [128, 128, 128]
         },
         {
           "name": "The Fall of Adam and Eve",
@@ -591,7 +633,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [128, 128, 128]
         },
         {
           "name": "Michelangelo's David",
@@ -614,7 +658,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 222, 222],
+          "bg_color": [191, 191, 191]
         },
         {
           "name": "The Dying Slave",
@@ -637,7 +683,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [128, 128, 128]
         },
         {
           "name": "Apollo and Daphne",
@@ -660,7 +708,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 222, 222],
+          "bg_color": [191, 191, 191]
         },
         {
           "name": "The Ecstasy of Saint Teresa",
@@ -683,7 +733,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 222, 222],
+          "bg_color": [191, 191, 191]
         }
       ]
     },
@@ -720,7 +772,9 @@
           "sides_width": 15,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [128, 128, 128]
         },
         {
           "name": "Cupid Cutting His Bow",
@@ -743,7 +797,9 @@
           "sides_width": 15,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 222, 222],
+          "bg_color": [191, 191, 191]
         },
         {
           "name": "The Three Graces",
@@ -766,7 +822,9 @@
           "sides_width": 15,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [128, 128, 128]
         },
         {
           "name": "Shephard Boy",
@@ -789,7 +847,9 @@
           "sides_width": 15,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 222, 222],
+          "bg_color": [191, 191, 191]
         },
         {
           "name": "Ugolino and His Sons",
@@ -812,7 +872,9 @@
           "sides_width": 15,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [128, 128, 128]
         }
       ]
     },
@@ -849,7 +911,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 134, 100],
+          "bg_color": [191, 171, 143]
         },
         {
           "name": "Inner Voice",
@@ -872,7 +936,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [77, 77, 77]
         },
         {
           "name": "Head",
@@ -895,7 +961,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [102, 82, 51],
+          "bg_color": [77, 61, 38]
         },
         {
           "name": "Figure",
@@ -918,7 +986,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [222, 222, 222],
+          "bg_color": [191, 191, 191]
         },
         {
           "name": "Pieta",
@@ -941,7 +1011,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 16,
-          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
+          "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
+          "fg_color": [158, 158, 158],
+          "bg_color": [128, 128, 128]
         }
       ]
     },
@@ -978,7 +1050,9 @@
           "sides_width": 14,
           "sides_height": 26,
           "num_crowns": 1,
-          "allowed_faults": [99]
+          "allowed_faults": [99],
+          "fg_color": [222, 222, 222],
+          "bg_color": [191, 191, 191]
         }
       ]
     }
