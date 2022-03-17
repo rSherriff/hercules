@@ -1,6 +1,7 @@
 
 from threading import Timer
 from typing import List, Tuple
+from enum import Enum, auto
 
 import tcod
 from actions.actions import (AddEntity, BlockMaterialChiseled, ChiselMistakeAction, DeleteEntity,
@@ -9,6 +10,10 @@ from utils.color import marble, marble_highlight, black, mistake
 
 from entities.blocker import Blocker
 from entities.entity import Entity
+
+class LeftClickAction(Enum):
+    CARVE = auto()
+    CHISEL = auto()
 
 
 class Material(Entity):
@@ -26,6 +31,8 @@ class Material(Entity):
             self.terminators.append([i,24,((abs(self.x - i) + abs(self.y - 24)))])
 
         self.terminators.sort(key=lambda x:x[2])
+
+        self.leftClickAction = LeftClickAction.CHISEL
         
     def update(self):
         self.get_path_to_terminator()
@@ -108,10 +115,17 @@ class StatueMaterial(Material):
         self.pickable = True
 
     def mousedown(self, button):
-        if button == 1 and self.is_path_to_anchor():
-            self.chisel_mistake()
-        elif button == 3:
-            self.chisel_material()
+        if self.is_path_to_anchor():
+            if button == 1:
+                if self.leftClickAction == LeftClickAction.CARVE:
+                    self.chisel_mistake()
+                else:
+                    self.chisel_material()
+            elif button == 3:
+                if self.leftClickAction == LeftClickAction.CARVE:
+                    self.chisel_material()
+                else:
+                    self.chisel_mistake()
     
     def chisel_material(self):
         super().chisel_material()
@@ -136,11 +150,17 @@ class BlockMaterial(Material):
         Timer(0.1, action.perform).start()
 
     def mousedown(self, button):
-        if button == 1:
-            if self.pickable and self.is_path_to_anchor():
-                self.chisel_material()
-        elif button == 3:
-            self.chisel_mistake()
+        if self.is_path_to_anchor():
+            if button == 1:
+                if self.leftClickAction == LeftClickAction.CARVE:
+                    self.chisel_material()
+                else:
+                    self.chisel_mistake()
+            elif button == 3:
+                if self.leftClickAction == LeftClickAction.CARVE:
+                    self.chisel_mistake()
+                else:
+                    self.chisel_material()
 
     
 
