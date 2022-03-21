@@ -271,22 +271,23 @@ class StatueSection(Section):
                     temp_console.print(i,0, self.level["name"][i], (255,255,255))
                     temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
 
-            faults_to_render = min(99,self.faults)
-            faults_string = str(faults_to_render)
-            font = self.engine.font_manager.get_font("number_font")
-            faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
-            for i in range(0, len(faults_string)):
-                start_x = i * font.char_width
-                if i > 0:
-                    start_x += 1
-                faults_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(faults_string[i])
-            final_width = font.char_width * len(faults_string)
+            if not self.level["disable_faults"]:
+                faults_to_render = min(99,self.faults)
+                faults_string = str(faults_to_render)
+                font = self.engine.font_manager.get_font("number_font")
+                faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
+                for i in range(0, len(faults_string)):
+                    start_x = i * font.char_width
+                    if i > 0:
+                        start_x += 1
+                    faults_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(faults_string[i])
+                final_width = font.char_width * len(faults_string)
 
-            final_x = self.level["faults_x"] + 2
-            if len(faults_string) > 1:
-                final_width += 1
-                final_x -= 2
-            faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
+                final_x = self.level["faults_x"] + 2
+                if len(faults_string) > 1:
+                    final_width += 1
+                    final_x -= 2
+                faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
 
         if self.spotting:
             self.render_spotting_line(console)
@@ -436,7 +437,8 @@ class StatueSection(Section):
 
     def chisel_fault(self):
         self.fault_sound.play()
-        self.faults += 1
+        if not self.level["disable_faults"]:
+            self.faults += 1
 
     def change_state(self, new_state):
         

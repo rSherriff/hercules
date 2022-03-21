@@ -51,10 +51,11 @@
           "sides_y": 6,
           "sides_width": 13,
           "sides_height": 22,
-          "num_crowns": 2,
+          "num_crowns": 3,
           "allowed_faults": [2, 3],
           "fg_color": [191, 171, 143],
-          "bg_color": [128, 102, 64]
+          "bg_color": [128, 102, 64],
+          "disable_faults": true
         },
         {
           "name": "Venus of Willendorf",
@@ -79,7 +80,8 @@
           "num_crowns": 3,
           "allowed_faults": [2, 3, 4],
           "fg_color": [191, 171, 143],
-          "bg_color": [158, 134, 100]
+          "bg_color": [158, 134, 100],
+          "disable_faults": true
         },
         {
           "name": "The Lowenmensch Figure",
@@ -104,7 +106,8 @@
           "num_crowns": 3,
           "allowed_faults": [2, 3, 4],
           "fg_color": [191, 171, 143],
-          "bg_color": [158, 134, 100]
+          "bg_color": [158, 134, 100],
+          "disable_faults": false
         },
         {
           "name": "Creeping Hyena",
@@ -129,7 +132,8 @@
           "num_crowns": 4,
           "allowed_faults": [2, 3, 4, 5],
           "fg_color": [222, 211, 195],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         }
       ]
     },
@@ -168,7 +172,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [191, 171, 143],
-          "bg_color": [128, 102, 64]
+          "bg_color": [128, 102, 64],
+          "disable_faults": false
         },
         {
           "name": "Assyrian Lion Weight",
@@ -193,7 +198,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [102, 102, 102],
-          "bg_color": [158, 158, 158]
+          "bg_color": [158, 158, 158],
+          "disable_faults": false
         },
         {
           "name": "Lamassu",
@@ -218,7 +224,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [102, 82, 51],
-          "bg_color": [158, 134, 100]
+          "bg_color": [158, 134, 100],
+          "disable_faults": false
         },
         {
           "name": "Younger Memnon",
@@ -243,7 +250,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [102, 82, 51],
-          "bg_color": [128, 102, 64]
+          "bg_color": [128, 102, 64],
+          "disable_faults": false
         },
         {
           "name": "Neferiti Bust",
@@ -268,7 +276,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [191, 171, 143],
-          "bg_color": [158, 134, 100]
+          "bg_color": [158, 134, 100],
+          "disable_faults": false
         }
       ]
     },
@@ -307,7 +316,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 211, 195],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         },
         {
           "name": "Attican Korous",
@@ -332,7 +342,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 211, 195],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         },
         {
           "name": "Bust of Pericles",
@@ -357,7 +368,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [128, 128, 128],
-          "bg_color": [158, 158, 158]
+          "bg_color": [158, 158, 158],
+          "disable_faults": false
         },
         {
           "name": "Parthenon Pediment",
@@ -382,7 +394,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [128, 128, 128],
-          "bg_color": [158, 158, 158]
+          "bg_color": [158, 158, 158],
+          "disable_faults": false
         },
         {
           "name": "The Farnese Hercules",
@@ -407,7 +420,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [128, 128, 128],
-          "bg_color": [158, 158, 158]
+          "bg_color": [158, 158, 158],
+          "disable_faults": false
         },
         {
           "name": "Apollo Belvedere",
@@ -432,7 +446,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [128, 128, 128],
-          "bg_color": [158, 158, 158]
+          "bg_color": [158, 158, 158],
+          "disable_faults": false
         }
       ]
     },
@@ -471,7 +486,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 134, 100],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         },
         {
           "name": "Porch Figures",
@@ -496,7 +512,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 134, 100],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         },
         {
           "name": "Virgin and Child",
@@ -521,7 +538,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 134, 100],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         },
         {
           "name": "Gargoyle",
@@ -546,7 +564,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [128, 128, 128],
-          "bg_color": [158, 158, 158]
+          "bg_color": [158, 158, 158],
+          "disable_faults": false
         },
         {
           "name": "The Binding of Isaac",
@@ -571,7 +590,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 134, 100],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         }
       ]
     },
@@ -610,7 +630,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [128, 128, 128]
+          "bg_color": [128, 128, 128],
+          "disable_faults": false
         },
         {
           "name": "The Fall of Adam and Eve",
@@ -635,7 +656,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [128, 128, 128]
+          "bg_color": [128, 128, 128],
+          "disable_faults": false
         },
         {
           "name": "Michelangelo's David",
@@ -660,7 +682,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 222, 222],
-          "bg_color": [191, 191, 191]
+          "bg_color": [191, 191, 191],
+          "disable_faults": false
         },
         {
           "name": "The Dying Slave",
@@ -685,7 +708,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [128, 128, 128]
+          "bg_color": [128, 128, 128],
+          "disable_faults": false
         },
         {
           "name": "Apollo and Daphne",
@@ -710,7 +734,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 222, 222],
-          "bg_color": [191, 191, 191]
+          "bg_color": [191, 191, 191],
+          "disable_faults": false
         },
         {
           "name": "The Ecstasy of Saint Teresa",
@@ -735,7 +760,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 222, 222],
-          "bg_color": [191, 191, 191]
+          "bg_color": [191, 191, 191],
+          "disable_faults": false
         }
       ]
     },
@@ -774,7 +800,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [128, 128, 128]
+          "bg_color": [128, 128, 128],
+          "disable_faults": false
         },
         {
           "name": "Cupid Cutting His Bow",
@@ -799,7 +826,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 222, 222],
-          "bg_color": [191, 191, 191]
+          "bg_color": [191, 191, 191],
+          "disable_faults": false
         },
         {
           "name": "The Three Graces",
@@ -824,7 +852,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [128, 128, 128]
+          "bg_color": [128, 128, 128],
+          "disable_faults": false
         },
         {
           "name": "Shephard Boy",
@@ -849,7 +878,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 222, 222],
-          "bg_color": [191, 191, 191]
+          "bg_color": [191, 191, 191],
+          "disable_faults": false
         },
         {
           "name": "Ugolino and His Sons",
@@ -874,7 +904,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [128, 128, 128]
+          "bg_color": [128, 128, 128],
+          "disable_faults": false
         }
       ]
     },
@@ -913,7 +944,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 134, 100],
-          "bg_color": [191, 171, 143]
+          "bg_color": [191, 171, 143],
+          "disable_faults": false
         },
         {
           "name": "Inner Voice",
@@ -938,7 +970,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [77, 77, 77]
+          "bg_color": [77, 77, 77],
+          "disable_faults": false
         },
         {
           "name": "Head",
@@ -963,7 +996,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [102, 82, 51],
-          "bg_color": [77, 61, 38]
+          "bg_color": [77, 61, 38],
+          "disable_faults": false
         },
         {
           "name": "Figure",
@@ -988,7 +1022,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [222, 222, 222],
-          "bg_color": [191, 191, 191]
+          "bg_color": [191, 191, 191],
+          "disable_faults": false
         },
         {
           "name": "Pieta",
@@ -1013,7 +1048,8 @@
           "num_crowns": 16,
           "allowed_faults": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17],
           "fg_color": [158, 158, 158],
-          "bg_color": [128, 128, 128]
+          "bg_color": [128, 128, 128],
+          "disable_faults": false
         }
       ]
     },
@@ -1052,7 +1088,8 @@
           "num_crowns": 1,
           "allowed_faults": [99],
           "fg_color": [222, 222, 222],
-          "bg_color": [191, 191, 191]
+          "bg_color": [191, 191, 191],
+          "disable_faults": true
         }
       ]
     }
