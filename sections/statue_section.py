@@ -1,4 +1,5 @@
 
+import enum
 import random
 from enum import Enum, auto
 from math import sqrt
@@ -22,7 +23,7 @@ from entities.material import BlockMaterial, Material, StatueMaterial
 from pygame import mixer
 from tcod import Console
 from ui.statue_ended_ui import StatueEndedUI
-from utils.color import black, marble, spot_line
+from utils.color import black, spot_line
 
 from sections.section import Section
 
@@ -37,6 +38,10 @@ class StatueState(Enum):
     IN_PROGRESS = auto()
     ENDING = auto()
     ENDED = auto()
+
+class SpottingLineType(Enum):
+    FREE = auto()
+    EIGHT_POINTS = auto()
 
 class StatueSection(Section):
     def __init__(self, engine, x: int, y: int, width: int, height: int, xp_filepath: str = ""):
@@ -55,6 +60,8 @@ class StatueSection(Section):
         self.right_click_sound = mixer.Sound('Sounds/right_click.wav')
         self.fault_sound = mixer.Sound('Sounds/fault.wav')
         self.curtain_sound =  mixer.Sound('Sounds/curtains.wav')
+
+        self.spotting_line_type = SpottingLineType.EIGHT_POINTS
 
     def reset(self):
         self.mousedown_point = None
@@ -264,22 +271,23 @@ class StatueSection(Section):
                     temp_console.print(i,0, self.level["name"][i], (255,255,255))
                     temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
 
-            faults_to_render = min(99,self.faults)
-            faults_string = str(faults_to_render)
-            font = self.engine.font_manager.get_font("number_font")
-            faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
-            for i in range(0, len(faults_string)):
-                start_x = i * font.char_width
-                if i > 0:
-                    start_x += 1
-                faults_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(faults_string[i])
-            final_width = font.char_width * len(faults_string)
+            if not self.level["disable_faults"]:
+                faults_to_render = min(99,self.faults)
+                faults_string = str(faults_to_render)
+                font = self.engine.font_manager.get_font("number_font")
+                faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
+                for i in range(0, len(faults_string)):
+                    start_x = i * font.char_width
+                    if i > 0:
+                        start_x += 1
+                    faults_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(faults_string[i])
+                final_width = font.char_width * len(faults_string)
 
-            final_x = self.level["faults_x"] + 2
-            if len(faults_string) > 1:
-                final_width += 1
-                final_x -= 2
-            faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
+                final_x = self.level["faults_x"] + 2
+                if len(faults_string) > 1:
+                    final_width += 1
+                    final_x -= 2
+                faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
 
         if self.spotting:
             self.render_spotting_line(console)
@@ -341,12 +349,25 @@ class StatueSection(Section):
         
         if self.mousedown_point is not None and mouse_pos != self.mousedown_point:
 
+            final_line_point = (0,0)
+            if self.spotting_line_type == SpottingLineType.FREE:
+               final_line_point = mouse_pos
+            elif self.spotting_line_type == SpottingLineType.EIGHT_POINTS:
+                final_line_point = mouse_pos
+                nearest_distance = self.get_distance_between_tiles(mouse_pos, self.mousedown_point)
+                for tile in self.get_moore_surrounding_tiles(self.mousedown_point[0], self.mousedown_point[1]):
+                    distance = self.get_distance_between_tiles(mouse_pos, tile)
+                    if distance < nearest_distance:
+                        nearest_distance = distance
+                        final_line_point = tile
+                        
             #Figure out the normalised vector between the mouse and the button press point            
-            spot_line_magnitude = sqrt((abs(mouse_pos[0]-self.mousedown_point[0])**2) + (abs(mouse_pos[1]-self.mousedown_point[1])**2))
-            spot_line_normalised = ((mouse_pos[0]-self.mousedown_point[0])/spot_line_magnitude,  (mouse_pos[1]-self.mousedown_point[1])/spot_line_magnitude)
+            spot_line_magnitude = sqrt((abs(final_line_point[0]-self.mousedown_point[0])**2) + (abs(final_line_point[1]-self.mousedown_point[1])**2))
+            spot_line_normalised = ((final_line_point[0]-self.mousedown_point[0])/spot_line_magnitude,  (final_line_point[1]-self.mousedown_point[1])/spot_line_magnitude)
 
             #Extend the line along the vector between the mouse and the button press point           
             final_spot = (self.mousedown_point[0] + int(spot_line_normalised[0] * 10),self.mousedown_point[1] + int(spot_line_normalised[1] * 10))
+
 
             #Loop through all of the points in this line
             for tile in self.line_between(self.mousedown_point, final_spot):
@@ -391,7 +412,7 @@ class StatueSection(Section):
             self.remove_entity(None)
 
 
-        if key == tcod.event.K_ESCAPE:
+        if key == tcod.event.K_ESCAPE and self.state == StatueState.IN_PROGRESS and self.total_remaining_blocks() > 0:
             OpenConfirmationDialog(self.engine, "       Return to menu?\n(progress will not be saved)", LevelLeaveAction(self.engine)).perform()
 
         if key == tcod.event.K_RETURN and self.state == StatueState.ENDED:
@@ -416,7 +437,8 @@ class StatueSection(Section):
 
     def chisel_fault(self):
         self.fault_sound.play()
-        self.faults += 1
+        if not self.level["disable_faults"]:
+            self.faults += 1
 
     def change_state(self, new_state):
         
@@ -491,6 +513,12 @@ class StatueSection(Section):
         xp_data = self.load_xp_data(level["file"])
         self.load_tiles(level["file"], xp_data)
         self.load_entities(level["file"], xp_data)
+
+        if "fg_color" in level and "bg_color" in level:
+            self.colour_material(level["fg_color"], level["bg_color"])
+        else:
+            self.colour_material((255,0,0), (0,255,0))
+
         self.level = level
         self.state = StatueState.LOAD_FOOTER
 
@@ -506,3 +534,9 @@ class StatueSection(Section):
         self.name_char_probabilites = list(map(lambda num: max(1,int(num * probability_step)), range(1, len(self.level["name"]) + 1)))
         random.shuffle(self.name_char_probabilites)
         
+    def colour_material(self, fg_color, bg_color):
+        for entity in self.entities:
+            if isinstance(entity, Material):
+                entity.set_initial_colors(bg_color, fg_color)
+
+
