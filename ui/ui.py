@@ -99,15 +99,16 @@ class UIElement:
 
 
 class Button(UIElement):
-    def __init__(self, x: int, y: int, width: int, height: int, click_action: Action, tiles):
+    def __init__(self, x: int, y: int, width: int, height: int, click_action: Action, tiles, normal_bg = (255,255,255), highlight_bg = (128,128,128)):
         super().__init__(x,y,width,height)
         self.click_action = click_action
         self.tiles = tiles
 
         self.hover_action = None
 
-        self.highlight_bg = (128,128,128)
-        self.normal_bg= (255,255,255)
+        self.normal_bg= normal_bg
+        self.highlight_bg = highlight_bg
+
 
     def render(self, console: Console):
         if self.tiles is None:
