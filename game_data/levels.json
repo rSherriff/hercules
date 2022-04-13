@@ -454,7 +454,7 @@
         {
           "name": "Apollo Belvedere",
           "artist": "N/A",
-          "date": "c. 120 - 140 AD",
+          "date": "c. 120-140 AD",
           "number": 17,
           "file": "level3-6.xp",
           "x": 14,
@@ -524,7 +524,7 @@
         {
           "name": "Porch Figures",
           "artist": "N/A",
-          "date": "c. 1100 - 1350 AD",
+          "date": "c. 1100-1350 AD",
           "number": 19,
           "file": "level4-2.xp",
           "x": 16,
@@ -552,7 +552,7 @@
         {
           "name": "Virgin and Child",
           "artist": "N/A",
-          "date": "c. 1260 - 1280 AD",
+          "date": "c. 1260-1280 AD",
           "number": 20,
           "file": "level4-3.xp",
           "x": 18,
@@ -580,7 +580,7 @@
         {
           "name": "Gargoyle",
           "artist": "N/A",
-          "date": "c. 1250 - 1350 AD",
+          "date": "c. 1250-1350 AD",
           "number": 21,
           "file": "level4-4.xp",
           "x": 17,
@@ -706,7 +706,7 @@
         {
           "name": "Michelangelo's David",
           "artist": "Michelangelo",
-          "date": "1501 - 1504",
+          "date": "1501-1504",
           "number": 25,
           "file": "level5-3.xp",
           "x": 16,
@@ -734,7 +734,7 @@
         {
           "name": "The Dying Slave",
           "artist": "Michelangelo",
-          "date": "1513 - 1516",
+          "date": "1513-1516",
           "number": 26,
           "file": "level5-4.xp",
           "x": 18,
@@ -762,7 +762,7 @@
         {
           "name": "Apollo and Daphne",
           "artist": "Gian Lorenzo Bernini",
-          "date": "1622 - 1625",
+          "date": "1622-1625",
           "number": 27,
           "file": "level5-5.xp",
           "x": 16,
@@ -790,7 +790,7 @@
         {
           "name": "The Ecstasy of Saint Teresa",
           "artist": "Gian Lorenzo Bernini",
-          "date": "1647 - 1652",
+          "date": "1647-1652",
           "number": 28,
           "file": "level5-6.xp",
           "x": 15,
@@ -916,7 +916,7 @@
         {
           "name": "Shepard Boy",
           "artist": "Bertel Thorvaldsen",
-          "date": "1822 - 1825",
+          "date": "1822-1825",
           "number": 32,
           "file": "level6-4.xp",
           "x": 18,
@@ -944,7 +944,7 @@
         {
           "name": "Ugolino and His Sons",
           "artist": "Jean-Baptiste Carpeaux",
-          "date": "1865 - 67",
+          "date": "1865-1867",
           "number": 33,
           "file": "level6-5.xp",
           "x": 19,
