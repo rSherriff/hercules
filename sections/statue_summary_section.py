@@ -104,7 +104,17 @@ class StatueSummarySection(Section):
         temp_console = Console(width=console.width, height=console.height, order="F")
 
         temp_console.print(0,0, self.summary.level["name"], (255,255,255))  
-        temp_console.blit(console, dest_x=self.layout["title_x"], dest_y=self.layout["title_y"], width=len(self.summary.level["name"]), height=1)        
+        temp_console.blit(console, dest_x=self.layout["title_x"], dest_y=self.layout["title_y"], width=len(self.summary.level["name"]), height=1)       
+
+        info_text = ""
+        if self.summary.level["artist"] != "N/A":
+            info_text += self.summary.level["artist"]
+        if self.summary.level["date"] != "N/A":
+            if len(info_text) > 0:
+                info_text += " - "
+            info_text += self.summary.level["date"]
+        temp_console.print(0,0, info_text, (255,255,255))  
+        temp_console.blit(console, dest_x=self.layout["info_x"], dest_y=self.layout["info_y"], width=len(info_text), height=1)     
 
         temp_console.print(0,0, str(self.summary.faults), (255,255,255))
         temp_console.blit(console, dest_x=self.layout["faults_x"], dest_y=self.layout["faults_y"], width=len(str(self.summary.faults)), height=1)        

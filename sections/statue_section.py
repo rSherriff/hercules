@@ -305,9 +305,21 @@ class StatueSection(Section):
         button_width = self.ui.summary_button.width
         button_height = self.ui.summary_button.height
         button_console = Console(width=button_width, height=button_height, order="F")
-        button_console.print_rect(0,0,button_width, button_height,"Cont..")
-
+        button_console.print_rect(0,0,button_width, button_height,"Continue...")
         self.ui.summary_button.tiles = button_console.tiles_rgb
+
+        console.print_box(0,26, self.width, 1, self.level["name"], fg=(255,255,255), bg=(0,0,0), alignment=tcod.CENTER)
+
+        info_text = ""
+        if self.level["artist"] != "N/A":
+            info_text += self.level["artist"]
+        if self.level["date"] != "N/A":
+            if len(info_text) > 0:
+                info_text += " - "
+            info_text += self.level["date"]
+
+        console.print_box(0,28, self.width, 1, info_text, fg=(255,255,255), bg=(0,0,0), alignment=tcod.CENTER)
+
         self.ui.render(console)
    
     def render_spotting_line(self, console):

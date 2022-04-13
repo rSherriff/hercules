@@ -1,6 +1,8 @@
 {
   "title_x": 5,
-  "title_y": 3,
+  "title_y": 1,
+  "info_x": 5,
+  "info_y": 3,
   "faults_x": 14,
   "faults_y": 7,
   "total_x": 37,
