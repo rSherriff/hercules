@@ -56,10 +56,10 @@ class StatueSection(Section):
 
         self.statue_ended_ui = StatueEndedUI(self)
 
-        self.left_click_sound = mixer.Sound('Sounds/left_click.wav')
-        self.right_click_sound = mixer.Sound('Sounds/right_click.wav')
-        self.fault_sound = mixer.Sound('Sounds/fault.wav')
-        self.curtain_sound =  mixer.Sound('Sounds/curtains.wav')
+        self.left_click_sound = self.validate_sound('Sounds/left_click.ogg')
+        self.right_click_sound = self.validate_sound('Sounds/right_click.ogg')
+        self.fault_sound = self.validate_sound('Sounds/fault.ogg')
+        self.curtain_sound =  self.validate_sound('Sounds/curtains.ogg')
 
         self.spotting_line_type = SpottingLineType.EIGHT_POINTS
 

@@ -35,11 +35,11 @@ class StatueSummarySection(Section):
         self.ui = StatueSummaryUI(self)
 
         self.crown_award_sounds = list()
-        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel1.wav'))
-        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel2.wav'))
-        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel3.wav'))
-        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel4.wav'))
-        self.crown_award_sounds.append(mixer.Sound('Sounds/chisel5.wav'))
+        self.crown_award_sounds.append(self.validate_sound('Sounds/chisel1.ogg'))
+        self.crown_award_sounds.append(self.validate_sound('Sounds/chisel2.ogg'))
+        self.crown_award_sounds.append(self.validate_sound('Sounds/chisel3.ogg'))
+        self.crown_award_sounds.append(self.validate_sound('Sounds/chisel4.ogg'))
+        self.crown_award_sounds.append(self.validate_sound('Sounds/chisel5.ogg'))
 
         self.reset()
 

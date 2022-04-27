@@ -1,4 +1,5 @@
 import gzip
+import os
 import random
 from math import sqrt
 
@@ -7,6 +8,7 @@ import tile_types
 import xp_loader
 from entities.entity import Entity
 from entities.entity_loader import EntityLoader
+from pygame import mixer, sndarray
 
 
 class Section:
@@ -128,3 +130,11 @@ class Section:
 
     def get_distance_between_tiles(self, a, b):
         return sqrt((abs(a[0]-b[0])**2) + (abs(a[1]-b[1])**2))
+
+    def validate_sound(self, file):
+        if os.path.isfile(file):
+            return mixer.Sound(file)
+        else:
+            #Build fake sound for when the file can't be found, so everything hereafter works ok
+            tmp = np.array([[0,0], [0,0]], np.int32)
+            return sndarray.make_sound(tmp)
