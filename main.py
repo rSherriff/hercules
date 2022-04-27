@@ -2,7 +2,7 @@
 import tcod
 
 from application_path import get_app_path
-from engine import Engine
+from hercules_game import HerculesGame
 
 
 def main() -> None:
@@ -27,7 +27,7 @@ def main() -> None:
 
         tcod.lib.SDL_SetHint(b"SDL_RENDER_SCALE_QUALITY", b"0")
         root_console = tcod.Console(screen_width, screen_height, order="F")
-        engine = Engine(screen_width, screen_height)
+        engine = HerculesGame(screen_width, screen_height)
 
         cycle = 0
         while True:

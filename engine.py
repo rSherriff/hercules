@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import abc
+
 import json
 import os
 import random
 from enum import Enum, auto
-from threading import Timer
 
 import tcod
-from playsound import playsound
 from pygame import mixer
 from tcod.console import Console
 
@@ -28,10 +28,10 @@ class GameState(Enum):
     MENU = auto()
     IN_GAME = auto()
 
-class Engine:
+class Engine(abc.ABC):
     def __init__(self, teminal_width: int, terminal_height: int):
 
-        self.debug_music_disabled = True
+        self.debug_music_disabled = False
 
         mixer.init()
         if not self.debug_music_disabled:
@@ -57,7 +57,7 @@ class Engine:
         self.state = GameState.INTRO
 
         self.font_manager = FontManager()
-        self.font_manager.add_font("number_font")
+        self.load_fonts()
 
         self.in_stage_music_queue = False
 
@@ -66,20 +66,26 @@ class Engine:
             with open("game_data/game_save.json") as f:
                 self.save_data = json.load(f)
         else:
-            self.save_data = dict()
-            self.save_data["total_crowns"] = 0
+            self.create_new_save_data()
 
-        self.stage_music = {}
         with open ( "game_data/levels.json" ) as f:
             data = json.load(f)
 
             self.intro_sections["introSection"].load_splashes(data["intro_splashes"])
 
-            for stage in data["stages"]:
-                self.stage_music[stage["name"]] = {}
-                self.stage_music[stage["name"]]["music"] = stage["music"]
-                self.stage_music[stage["name"]]["music_volume"] = stage["music_volume"]
+            self.load_initial_data(data)
+            
+    @abc.abstractmethod
+    def create_new_save_data(self):
+        pass
 
+    @abc.abstractmethod
+    def load_initial_data(self, data):
+        pass
+
+    @abc.abstractmethod
+    def load_fonts(self):
+        pass
 
     def render(self, root_console: Console) -> None:
         """ Renders the game to console """
@@ -125,7 +131,8 @@ class Engine:
     def setup_effects(self):
         self.full_screen_effect = MeltWipeEffect(self, 0, 0, self.screen_width, self.screen_height, MeltWipeEffectType.RANDOM, 20)
 
-    def setup_sections(self):
+    #@abc.abstractmethod
+    def setup_sections(self): #move
         self.intro_sections = {}
         self.intro_sections["introSection"] = IntroSection(self,0,0,self.screen_width, self.screen_height)
 
@@ -148,8 +155,6 @@ class Engine:
             return self.menu_sections.items()
         elif self.is_in_game():
             return self.game_sections.items()
-        elif self.state == GameState.COMPLETE:
-            return self.completion_sections.items()
 
     def get_active_ui_sections(self):
         if self.state == GameState.INTRO:
@@ -158,8 +163,6 @@ class Engine:
             return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.menu_sections.items())).items()
         elif self.is_in_game():
             return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.game_sections.items())).items()
-        elif self.state == GameState.COMPLETE:
-            return dict(filter(lambda elem: elem[0] not in self.disabled_sections, self.completion_sections.items())).items()
 
     def enable_section(self, section):
         if section in self.disabled_sections:
@@ -168,29 +171,6 @@ class Engine:
     def disable_section(self, section):
         if section not in self.disabled_sections:
             self.disabled_sections.append(section)
-
-    def load_level(self):
-        self.enable_section("statueSection")
-        self.game_sections["statueSection"].load_level(self.stage, self.level)
-
-    def select_level(self, stage, level):
-        mixer.music.fadeout(1000)
-        self.change_state(GameState.IN_GAME)
-        self.full_screen_effect.start()
-        self.stage = stage
-        self.level = level
-        Timer(2,self.load_level).start()
-
-    def level_complete(self, summary):
-        self.open_summary_section(summary)
-        self.full_screen_effect.start()
-
-    def leave_level(self):
-        self.change_state(GameState.MENU)
-        self.full_screen_effect.start()
-        self.disable_section("statueSection")
-        self.game_sections["statueSection"].reset()
-        self.end_music_queue(2000)
 
     def queue_music(self, stage):
         music = self.stage_music[stage]["music"]
@@ -238,33 +218,11 @@ class Engine:
         self.change_state(GameState.MENU)
         self.full_screen_effect.start()
 
-    def award_crowns(self, num_crowns, total_level_crowns, level_name):
-        with open("game_data/game_save.json", "w") as f:
-            self.save_data["total_crowns"] += num_crowns
-            if not level_name in self.save_data or self.save_data[level_name] < total_level_crowns:
-                self.save_data[level_name] = total_level_crowns
-
-            if not "levels_completed" in self.save_data:
-                self.save_data["levels_completed"] = 0
-            
-            self.save_data["levels_completed"] += 1
-            
-            json.dump(self.save_data, f, indent=2)
-
-    def get_awarded_crowns(self, level_name):
-        if level_name in self.save_data:
-            return self.save_data[level_name]
-        else:
-            return 0
-
     def change_state(self, new_state):
         old_state = self.state
 
         self.state = new_state
    
-    def get_total_awarded_crowns(self):
-        return self.save_data["total_crowns"]
-
     def get_delta_time(self):
         return self.delta_time.get_delta_time()
 
