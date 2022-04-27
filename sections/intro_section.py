@@ -130,7 +130,7 @@ class IntroSection(Section):
     def keydown(self, key):
         if key == tcod.event.K_RETURN or key == tcod.event.K_ESCAPE:
             #HACK! 
-            PlayMenuMusicAction(self.engine,"menu.mp3").perform()
+            PlayMenuMusicAction(self.engine,"menu.ogg").perform()
             self.end()
 
     def end(self):
