@@ -241,6 +241,7 @@ class StatueSection(Section):
                     self.render_faults(console)
 
                 self.render_spotted_tiles(console)
+                self.render_spotting_line(console)
                 self.render_material(console)
                 self.finish_setup()
                 return
@@ -305,6 +306,7 @@ class StatueSection(Section):
             spotting_console.blit(console, src_x=0, src_y=0, dest_x = x, dest_y = y, width = font.char_width, height = font.char_height)
        
         self.render_material(console)
+        self.render_spotting_line(console)
 
 
     def render_static(self, console, render_material):
