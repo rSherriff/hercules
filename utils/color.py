@@ -26,3 +26,19 @@ colors.append(yellow)
 
 def get_random_color():
     return colors[random.randrange(0, len(colors))]
+
+def blend_colour(lc, rc, t):
+    r = lc[0] * t + rc[0] * (1 - t) 
+    g = lc[1] * t + rc[1] * (1 - t) 
+    b = lc[2] * t + rc[2] * (1 - t)
+
+    return (int(r),int(g),int(b))
+
+    
+def blend_colour_with_alpha(lc, rc, t):
+    r = lc[0] * t + rc[0] * (1 - t) 
+    g = lc[1] * t + rc[1] * (1 - t) 
+    b = lc[2] * t + rc[2] * (1 - t)
+    a = lc[3] * t + rc[3] * (1 - t)
+
+    return (int(r),int(g),int(b), int(a))

@@ -1,13 +1,16 @@
 
+import copy
 import json
 from enum import Enum, auto
 
 import numpy as np
 import tcod
-from actions.actions import IntroEndAction, PlayMusicFileAction, PlayMenuMusicAction
+from actions.actions import (IntroEndAction, PlayMenuMusicAction,
+                             PlayMusicFileAction)
 from image import Image
 from tcod import Console
-import copy
+from utils.color import blend_colour
+from utils.utils import translate_range
 
 from sections.section import Section
 
@@ -99,29 +102,29 @@ class IntroSection(Section):
             if splash.type == IntroSplashType.TEXT:
                 
                 if self.time_into_splash < splash.intro:
-                    t = self.translate(self.time_into_splash, 0, splash.intro, 0, 1)
-                    fg = self.blend_colour((255,255,255), (0,0,0), t)
+                    t = translate_range(self.time_into_splash, 0, splash.intro, 0, 1)
+                    fg = blend_colour((255,255,255), (0,0,0), t)
                 elif self.time_into_splash > splash.outro_start:
-                    t = self.translate(self.time_into_splash,  splash.outro_start,  splash.outro_end, 0, 1)
-                    fg = self.blend_colour((0,0,0), (255,255,255), t)
+                    t = translate_range(self.time_into_splash,  splash.outro_start,  splash.outro_end, 0, 1)
+                    fg = blend_colour((0,0,0), (255,255,255), t)
                 else:
                     fg = (255,255,255)
                 console.print_box(x=0, y=int(self.height/2) - 1,  width=self.width, height=self.height, string=splash.text, alignment=tcod.CENTER, fg = fg)
             elif splash.type == IntroSplashType.IMAGE:
                 if self.time_into_splash < splash.intro:
-                    t = self.translate(self.time_into_splash, 0, splash.intro, 0, 1)
+                    t = translate_range(self.time_into_splash, 0, splash.intro, 0, 1)
                 elif self.time_into_splash > splash.outro_start:
-                    t = self.translate(self.time_into_splash, splash.outro_start,  splash.outro_end, 0, 1)
+                    t = translate_range(self.time_into_splash, splash.outro_start,  splash.outro_end, 0, 1)
 
                 for w in range(0, console.width):
                     for h in range(0, self.height):
                         new_tile =  copy.copy(splash.image.tiles[w,h]["graphic"])
                         if self.time_into_splash < splash.intro:
-                            new_tile[1] = self.blend_colour(new_tile[1], (0,0,0), t)
-                            new_tile[2] = self.blend_colour(new_tile[2], (0,0,0), t)
+                            new_tile[1] = blend_colour(new_tile[1], (0,0,0), t)
+                            new_tile[2] = blend_colour(new_tile[2], (0,0,0), t)
                         elif self.time_into_splash > splash.outro_start:
-                            new_tile[1] = self.blend_colour((0,0,0), new_tile[1],  t)
-                            new_tile[2] = self.blend_colour((0,0,0), new_tile[2],  t)
+                            new_tile[1] = blend_colour((0,0,0), new_tile[1],  t)
+                            new_tile[2] = blend_colour((0,0,0), new_tile[2],  t)
 
                         console.tiles_rgb[w,h] = new_tile
             elif splash.type == IntroSplashType.BLANK:
@@ -135,21 +138,3 @@ class IntroSection(Section):
 
     def end(self):
         IntroEndAction(self.engine).perform()
-
-    def translate(self, value, leftMin, leftMax, rightMin, rightMax):
-        # Figure out how 'wide' each range is
-        leftSpan = leftMax - leftMin
-        rightSpan = rightMax - rightMin
-
-        # Convert the left range into a 0-1 range (float)
-        valueScaled = float(value - leftMin) / float(leftSpan)
-
-        # Convert the 0-1 range into a value in the right range.
-        return rightMin + (valueScaled * rightSpan)
-
-    def blend_colour(self, lc, rc, t):
-        r = lc[0] * t + rc[0] * (1 - t) 
-        g = lc[1] * t + rc[1] * (1 - t) 
-        b = lc[2] * t + rc[2] * (1 - t)
-
-        return (int(r),int(g),int(b))

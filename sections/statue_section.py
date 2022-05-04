@@ -1,4 +1,5 @@
 
+import copy
 import enum
 import random
 from enum import Enum, auto
@@ -8,7 +9,8 @@ from threading import Timer
 import numpy as np
 import tcod
 from actions.actions import (EndMusicQueueAction, LevelCompleteAction,
-                             LevelLeaveAction, OpenConfirmationDialog, QueueMusicAction)
+                             LevelLeaveAction, OpenConfirmationDialog,
+                             QueueMusicAction)
 from data.statue_summary import StatueSummary
 from effects.brick_wall_effect import BrickWallDirection, BrickWallEffect
 from effects.horizontal_move_effect import (HorizontalMoveDirection,
@@ -23,7 +25,8 @@ from entities.material import BlockMaterial, Material, StatueMaterial
 from pygame import mixer
 from tcod import Console
 from ui.statue_ended_ui import StatueEndedUI
-from utils.color import black, spot_line
+from utils.color import black, spot_line, blend_colour, blend_colour_with_alpha
+from utils.utils import translate_range
 
 from sections.section import Section
 
@@ -35,6 +38,7 @@ class StatueState(Enum):
     LOAD_FOOTER = auto()
     LOAD_SIDES = auto()
     LOAD_MATERIAL = auto()
+    LOAD_TEXT = auto()
     IN_PROGRESS = auto()
     ENDING = auto()
     ENDED = auto()
@@ -81,6 +85,7 @@ class StatueSection(Section):
         self.finished_setup = False
         self.finished_ending = False
         self.transistioning_to_state = StatueState.NONE
+        self.current_text_fading_time = 0
 
         self.footer_y = 0
         self.footer_height = 0
@@ -117,6 +122,8 @@ class StatueSection(Section):
             self.render_load_sides(console)
         elif self.state == StatueState.LOAD_MATERIAL:
             self.render_load_material(console)
+        elif self.state == StatueState.LOAD_TEXT:
+            self.render_load_text(console)
         elif self.state == StatueState.IN_PROGRESS:
             self.render_in_progress(console)
         elif self.state == StatueState.ENDING:
@@ -206,11 +213,11 @@ class StatueSection(Section):
         if self.load_material_effect == None:
             self.load_material_effect = BrickWallEffect(self.engine, self.level["x"], self.level["y"], self.level["width"], self.level["height"])
 
-        if not self.load_material_effect.in_effect and not self.finished_setup:
+        if not self.load_material_effect.in_effect:
 
             if self.load_material_effect.time_alive > 0:
-                self.finish_setup()
-                self.render_static(console)
+                self.change_state(StatueState.LOAD_TEXT)
+                self.render_static(console, True)
                 return
 
             temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
@@ -224,32 +231,114 @@ class StatueSection(Section):
         elif self.load_material_effect.in_effect == True:
             self.load_material_effect.render(console)
 
-        self.render_static(console)
+        self.render_static(console, False)
+
+    def render_load_text(self,console):
+        if self.current_text_fading_time > self.stage["start_length"]:
+            if not self.finished_setup:
+                super().render(console)
+                if not self.level["disable_faults"]:
+                    self.render_faults(console)
+
+                self.render_spotted_tiles(console)
+                self.render_material(console)
+                self.finish_setup()
+                return
+        else:
+            self.current_text_fading_time += self.engine.get_delta_time()
+
+        self.render_static(console, False)
+
+        t = translate_range(self.current_text_fading_time, 0, self.stage["start_length"], 0, 1)
+
+        #Fade tutorial text
+        if "tutorial_text_x" in self.level:
+            x_extent = self.level["tutorial_text_x"] + self.level["tutorial_text_width"]
+            y_extent = self.level["tutorial_text_y"] + self.level["tutorial_text_height"]
+            for w in range(self.level["tutorial_text_x"], x_extent):
+                for h in range(self.level["tutorial_text_y"], y_extent):
+                    new_tile =  copy.copy(self.tiles[w,h]["graphic"])
+                    new_tile[1] = blend_colour(new_tile[1], (0,0,0), t)
+                    new_tile[2] = blend_colour(new_tile[2], (0,0,0), t)
+
+                    console.tiles_rgb[w,h] = new_tile
+        
+        font = self.engine.font_manager.get_font("number_font")
+
+        #Fade faults
+        if not self.level["disable_faults"]:
+            faults_string = "0"
+            faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
+            faults_console.tiles_rgb[0:font.char_width, 0:font.char_height] = font.get_character(faults_string[0])
+            final_width = font.char_width * len(faults_string)
+
+            final_x = self.level["faults_x"] + 2
+            if len(faults_string) > 1:
+                final_width += 1
+                final_x -= 2
+            
+            for w in range(0, final_width):
+                for h in range(0, font.char_height):
+                    new_tile =  copy.copy(faults_console.tiles[w,h])
+                    new_tile[1] = blend_colour_with_alpha(new_tile[1], (0,0,0,255), t)
+                    new_tile[2] = blend_colour_with_alpha(new_tile[2], (0,0,0,255), t)
+
+                    faults_console.tiles_rgb[w,h] = new_tile
+            faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
+
+        #Fade Spotting numbers
+        num_to_render = '0'
+        for i in range(0, len(self.level["spotted_tiles_x"])):
+            spotting_console = Console(width = font.char_width, height = font.char_height, order="F")
+            spotting_console.tiles_rgb[0: font.char_width, 0:font.char_height] = font.get_character(num_to_render)
+
+            x = self.level["spotted_tiles_x"][i] - int(font.char_width / 2)
+            y = self.level["spotted_tiles_y"][i] - int(font.char_height / 2)
+
+            for w in range(0, font.char_width):
+                for h in range(0, font.char_height):
+                    new_tile =  copy.copy(spotting_console.tiles[w,h])
+                    new_tile[1] = blend_colour_with_alpha(new_tile[1], (0,0,0,255), t)
+                    new_tile[2] = blend_colour_with_alpha(new_tile[2], (0,0,0,255), t)
+                    spotting_console.tiles_rgb[w,h] = new_tile
+
+            spotting_console.blit(console, src_x=0, src_y=0, dest_x = x, dest_y = y, width = font.char_width, height = font.char_height)
        
+        self.render_material(console)
 
-    def render_static(self, console):
-        if self.finished_setup:
-            temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
-            temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
-            for entity in self.entities:
-                temp_console.print(entity.x - self.level["x"], entity.y - self.level["y"],entity.char, fg=entity.fg_color, bg=entity.bg_color)
-            temp_console.blit(console, dest_x=self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
 
+    def render_static(self, console, render_material):
+        
+        #Render material
+        if render_material:
+            self.render_material(console)
+
+        #Render footer
         temp_console = Console(width=self.width, height=self.footer_height, order="F")
         temp_console.tiles_rgb[0 :self.width, 0: self.footer_height] = self.tiles[0 :self.width, self.footer_y: self.footer_y + self.footer_height]["graphic"]
         temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=self.footer_y, width=self.width, height=self.footer_height)
 
+        #Render header
         temp_console = Console(width=self.width, height=self.header_height, order="F")
         temp_console.tiles_rgb[0 :self.width, 0: self.header_height] = self.tiles[0 :self.width, 0: self.header_height]["graphic"]
         temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=0, width=self.width, height=self.header_height)
 
+        #Render side left
         temp_console = Console(width=self.sides_width, height=self.sides_height, order="F")
         temp_console.tiles_rgb[0 :self.sides_width, 0: self.sides_height] = self.tiles[0 :self.sides_width, self.sides_y: self.sides_y+ self.sides_height]["graphic"]
         temp_console.blit(console, src_x=0, src_y=0, dest_x=0, dest_y=self.sides_y, width=self.sides_width, height=self.sides_height)
 
+        #Render side right
         temp_console = Console(width=self.sides_width + 1, height=self.sides_height, order="F")
         temp_console.tiles_rgb[0 :self.sides_width + 1, 0: self.sides_height] = self.tiles[self.width - self.sides_width -1: (self.width - self.sides_width - 1) + self.sides_width + 1, self.sides_y: self.sides_y+ self.sides_height]["graphic"]
         temp_console.blit(console, src_x=0, src_y=0, dest_x=self.width - self.sides_width - 1, dest_y=self.sides_y, width=self.sides_width + 1, height=self.sides_height)
+
+    def render_material(self, console):
+        temp_console = Console(width=self.level["width"], height=self.level["height"], order="F")
+        temp_console.tiles_rgb[self.x : self.x + self.width, self.y: self.y + self.height] = self.tiles[self.level["x"]:self.level["x"]+self.level["width"], self.level["y"]:self.level["y"]+self.level["height"] ]["graphic"]
+        for entity in self.entities:
+            temp_console.print(entity.x - self.level["x"], entity.y - self.level["y"],entity.char, fg=entity.fg_color, bg=entity.bg_color)
+        temp_console.blit(console, dest_x=self.level["x"], dest_y=self.level["y"], width=self.level["width"], height=self.level["height"])
 
     def render_in_progress(self, console):
         super().render(console)
@@ -272,22 +361,7 @@ class StatueSection(Section):
                     temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
 
             if not self.level["disable_faults"]:
-                faults_to_render = min(99,self.faults)
-                faults_string = str(faults_to_render)
-                font = self.engine.font_manager.get_font("number_font")
-                faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
-                for i in range(0, len(faults_string)):
-                    start_x = i * font.char_width
-                    if i > 0:
-                        start_x += 1
-                    faults_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(faults_string[i])
-                final_width = font.char_width * len(faults_string)
-
-                final_x = self.level["faults_x"] + 2
-                if len(faults_string) > 1:
-                    final_width += 1
-                    final_x -= 2
-                faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
+                self.render_faults(console)
 
         if self.spotting:
             self.render_spotting_line(console)
@@ -330,6 +404,24 @@ class StatueSection(Section):
             tile = self.spotted_tiles[i]
             temp_console.tiles_rgb[tile[0], tile[1]] = (9632, black,spot_line)
             temp_console.blit(console, src_x=tile[0], src_y=tile[1], dest_x=tile[0], dest_y=tile[1], width=1, height=1)
+
+    def render_faults(self,console):
+        faults_to_render = min(99,self.faults)
+        faults_string = str(faults_to_render)
+        font = self.engine.font_manager.get_font("number_font")
+        faults_console = Console(width = font.char_width * len(faults_string) + 1, height = font.char_height, order="F")
+        for i in range(0, len(faults_string)):
+            start_x = i * font.char_width
+            if i > 0:
+                start_x += 1
+            faults_console.tiles_rgb[start_x:start_x+ font.char_width, 0:font.char_height] = font.get_character(faults_string[i])
+        final_width = font.char_width * len(faults_string)
+
+        final_x = self.level["faults_x"] + 2
+        if len(faults_string) > 1:
+            final_width += 1
+            final_x -= 2
+        faults_console.blit(console, src_x=0, src_y=0, dest_x = final_x, dest_y = self.level["faults_y"], width = final_width, height = font.char_height)
 
     def render_spotted_tiles(self, console):
         font = self.engine.font_manager.get_font("number_font")
@@ -466,7 +558,7 @@ class StatueSection(Section):
 
     def finish_setup(self):
         self.finished_setup = True
-        Timer(self.stage["start_length"], self.change_state, [StatueState.IN_PROGRESS]).start()
+        self.change_state(StatueState.IN_PROGRESS)
                         
     def complete_level(self):
         if self.complete_sound is not None:
