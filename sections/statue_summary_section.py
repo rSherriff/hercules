@@ -103,8 +103,12 @@ class StatueSummarySection(Section):
 
         temp_console = Console(width=console.width, height=console.height, order="F")
 
-        temp_console.print(0,0, self.summary.level["name"], (255,255,255))  
-        temp_console.blit(console, dest_x=self.layout["title_x"], dest_y=self.layout["title_y"], width=len(self.summary.level["name"]), height=1)       
+        text_width = self.layout["name_available_width"]
+        text_console = Console(width=text_width, height= 1, order="F")
+
+        text_console.print_box(0,0, text_width, 1, self.summary.level["name"], (255,255,255), alignment=tcod.CENTER)  
+        text_console.blit(console, dest_x=self.layout["title_x"], dest_y=self.layout["title_y"], width=text_width, height=1)  
+        text_console.clear()     
 
         info_text = ""
         if self.summary.level["artist"] != "N/A":
@@ -113,8 +117,8 @@ class StatueSummarySection(Section):
             if len(info_text) > 0:
                 info_text += " - "
             info_text += self.summary.level["date"]
-        temp_console.print(0,0, info_text, (255,255,255))  
-        temp_console.blit(console, dest_x=self.layout["info_x"], dest_y=self.layout["info_y"], width=len(info_text), height=1)     
+        text_console.print_box(0,0,text_width,1,info_text, (255,255,255), alignment=tcod.CENTER)  
+        text_console.blit(console, dest_x=self.layout["info_x"], dest_y=self.layout["info_y"], width=text_width, height=1)     
 
         temp_console.print(0,0, str(self.summary.faults), (255,255,255))
         temp_console.blit(console, dest_x=self.layout["faults_x"], dest_y=self.layout["faults_y"], width=len(str(self.summary.faults)), height=1)        

@@ -777,7 +777,7 @@
         },
         {
           "name": "Apollo and Daphne",
-          "artist": "Gian Lorenzo Bernini",
+          "artist": "Bernini",
           "date": "1622-1625",
           "number": 27,
           "file": "level5-5.xp",
@@ -805,7 +805,7 @@
         },
         {
           "name": "The Ecstasy of Saint Teresa",
-          "artist": "Gian Lorenzo Bernini",
+          "artist": "Bernini",
           "date": "1647-1652",
           "number": 28,
           "file": "level5-6.xp",
@@ -1000,7 +1000,7 @@
       "end_length": 6,
       "levels": [
         {
-          "name": "Little Dancer of Fourteen Years",
+          "name": "Dancer of Fourteen Years",
           "artist": "Edgar Degas",
           "date": "1880",
           "number": 34,

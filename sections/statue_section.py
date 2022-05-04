@@ -379,7 +379,8 @@ class StatueSection(Section):
         button_width = self.ui.summary_button.width
         button_height = self.ui.summary_button.height
         button_console = Console(width=button_width, height=button_height, order="F")
-        button_console.print_rect(0,0,button_width, button_height,"Continue...")
+        button_console.draw_frame(0,0, button_width, button_height, decoration="╔═╗║ ║╚═╝")
+        button_console.print_rect(1,1,button_width, button_height,"Continue")
         self.ui.summary_button.tiles = button_console.tiles_rgb
 
         console.print_box(0,26, self.width, 1, self.level["name"], fg=(255,255,255), bg=(0,0,0), alignment=tcod.CENTER)
