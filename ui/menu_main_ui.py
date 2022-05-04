@@ -8,12 +8,12 @@ class MenuMainUI(UI):
 
         bd = [21, 16, 9, 5]  # Button Dimensions
         button_tiles = tiles[bd[0]:bd[0] + bd[2], bd[1]:bd[1] + bd[3]]
-        self.start_button = Button(x=bd[0], y=bd[1], width=bd[2],height=bd[3], click_action=EnterStageSelectAction(self.section.engine), tiles=button_tiles, normal_bg=(255,191,0), highlight_bg=(178,134,0))
+        self.start_button = Button(x=bd[0], y=bd[1], width=bd[2],height=bd[3], click_action=EnterStageSelectAction(self.section.engine), tiles=button_tiles, normal_bg=(191,191,191), highlight_bg=(128,128,128))
         self.elements.append(self.start_button)
 
         
         bd = [21, 22, 9, 5]  # Button Dimensions
         button_tiles = tiles[bd[0]:bd[0] + bd[2], bd[1]:bd[1] + bd[3]]
-        self.quit_button = Button(x=bd[0], y=bd[1], width=bd[2],height=bd[3], click_action=EscapeAction(self.section.engine), tiles=button_tiles, normal_bg=(255,191,0), highlight_bg=(178,134,0))
+        self.quit_button = Button(x=bd[0], y=bd[1], width=bd[2],height=bd[3], click_action=EscapeAction(self.section.engine), tiles=button_tiles, normal_bg=(191,191,191), highlight_bg=(128,128,128))
         self.elements.append(self.quit_button)
         
