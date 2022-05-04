@@ -52,6 +52,7 @@ class HerculesGame(Engine):
 
     def select_level(self, stage, level): 
         mixer.music.fadeout(1000)
+        self.playing_menu_music = False
         self.change_state(GameState.IN_GAME)
         self.full_screen_effect.start()
         self.stage = stage

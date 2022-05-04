@@ -60,7 +60,8 @@ class Engine(abc.ABC):
         self.load_fonts()
 
         self.in_stage_music_queue = False
-
+        self.playing_menu_music = False
+        
         self.save_data = None
         if os.path.isfile("game_data/game_save.json"):
             with open("game_data/game_save.json") as f:
@@ -209,10 +210,12 @@ class Engine(abc.ABC):
             mixer.music.play()
 
     def play_menu_music(self, file=""):
-        if len(file) > 0:
-            self.menu_music = file
-        mixer.music.load("sounds/music/" + self.menu_music)
-        mixer.music.play()
+        if not self.playing_menu_music:
+            self.playing_menu_music = True
+            if len(file) > 0:
+                self.menu_music = file
+            mixer.music.load("sounds/music/" + self.menu_music)
+            mixer.music.play()
 
     def open_menu(self):
         self.change_state(GameState.MENU)
