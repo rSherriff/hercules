@@ -28,6 +28,7 @@ class MenuSection(Section):
         self.stages = []
         self.selected_stage_index = 0
         self.selected_level = 0
+        self.button_decoration_index =0
 
         self.enabled_level_colour = (255,255,255)
         self.disabled_level_colour = (40,40,40)
@@ -79,6 +80,20 @@ class MenuSection(Section):
                 level_name_pos[1] += 2
                 crowns_awarded_pos[1] += 2
                 count += 1
+
+            #Indicate you can move to the next stage when all the levels in a stage are complete
+            if "levels_completed" in self.engine.save_data and self.engine.save_data["levels_completed"] == self.stages[self.selected_stage_index]["levels"][-1]["number"] and self.stages[self.selected_stage_index]["name"] != "Epilogue":
+                
+                width = 3
+                height = 1
+
+                w = int(self.button_decoration_index) % width
+                h = int(int(self.button_decoration_index - w) / width)
+
+                console.print(47 + w, 23 + h, string='*', fg=(255,255,255))
+
+                self.button_decoration_index += (self.engine.get_delta_time() * width) 
+                self.button_decoration_index %= width * height
 
         if self.transition_effect.in_effect == True:
             self.transition_effect.render(console)
