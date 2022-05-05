@@ -241,8 +241,11 @@ class StatueSection(Section):
                     self.render_faults(console)
 
                 self.render_spotted_tiles(console)
-                self.render_spotting_line(console)
                 self.render_material(console)
+
+                if self.spotting:
+                    self.render_spotting_line(console)
+
                 self.finish_setup()
                 return
         else:
@@ -289,6 +292,8 @@ class StatueSection(Section):
 
         #Fade Spotting numbers
         num_to_render = '0'
+        if self.spotting:
+            num_to_render = str(self.spotted_statue_tiles)
         for i in range(0, len(self.level["spotted_tiles_x"])):
             spotting_console = Console(width = font.char_width, height = font.char_height, order="F")
             spotting_console.tiles_rgb[0: font.char_width, 0:font.char_height] = font.get_character(num_to_render)
@@ -306,7 +311,8 @@ class StatueSection(Section):
             spotting_console.blit(console, src_x=0, src_y=0, dest_x = x, dest_y = y, width = font.char_width, height = font.char_height)
        
         self.render_material(console)
-        self.render_spotting_line(console)
+        if self.spotting:
+            self.render_spotting_line(console)
 
 
     def render_static(self, console, render_material):
@@ -499,7 +505,7 @@ class StatueSection(Section):
             self.spotted_tiles.append([mouse_pos[0], mouse_pos[1]])
 
     def mousedown(self,button,x,y):
-        if not self.engine.is_confirmation_dialog_open():
+        if not self.engine.is_confirmation_dialog_open() and (self.state == StatueState.LOAD_TEXT or self.state == StatueState.IN_PROGRESS):
             processed_entity = False
             if not self.spotting:
                 for entity in self.get_entities_at_location(self.engine.mouse_location[0], self.engine.mouse_location[1]):
