@@ -660,7 +660,7 @@
       "start_music": "start_rb.ogg",
       "ending_music": "completion_rb.ogg",
       "music_volume": 0.2,
-      "start_length": 2.5,
+      "start_length": 3.5,
       "end_length": 8.4,
       "levels": [
         {
