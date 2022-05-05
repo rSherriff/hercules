@@ -68,5 +68,5 @@ class HerculesGame(Engine):
         self.full_screen_effect.start()
         self.disable_section("statueSection")
         self.game_sections["statueSection"].reset()
-        self.end_music_queue(2000)
+        self.play_menu_music()
 
