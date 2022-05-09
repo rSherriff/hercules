@@ -31,9 +31,10 @@ class IntroSplash():
         self.outro_end = self.outro_start + outro
 
 class TextIntroSplash(IntroSplash):
-    def __init__(self,  intro, hang, outro, text) -> None:
+    def __init__(self,  intro, hang, outro, text, margin) -> None:
         super().__init__(IntroSplashType.TEXT,  intro, hang, outro)
         self.text = text
+        self.margin = margin
 
 class ImageIntroSplash(IntroSplash):
     def __init__(self,  intro, hang, outro, width, height, image_path) -> None:
@@ -68,7 +69,7 @@ class IntroSection(Section):
         """
         for splash in splahes:
             if splash["type"] == "TEXT":
-                self.splash_list.append(TextIntroSplash(splash["intro"],splash["hang"],splash["outro"], splash["text"]))
+                self.splash_list.append(TextIntroSplash(splash["intro"],splash["hang"],splash["outro"], splash["text"], splash["margin"]))
             elif splash["type"] == "BLANK":
                 self.splash_list.append(BlankIntroSplash(splash["length"]))
             elif splash["type"] == "IMAGE":
@@ -109,7 +110,7 @@ class IntroSection(Section):
                     fg = blend_colour((0,0,0), (255,255,255), t)
                 else:
                     fg = (255,255,255)
-                console.print_box(x=0, y=int(self.height/2) - 1,  width=self.width, height=self.height, string=splash.text, alignment=tcod.CENTER, fg = fg)
+                console.print_box(x=splash.margin, y=int(self.height/2) - 1,  width=self.width - (splash.margin * 2), height=self.height, string=splash.text, alignment=tcod.CENTER, fg = fg)
             elif splash.type == IntroSplashType.IMAGE:
                 if self.time_into_splash < splash.intro:
                     t = translate_range(self.time_into_splash, 0, splash.intro, 0, 1)
