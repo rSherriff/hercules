@@ -15,6 +15,7 @@ class LFSREffect(Effect):
         
     def start(self):
         super().start()
+        self.processed_tiles.clear()
         
     def render(self, console):
 

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import abc
-
 import json
 import os
 import random
@@ -12,6 +11,7 @@ from pygame import mixer
 from tcod.console import Console
 
 from application_path import get_app_path
+from effects.lfsr_effect import LFSREffect
 from effects.melt_effect import MeltWipeEffect, MeltWipeEffectType
 from fonts.font_manager import FontManager
 from input_handlers import EventHandler, MainGameEventHandler
@@ -96,8 +96,11 @@ class Engine(abc.ABC):
 
         if self.full_screen_effect.in_effect == True:
             self.full_screen_effect.render(root_console)
+        elif self.lfsr_screen_effect.in_effect == True:
+            self.lfsr_screen_effect.render(root_console)
         else:
             self.full_screen_effect.set_tiles(root_console.tiles_rgb)
+            self.lfsr_screen_effect.set_tiles(root_console.tiles_rgb)
 
         #root_console.print(40, 1, str(self.mouse_location), (255,255,255))
 
@@ -127,10 +130,11 @@ class Engine(abc.ABC):
         return self.state == GameState.IN_GAME
 
     def handle_events(self, context: tcod.context.Context):
-        self.event_handler.handle_events(context, discard_events=self.full_screen_effect.in_effect)
+        self.event_handler.handle_events(context, discard_events=self.is_ui_paused())
 
     def setup_effects(self):
         self.full_screen_effect = MeltWipeEffect(self, 0, 0, self.screen_width, self.screen_height, MeltWipeEffectType.RANDOM, 20)
+        self.lfsr_screen_effect = LFSREffect(self, 0, 0, self.screen_width, self.screen_height)
 
     #@abc.abstractmethod
     def setup_sections(self): #move
@@ -268,8 +272,11 @@ class Engine(abc.ABC):
         self.play_menu_music()
 
     def is_ui_paused(self):
-        return self.full_screen_effect.in_effect
+        return self.full_screen_effect.in_effect or self.lfsr_screen_effect.in_effect
 
     def end_intro(self):
         self.change_state(GameState.MENU)
         self.full_screen_effect.start()
+
+    def start_lfsr_effect(self):
+        self.lfsr_screen_effect.start()
