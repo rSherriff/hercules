@@ -11,6 +11,7 @@ from effects.horizontal_wipe_effect import (HorizontalWipeDirection,
                                             HorizontalWipeEffect)
 from tcod import Console
 from ui.menu_main_ui import MenuMainUI
+from ui.menu_options_ui import MenuOptionsUI
 from ui.menu_stage_ui import MenuStageUI
 
 from sections.section import Section
@@ -19,6 +20,7 @@ from sections.section import Section
 class MenuState(Enum):
     MAIN = auto()
     STAGE_SCREEN = auto()
+    OPTIONS = auto()
 
 
 class MenuSection(Section):
@@ -40,8 +42,11 @@ class MenuSection(Section):
                 self.stages.append(stage)
                 self.stage_tiles.append(self.load_xp_data(stage["background"]))
 
-        self.load_tiles("main", self.stage_tiles[0])
         self.stage_ui = MenuStageUI(self, self.tiles["graphic"])
+
+        self.options_tiles = self.load_xp_data("menu_options.xp")
+        self.load_tiles("options", self.options_tiles)
+        self.options_ui = MenuOptionsUI(self, self.tiles["graphic"])
 
         self.main_tiles = self.load_xp_data("menu_main.xp")
         self.load_tiles("main", self.main_tiles)
@@ -52,7 +57,8 @@ class MenuSection(Section):
         
 
     def update(self):
-        pass
+        if "Menu" in self.engine.disabled_ui_sections and not self.transition_effect.in_effect:
+            self.engine.enable_ui_section("Menu")
     
     def render(self, console):
         super().render(console)
@@ -97,6 +103,8 @@ class MenuSection(Section):
 
         if self.transition_effect.in_effect == True:
             self.transition_effect.render(console)
+        elif self.state == MenuState.OPTIONS:
+            self.transition_effect.set_tiles(console.tiles_rgb)
 
 
     def mousedown(self,button,x,y):
@@ -117,11 +125,15 @@ class MenuSection(Section):
                     self.change_stage(self.selected_stage_index - 1)
             elif key == tcod.event.K_RETURN:
                     self.select_level(self.selected_level)
-            elif key == tcod.event.K_BACKSPACE:
+            elif key == tcod.event.K_BACKSPACE or key == tcod.event.K_ESCAPE:
                 self.change_state(MenuState.MAIN)
                 self.selected_level = 0
-            elif key == tcod.event.K_ESCAPE:
+        elif self.state == MenuState.MAIN:
+            if key == tcod.event.K_ESCAPE:
                 EscapeAction(self.engine).perform()
+        elif self.state == MenuState.OPTIONS:
+            if key == tcod.event.K_ESCAPE:
+                self.change_state(MenuState.MAIN)
 
     def hover_over_level(self, level_index):
         if level_index >= len( self.stages[self.selected_stage_index]["levels"]):
@@ -168,10 +180,14 @@ class MenuSection(Section):
 
     def change_state(self, new_state):
         if new_state == MenuState.MAIN:
-            self.transition_effect.set_tiles(self.tiles["graphic"])
-            self.load_tiles("main", self.main_tiles)
+
+            if self.state != MenuState.OPTIONS:
+                self.transition_effect.set_tiles(self.tiles["graphic"])
+
             self.transition_effect.start(HorizontalWipeDirection.RIGHT)
+            self.load_tiles("main", self.main_tiles)
             self.ui = self.main_ui
+            
         elif new_state == MenuState.STAGE_SCREEN:
             self.transition_effect.set_tiles(self.tiles["graphic"])
             self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
@@ -184,10 +200,23 @@ class MenuSection(Section):
             else:
                 self.transition_effect.start(HorizontalWipeDirection.RIGHT)
 
+        elif new_state == MenuState.OPTIONS:
+            self.transition_effect.set_tiles(self.tiles["graphic"])
+            self.load_tiles("options", self.options_tiles)
+            self.transition_effect.start(HorizontalWipeDirection.RIGHT)
+            self.ui = self.options_ui
+
+        self.engine.disable_ui_section("Menu")
         self.state = new_state
+
+    def enter_main(self):
+        self.change_state(MenuState.MAIN)
 
     def enter_stage_select(self):
         self.change_state(MenuState.STAGE_SCREEN)
+
+    def enter_options(self):
+        self.change_state(MenuState.OPTIONS)
 
     def can_play_level(self, level_index):
         if "levels_completed" not in self.engine.save_data:

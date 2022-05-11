@@ -20,7 +20,7 @@ class HorizontalWipeEffect(Effect):
         self.current_wipe_length = 0
         
     def render(self, console):
-        if self.time_alive > self.lifespan:
+        if abs(self.current_wipe_length) >= self.width:
             self.stop()
 
         if(self.direction == HorizontalWipeDirection.LEFT):

@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
-from tcod import Console, event
-
-import tcod.event
-import keyboard
 from threading import Timer
-from actions.actions import Action, CloseMenu, OpenMenu, EscapeAction
+from typing import TYPE_CHECKING
+from urllib import response
 
-from effects.horizontal_wipe_effect import HorizontalWipeEffect, HorizontalWipeDirection
+import keyboard
+import tcod.event
+from actions.actions import Action, CloseMenu, EscapeAction, OpenMenu
+from effects.horizontal_wipe_effect import (HorizontalWipeDirection,
+                                            HorizontalWipeEffect)
+from tcod import Console, event
+from utils.utils import translate_range
+
 
 class UI:
     def __init__(self, section, x=0, y=0):
@@ -37,10 +39,17 @@ class UI:
             
         for element in self.elements:
             if element.is_mouseover(x, y):
-                element.on_mousedown()
+                element.on_mousedown(x,y)
             elif isinstance(element, Input):
                 element.selected = False
                 element.blink = False
+
+    def mouseup(self, x: int, y: int):
+        if self.enabled == False:
+            return
+            
+        for element in self.elements:
+                element.on_mouseup()
 
     def mousemove(self, x: int, y: int):
         if self.enabled == False:
@@ -55,6 +64,8 @@ class UI:
                 if element.mouseover == True:
                     element.on_mouseleave()
                 element.mouseover = False
+
+            element.mousemove(x,y)
         
         self.sort_elements()
 
@@ -67,7 +78,6 @@ class UI:
     def sort_elements(self):
         self.elements.sort(key = lambda element: element.render_order)
         self.elements.sort(key = lambda element: element.mouseover)
-
 
 class UIElement:
     def __init__(self, x, y, width, height):
@@ -94,8 +104,14 @@ class UIElement:
     def is_mouseover(self, x: int, y: int):
         return self.x<= x <= self.x + self.width - 1 and self.y <= y <= self.y + self.height - 1
 
-    def on_mousedown(self):
+    def mousemove(self,x,y):
+        pass
+
+    def on_mousedown(self, x: int, y: int):
         raise NotImplementedError()
+    
+    def on_mouseup(self):
+        pass
 
 
 class Button(UIElement):
@@ -128,7 +144,7 @@ class Button(UIElement):
 
         temp_console.blit(console, self.x, self.y)
 
-    def on_mousedown(self):
+    def on_mousedown(self, x: int, y: int):
         if self.click_action is not None:
             self.click_action.perform()
 
@@ -202,7 +218,7 @@ class Input(UIElement):
             t = Timer(self.blink_interval, self.blink_on)
             t.start()
 
-    def on_mousedown(self):
+    def on_mousedown(self, x: int, y: int):
         self.selected = True
         self.blink_on()
 
@@ -246,7 +262,7 @@ class CheckedInput(Input):
             self.completion_effect.in_effect = True
             self.completion_effect.set_tiles(console.tiles_rgb[self.x: self.x+self.width, self.y: self.y+self.height])
 
-    def on_mousedown(self):
+    def on_mousedown(self, x: int, y: int):
         if self.input_correct == False or self.input_correct == True and self.trigger_once == False :
             self.selected = True
             self.blink_on()
@@ -277,7 +293,7 @@ class HoverTrigger(UIElement):
     def on_mouseleave(self):
         self.mouse_leave_action.perform()
 
-    def on_mousedown(self):
+    def on_mousedown(self, x: int, y: int):
         pass
 
 class Tooltip(UIElement):
@@ -308,7 +324,7 @@ class Tooltip(UIElement):
         self.visible = False
         
 
-    def on_mousedown(self):
+    def on_mousedown(self, x: int, y: int):
         pass
 
     def render(self, console: Console):
@@ -330,7 +346,138 @@ class Tooltip(UIElement):
                 count += 1
 
             temp_console.blit(console, self.x + self.x_offset, self.y+self.y_offset)
-    
+
+class Toggle(Button):
+    def __init__(self, x: int, y: int, width: int, height: int, is_on: bool, on_action: Action, off_action: Action, tiles, on_tiles, off_tiles, response_x:int, response_y:int, normal_bg = (255,255,255), highlight_bg = (128,128,128)):
+        super().__init__(x,y,width,height, None, tiles, normal_bg, highlight_bg)
+        self.on_action = on_action
+        self.off_action = off_action
+        self.on_tiles = on_tiles
+        self.off_tiles = off_tiles
+        self.response_x = response_x
+        self.response_y = response_y
+
+        self.is_on = is_on
+
+    def render(self, console: Console):
+        if self.tiles is None:
+            return
+
+        temp_console = Console(width=self.width, height=self.height, order="F")
+
+        for h in range(0,self.height):
+            for w in range(0, self.width):
+                if self.tiles[w,h][0] != 9488:
+                    if self.mouseover:
+                        self.tiles[w,h][1] = self.highlight_bg
+                    else:
+                        self.tiles[w,h][1] = self.normal_bg 
+                        
+                temp_console.tiles_rgb[w,h] = self.tiles[w,h]
+        
+        tiles_to_draw = self.on_tiles if self.is_on else self.off_tiles
+        shape = self.on_tiles.shape
+        for h in range(0,shape[1]):
+            for w in range(0, shape[0]):
+                temp_console.tiles_rgb[self.response_x + w, self.response_y + h] = tiles_to_draw[w,h]["graphic"]
+                if self.mouseover:
+                    temp_console.tiles_rgb[self.response_x + w, self.response_y + h][1] = self.highlight_bg
+                else:
+                    temp_console.tiles_rgb[self.response_x + w, self.response_y + h][1] = self.normal_bg 
+
+        temp_console.blit(console, self.x, self.y)
+
+    def on_mousedown(self, x: int, y: int):
+        if self.is_on:
+            if self.off_action is not None:
+                self.off_action.perform()
+        if not self.is_on:
+            if self.on_action is not None:
+                self.on_action.perform()
+                
+        self.is_on = not self.is_on
+
+    def set_on_action(self, action):
+        self.click_action = action
+
+    def set_off_action(self, action):
+        self.off_action = action
+
+class HorizontalSlider(UIElement):
+    def __init__(self, x, y, width, handle_tiles, move_action: Action, value:int=0, range_min:int=0, range_max:int=1):
+        super().__init__(x, y, width, 1)
+        self.handle_tiles = handle_tiles
+        self.move_action = move_action
+        self.is_dragging = False
+        self.range_min = range_min
+        self.range_max = range_max
+        self.value = int(self.get_reversed_ranged_value(value))
+
+    def render(self, console):
+        shape = self.handle_tiles.shape
+        x = self.x + self.value
+        console.tiles_rgb[x:x+shape[0], self.y:self.y+shape[1]] = self.handle_tiles["graphic"]
+
+    def on_mousedown(self, x: int, y: int):
+        self.value = min(max(self.x, x), self.x+self.width) - self.x
+        self.is_dragging = True
+
+    def mousemove(self, x: int, y: int):
+        old_value = self.value
+        if self.is_dragging:
+            self.value = min(max(self.x, x), self.x+self.width- 1) - self.x
+            if self.value != old_value:
+                self.move_action.perform(self.get_ranged_value(self.value))
+                
+    def on_mouseup(self):
+        if self.is_dragging:
+            self.is_dragging = False
+            self.move_action.perform(self.get_ranged_value(self.value))
+
+    def get_ranged_value(self, value):
+        return translate_range(value, 0, self.width, self.range_min, self.range_max)
+
+    def get_reversed_ranged_value(self, value):
+        return translate_range(value, self.range_min, self.range_max, 0, self.width)
+
+class VerticalSlider(UIElement):
+    def __init__(self, x, y, height, handle_tiles, move_action: Action, value:int=0, range_min:int=0, range_max:int=1):
+        super().__init__(x, y, 1, height)
+        self.handle_tiles = handle_tiles
+        self.move_action = move_action
+        self.is_dragging = False
+        self.range_min = range_min
+        self.range_max = range_max
+        self.value = int(self.get_reversed_ranged_value(value))
+
+    def render(self, console):
+        shape = self.handle_tiles.shape
+        y = self.y + self.value
+        console.tiles_rgb[self.x:self.x+shape[0], y:y+shape[1]] = self.handle_tiles["graphic"]
+
+    def on_mousedown(self, x: int, y: int):
+        self.value = min(max(self.y, y), self.y+self.height) - self.y
+        self.is_dragging = True
+
+    def mousemove(self, x: int, y: int):
+        old_value = self.value
+        if self.is_dragging:
+            self.value = min(max(self.y, y), self.y+self.height) - self.y
+            if self.value != old_value:
+                self.move_action.perform(self.get_ranged_value(self.value))
+                
+    def on_mouseup(self):
+        if self.is_dragging:
+            self.is_dragging = False
+            self.move_action.perform(self.get_ranged_value(self.value))
+
+    def get_ranged_value(self, value):
+        return translate_range(value, 0, self.height, self.range_min, self.range_max)
+
+    def get_reversed_ranged_value(self, value):
+        return translate_range(value, self.range_min, self.range_max, 0, self.height)
+        
+
 def ele_comp(a:UIElement, b:UIElement):
     if a is Tooltip:
         return b

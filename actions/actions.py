@@ -35,6 +35,9 @@ class OpenMenu(Action):
     def perform(self) -> None:
         self.engine.open_menu()
 
+class NoAction(Action):
+    def perform(self) -> None:
+        print("No Action taken!")
 
 class ShowTooltip(Action):
     def __init__(self, engine, tooltip_key: str) -> None:
@@ -114,6 +117,31 @@ class CloseNotificationDialog(Action):
     def perform(self) -> None:
         return self.engine.close_notification_dialog()
 
+
+class ToggleFullScreenAction(Action):
+    def __init__(self, engine) -> None:
+        super().__init__(engine)
+
+    def perform(self) -> None:
+        self.engine.toggle_fullscreen()
+
+
+class SliderAction(Action):
+    def __init__(self, engine, action_type) -> None:
+        super().__init__(engine)
+        self.action_type = action_type
+        
+    def perform(self, value) -> None:
+        action = self.action_type(self.engine, value)
+        return action.perform(value)
+
+class ChangeVolumeAction(Action):
+    def __init__(self, engine, value) -> None:
+        super().__init__(engine)
+        self.value = value
+        
+    def perform(self, value) -> None:
+        return self.engine.set_mixer_volume(value)
 
 class StatueMaterialChiseled(Action):
     def __init__(self, engine, entity) -> None:
@@ -231,3 +259,17 @@ class MenuSelectLevelAction(Action):
 
     def perform(self) -> None:
         self.engine.menu_sections["Menu"].select_level(self.level_index)
+
+class EnterMenuMainAction(Action):
+    def __init__(self, engine) -> None:
+        super().__init__(engine)
+
+    def perform(self) -> None:
+        self.engine.menu_sections["Menu"].enter_main()
+
+class EnterOptionsAction(Action):
+    def __init__(self, engine) -> None:
+        super().__init__(engine)
+
+    def perform(self) -> None:
+        self.engine.menu_sections["Menu"].enter_options()

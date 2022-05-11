@@ -83,3 +83,17 @@ class MainGameEventHandler(EventHandler):
                     self.engine.mouse_location[0], self.engine.mouse_location[1])
 
         return actions
+
+    def ev_mousebuttonup(self, event: tcod.event.MouseButtonUp) -> Optional[T]:
+        if self.engine.is_ui_paused():
+            return
+
+        actions = []
+
+        for _, section in self.engine.get_active_ui_sections():
+            section.mouseup(event.button, self.engine.mouse_location[0], self.engine.mouse_location[1])
+            if section.ui is not None:
+                section.ui.mouseup(
+                    self.engine.mouse_location[0], self.engine.mouse_location[1])
+
+        return actions

@@ -93,6 +93,9 @@ class Section:
     def mousedown(self,button,x,y):
         pass
 
+    def mouseup(self,button,x,y):
+        pass
+
     def keydown(self, key):
         for entity in self.entities:
             entity.keydown(key)

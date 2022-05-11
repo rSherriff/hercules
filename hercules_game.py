@@ -10,7 +10,7 @@ class HerculesGame(Engine):
         super().__init__(teminal_width, terminal_height)
 
     def create_new_save_data(self):
-        self.save_data = dict()
+        super().create_new_save_data()
         self.save_data["total_crowns"] = 0
 
     def load_initial_data(self, data):
