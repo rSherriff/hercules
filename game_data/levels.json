@@ -1,11 +1,11 @@
 {
   "intro_splashes": [
-    { "type": "TEXT", "intro": 2, "hang": 1, "outro": 2, "margin": 0, "text": "The Folk2D Engine" },
+    { "type": "IMAGE", "intro": 4, "hang": 3, "outro": 2, "file": "images/quote.xp", "width": -1, "height": -1 },
     { "type": "BLANK", "length": 2 },
-    { "type": "TEXT", "intro": 2, "hang": 1, "outro": 2, "margin": 0, "text": "A Game by Richard Sherriff" },
+    { "type": "TEXT", "intro": 2, "hang": 0.5, "outro": 1, "margin": 0, "text": "The Folk2D Engine" },
     { "type": "BLANK", "length": 2 },
-    { "type": "TEXT", "intro": 2, "hang": 3, "outro": 2, "margin": 5, "text": "I mean sculpture, that which one does by means of removal.\n\n- Michelangelo" },
-    { "type": "BLANK", "length": 2 },
+    { "type": "TEXT", "intro": 2, "hang": 0.5, "outro": 1, "margin": 0, "text": "A Game by Richard Sherriff" },
+    { "type": "BLANK", "length": 3 },
     { "type": "SOUND", "file": "menu.ogg", "keep_into_menu": true },
     { "type": "IMAGE", "intro": 2, "hang": 3, "outro": 0, "file": "images/logo.xp", "width": -1, "height": -1 },
     { "type": "IMAGE", "intro": 0, "hang": 0.075, "outro": 0, "file": "images/logo_anim_0.xp", "width": -1, "height": -1 },
