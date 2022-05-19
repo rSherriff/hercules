@@ -1,5 +1,6 @@
 {
   "intro_splashes": [
+    { "type": "BLANK", "length": 2 },
     { "type": "IMAGE", "intro": 4, "hang": 3, "outro": 2, "file": "images/quote.xp", "width": -1, "height": -1 },
     { "type": "BLANK", "length": 2 },
     { "type": "TEXT", "intro": 2, "hang": 0.5, "outro": 1, "margin": 0, "text": "The Folk2D Engine" },
@@ -609,7 +610,7 @@
           "spotted_tiles_y": [21, 21],
           "faults_x": 41,
           "faults_y": 8,
-          "name_x": 20,
+          "name_x": 21,
           "name_y": 28,
           "footer_height": 4,
           "footer_y": 26,
@@ -763,7 +764,7 @@
           "spotted_tiles_y": [21, 21],
           "faults_x": 38,
           "faults_y": 3,
-          "name_x": 17,
+          "name_x": 18,
           "name_y": 27,
           "footer_height": 4,
           "footer_y": 26,
