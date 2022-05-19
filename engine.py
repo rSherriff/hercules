@@ -75,8 +75,9 @@ class Engine(abc.ABC):
             
     def create_new_save_data(self):
         self.save_data = dict()
-        self.save_data["fullscreen"] = False
+        self.save_data["fullscreen"] = True
         self.save_data["volume"] = 0.5
+        self.set_mixer_volume(self.save_data["volume"])
 
     @abc.abstractmethod
     def load_initial_data(self, data):
@@ -192,10 +193,7 @@ class Engine(abc.ABC):
         volume = self.stage_music[stage]["music_volume"]
         if len(music) > 0:
             random.shuffle(music)
-
-            if not self.debug_music_disabled:
-                mixer.music.set_volume(volume)
-
+            mixer.music.set_volume(self.save_data["volume"])
             self.current_music_index = 0
             self.music_queue = music
             self.advance_music_queue()

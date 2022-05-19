@@ -20,7 +20,7 @@ def main() -> None:
     )
 
     load_failed = False
-    window_flags = tcod.context.SDL_WINDOW_BORDERLESS
+    window_flags = tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP
     if os.path.isfile("game_data/game_save.json"):
         with open("game_data/game_save.json") as f:
             try:
