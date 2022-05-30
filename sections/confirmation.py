@@ -10,9 +10,9 @@ class Confirmation(Section):
         self.text = ""
         self.ui = ConfirmationUI(self, x, y, self.tiles["graphic"])
 
-    def setup(self, text, confirmation_action):
+    def setup(self, text, confirmation_action, section):
         self.text = text
-        self.ui.reset(confirmation_action)
+        self.ui.reset(confirmation_action, section)
 
     def render(self, console):
         super().render(console)

@@ -90,32 +90,42 @@ class DisableSection(Action):
 
 
 class OpenConfirmationDialog(Action):
-    def __init__(self, engine, text, confirmation_action) -> None:
+    def __init__(self, engine, text, confirmation_action, section) -> None:
         super().__init__(engine)
         self.text = text
         self.confirmation_action = confirmation_action
+        self.section = section
 
     def perform(self) -> None:
-        return self.engine.open_confirmation_dialog(self.text, self.confirmation_action)
+        return self.engine.open_confirmation_dialog(self.text, self.confirmation_action, self.section)
 
 
 class CloseConfirmationDialog(Action):
+    def __init__(self, engine, section) -> None:
+        super().__init__(engine)
+        self.section = section
+
     def perform(self) -> None:
-        return self.engine.close_confirmation_dialog()
+        return self.engine.close_confirmation_dialog(self.section)
 
 
 class OpenNotificationDialog(Action):
-    def __init__(self, engine, text) -> None:
+    def __init__(self, engine, text, section) -> None:
         super().__init__(engine)
         self.text = text
+        self.section = section
 
     def perform(self) -> None:
-        return self.engine.open_notification_dialog(self.text)
+        return self.engine.open_notification_dialog(self.text, self.section)
 
 
 class CloseNotificationDialog(Action):
+    def __init__(self, engine, section) -> None:
+        super().__init__(engine)
+        self.section = section
+        
     def perform(self) -> None:
-        return self.engine.close_notification_dialog()
+        return self.engine.close_notification_dialog(self.section)
 
 
 class ToggleFullScreenAction(Action):

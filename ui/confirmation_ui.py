@@ -14,15 +14,19 @@ class ConfirmationUI(UI):
                                 height=bd[3], click_action=None, tiles=button_tiles)
         self.add_element(self.confirm_button)
 
-        confirm_close_button = Button(x=bd[0], y=bd[1], width=bd[2], height=bd[3], click_action=CloseConfirmationDialog(
-            self.section.engine), tiles=button_tiles)
-        self.add_element(confirm_close_button)
+        self.confirm_close_button = Button(x=bd[0], y=bd[1], width=bd[2], height=bd[3], click_action=CloseConfirmationDialog(
+            self.section.engine, None), tiles=button_tiles)
+        self.add_element(self.confirm_close_button)
 
         bd = [19, 4, 7, 5]
         button_tiles = tiles[bd[0]:bd[0] + bd[2], bd[1]:bd[1] + bd[3]]
-        close_button = Button(x=bd[0], y=bd[1], width=bd[2], height=bd[3], click_action=CloseConfirmationDialog(
-            self.section.engine), tiles=button_tiles)
-        self.add_element(close_button)
+        self.close_button = Button(x=bd[0], y=bd[1], width=bd[2], height=bd[3], click_action=CloseConfirmationDialog(
+            self.section.engine, None), tiles=button_tiles)
+        self.add_element(self.close_button)
 
-    def reset(self, confirmation_action):
+    def reset(self, confirmation_action, section):
         self.confirm_button.set_action(confirmation_action)
+
+        close_action=CloseConfirmationDialog(self.section.engine, section)
+        self.confirm_close_button.set_action(close_action)
+        self.close_button.set_action(close_action)

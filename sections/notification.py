@@ -1,5 +1,5 @@
 import tcod
-from actions.actions import Action
+from actions.actions import CloseNotificationDialog
 from ui.notification_ui import NotificationUI
 
 from sections.section import Section
@@ -12,8 +12,10 @@ class Notification(Section):
         self.text = ""
         self.ui = NotificationUI(self, x, y, self.tiles["graphic"])
 
-    def setup(self, text):
+    def setup(self, text, section):
         self.text = text
+        close_action = CloseNotificationDialog(self.engine, section)
+        self.ui.reset(close_action)
 
     def render(self, console):
         super().render(console)

@@ -4,6 +4,7 @@ import abc
 import json
 import os
 import random
+from collections import OrderedDict
 from enum import Enum, auto
 
 import tcod
@@ -136,39 +137,48 @@ class Engine(abc.ABC):
 
     #@abc.abstractmethod
     def setup_sections(self): #move
-        self.intro_sections = {}
+        self.intro_sections = OrderedDict()
         self.intro_sections["introSection"] = IntroSection(self,0,0,self.screen_width, self.screen_height)
 
-        self.menu_sections = {}
+        self.menu_sections = OrderedDict()
         self.menu_sections["Menu"] = MenuSection(self,0,0,self.screen_width, self.screen_height)
-        self.menu_sections["notificationDialog"] = Notification(self, 7, 9, 37, 10)
 
-        self.game_sections = {}
+        self.game_sections = OrderedDict()
         self.game_sections["statueSection"] = StatueSection(self, 0,0,self.screen_width, self.screen_height)
         self.game_sections["statueSummarySection"] = StatueSummarySection(self, 0,0,self.screen_width, self.screen_height, "summary_section.xp")
-        self.game_sections["confirmationDialog"] = Confirmation(self, 7, 9, 37, 10)
-        self.game_sections["notificationDialog"] = Notification(self, 7, 9, 37, 10)
+        
+        self.misc_sections = OrderedDict()
+        self.misc_sections["notificationDialog"] = Notification(self, 7, 9, 37, 10)
+        self.misc_sections["confirmationDialog"] = Confirmation(self, 7, 9, 37, 10)
 
-        self.completion_sections = {}
+        self.completion_sections = OrderedDict()
 
         self.disabled_sections = ["confirmationDialog", "notificationDialog", "statueSummarySection"]
         self.disabled_ui_sections = ["confirmationDialog", "notificationDialog", "statueSummarySection"]
 
     def get_active_sections(self):
+        sections = OrderedDict()
         if self.state == GameState.INTRO:
-            return self.intro_sections.items()
+            sections = self.intro_sections
         elif self.state == GameState.MENU:
-            return self.menu_sections.items()
+            sections = self.menu_sections
         elif self.is_in_game():
-            return self.game_sections.items()
+            sections = self.game_sections
+
+        sections |= self.misc_sections
+        return sections.items()
 
     def get_active_ui_sections(self):
+        sections = OrderedDict()
         if self.state == GameState.INTRO:
-            return dict(filter(lambda elem: elem[0] not in self.disabled_ui_sections, self.intro_sections.items())).items()
+            sections = dict(filter(lambda elem: elem[0] not in self.disabled_ui_sections, self.intro_sections.items()))
         elif self.state == GameState.MENU:
-            return dict(filter(lambda elem: elem[0] not in self.disabled_ui_sections, self.menu_sections.items())).items()
+            sections =  dict(filter(lambda elem: elem[0] not in self.disabled_ui_sections, self.menu_sections.items()))
         elif self.is_in_game():
-            return dict(filter(lambda elem: elem[0] not in self.disabled_ui_sections, self.game_sections.items())).items()
+            sections =  dict(filter(lambda elem: elem[0] not in self.disabled_ui_sections, self.game_sections.items()))
+
+        sections |= (dict(filter(lambda elem: elem[0] not in self.disabled_ui_sections, self.misc_sections.items())))
+        return sections.items()
 
     def enable_section(self, section):
         if section in self.disabled_sections:
@@ -249,29 +259,28 @@ class Engine(abc.ABC):
             self.save_data["fullscreen"] = not self.save_data["fullscreen"]
             json.dump(self.save_data, f, indent=2)
 
-        OpenNotificationDialog(self, "The game must be restarted for this option to take effect.").perform()
+        OpenNotificationDialog(self, "The game must be restarted for this option to take effect.", "Menu").perform()
             
-    def open_confirmation_dialog(self, text, confirmation_action):
-        self.game_sections["confirmationDialog"].setup(
-            text, confirmation_action)
+    def open_confirmation_dialog(self, text, confirmation_action, section):
+        self.misc_sections["confirmationDialog"].setup(text, confirmation_action, section)
         self.enable_section("confirmationDialog")
+        self.disable_ui_section(section)
 
-    def close_confirmation_dialog(self):
+    def close_confirmation_dialog(self, section):
         self.disable_section("confirmationDialog")
+        self.enable_ui_section(section)
 
     def is_confirmation_dialog_open(self):
         return "confirmationDialog" not in self.disabled_sections
 
-    def open_notification_dialog(self, text):
-        if self.state == GameState.MENU:
-            self.menu_sections["notificationDialog"].setup(text)
-        elif self.state == GameState.IN_GAME:
-            self.game_sections["notificationDialog"].setup(text)
-
+    def open_notification_dialog(self, text, section):
+        self.misc_sections["notificationDialog"].setup(text, section)
         self.enable_section("notificationDialog")
+        self.disable_ui_section(section)
 
-    def close_notification_dialog(self):
+    def close_notification_dialog(self, section):
         self.disable_section("notificationDialog")
+        self.enable_ui_section(section)
 
     def open_summary_section(self, summary):
         self.game_sections["statueSummarySection"].setup(summary)

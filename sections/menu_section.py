@@ -57,7 +57,7 @@ class MenuSection(Section):
         
 
     def update(self):
-        if "Menu" in self.engine.disabled_ui_sections and not self.transition_effect.in_effect:
+        if "Menu" in self.engine.disabled_ui_sections and not self.transition_effect.in_effect and "notificationDialog" in self.engine.disabled_sections:
             self.engine.enable_ui_section("Menu")
     
     def render(self, console):
