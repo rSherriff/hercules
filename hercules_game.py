@@ -26,6 +26,9 @@ class HerculesGame(Engine):
 
     def award_crowns(self, num_crowns, total_level_crowns, level_name):
         with open("game_data/game_save.json", "w") as f:
+            if not "total_crowns" in self.save_data:
+                self.save_data["total_crowns"] = 0
+
             self.save_data["total_crowns"] += num_crowns
             if not level_name in self.save_data or self.save_data[level_name] < total_level_crowns:
                 self.save_data[level_name] = total_level_crowns
