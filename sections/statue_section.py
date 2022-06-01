@@ -619,8 +619,8 @@ class StatueSection(Section):
         self.stage = stage
         
         if stage["ending_music"] != "" and stage["start_music"] != "":
-            self.complete_sound = mixer.Sound('Sounds/' + stage["ending_music"])
-            self.start_sound = mixer.Sound('Sounds/' + stage["start_music"])
+            self.complete_sound = self.validate_sound('Sounds/' + stage["ending_music"])
+            self.start_sound = self.validate_sound('Sounds/' + stage["start_music"])
             self.start_sound.play()
             self.curtain_sound.play()
 

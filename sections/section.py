@@ -136,7 +136,9 @@ class Section:
 
     def validate_sound(self, file):
         if os.path.isfile(file):
-            return mixer.Sound(file)
+            sound = mixer.Sound(file)
+            sound.set_volume(self.engine.save_data["volume"])
+            return sound
         else:
             #Build fake sound for when the file can't be found, so everything hereafter works ok
             tmp = np.array([[0,0], [0,0]], np.int32)
