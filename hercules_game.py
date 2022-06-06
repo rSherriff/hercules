@@ -67,6 +67,7 @@ class HerculesGame(Engine):
         self.full_screen_effect.start()
 
     def leave_level(self):
+        self.end_music_queue(0)
         self.change_state(GameState.MENU)
         self.start_lfsr_effect()
         self.disable_section("statueSection")
