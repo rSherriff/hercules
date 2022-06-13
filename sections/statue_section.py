@@ -363,10 +363,11 @@ class StatueSection(Section):
         #temp_console.blit(console, src_x=1, src_y=3, dest_x=1, dest_y=2, width=12, height=1)
 
         if self.level is not None:
-            for i in range(0,len(self.level["name"])):
-                if self.cleared_blocks >= self.name_char_probabilites[i]:
-                    temp_console.print(i,0, self.level["name"][i], (255,255,255))
-                    temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
+            if "disable_title" in self.level and not self.level["disable_title"]:
+                for i in range(0,len(self.level["name"])):
+                    if self.cleared_blocks >= self.name_char_probabilites[i]:
+                        temp_console.print(i,0, self.level["name"][i], (255,255,255))
+                        temp_console.blit(console, src_x=0, src_y=0, dest_x=self.level["name_x"], dest_y=self.level["name_y"], width=len(self.level["name"]), height=1)
 
             if not self.level["disable_faults"]:
                 self.render_faults(console)
