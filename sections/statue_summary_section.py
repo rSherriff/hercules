@@ -183,7 +183,8 @@ class StatueSummarySection(Section):
         self.reset()
 
     def display_scores(self):
-        self.state = SummaryState.SCORING
+        if self.state == SummaryState.BEGINING:
+            self.state = SummaryState.SCORING
 
     def mousedown(self,button,x,y):
         pass
