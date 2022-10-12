@@ -27,6 +27,7 @@ class Material(Entity):
         self.terminators = []
         self.initial_bg = marble
         self.initial_fg = marble_highlight
+        self.dying = False
         for i in range(12,27):
             self.terminators.append([i,24,((abs(self.x - i) + abs(self.y - 24)))])
 
@@ -90,11 +91,12 @@ class Material(Entity):
             self.chisel_material()
     
     def chisel_mistake(self):
-        self.fg_color = mistake
-        self.bg_color = black
-        self.char = chr(ord('X'))
-        ChiselMistakeAction(self.engine,self).perform()
-        Timer(0.3, self.reset_tile).start()
+        if not self.dying:
+            self.fg_color = mistake
+            self.bg_color = black
+            self.char = chr(ord('X'))
+            ChiselMistakeAction(self.engine,self).perform()
+            Timer(0.3, self.reset_tile).start()
     
     def reset_tile(self):
         self.fg_color = self.initial_fg
@@ -132,6 +134,7 @@ class StatueMaterial(Material):
         self.fg_color = marble
         self.bg_color = black
         self.char = chr(236)
+        self.dying = True
         action = StatueMaterialChiseled(self.engine, self)
         Timer(0.1, action.perform).start()
 
@@ -146,6 +149,7 @@ class BlockMaterial(Material):
         self.fg_color = marble
         self.bg_color = black
         self.char = chr(236)
+        self.dying = True
         action = BlockMaterialChiseled(self.engine, self)
         Timer(0.1, action.perform).start()
 
