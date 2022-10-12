@@ -189,11 +189,11 @@ class MenuSection(Section):
             self.ui = self.main_ui
             
         elif new_state == MenuState.STAGE_SCREEN:
+            self.selected_stage_index = 0
             self.transition_effect.set_tiles(self.tiles["graphic"])
             self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
             self.ui = self.stage_ui
             self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"])
-            self.selected_stage_index = 0
 
             if self.state == MenuState.MAIN:
                 self.transition_effect.start(HorizontalWipeDirection.LEFT)
