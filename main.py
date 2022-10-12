@@ -26,7 +26,7 @@ def main() -> None:
             try:
                 data = json.load(f)
                 if "fullscreen" in data:
-                    window_flags = tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP if data["fullscreen"] else tcod.context.SDL_WINDOW_BORDERLESS
+                    window_flags = tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP if data["fullscreen"] else tcod.context.SDL_WINDOW_RESIZABLE
             except:
                 load_failed = True
         if load_failed:
