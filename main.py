@@ -3,6 +3,7 @@ import json
 import os
 
 import tcod
+from appdirs import *
 
 from application_path import get_app_path
 from hercules_game import HerculesGame
@@ -21,8 +22,18 @@ def main() -> None:
 
     load_failed = False
     window_flags = tcod.context.SDL_WINDOW_FULLSCREEN_DESKTOP
-    if os.path.isfile("game_data/game_save.json"):
-        with open("game_data/game_save.json") as f:
+
+    appname = "fhercules"
+    appauthor = "rsherriff"
+    save_path = user_data_dir(appname, appauthor) 
+
+    if not os.path.isdir(save_path):
+        os.makedirs(save_path)
+
+    save_path += "/game_save.json"
+
+    if os.path.isfile(save_path):
+        with open(save_path) as f:
             try:
                 data = json.load(f)
                 if "fullscreen" in data:
@@ -31,7 +42,7 @@ def main() -> None:
                 load_failed = True
         if load_failed:
             print("Save data exists but it failed to load, overwriting!")
-            os.remove("game_data/game_save.json")
+            os.remove(save_path)
 
     with tcod.context.new_terminal(
         terminal_width,
@@ -45,7 +56,7 @@ def main() -> None:
         tcod.lib.SDL_SetHint(b"SDL_RENDER_SCALE_QUALITY", b"0")
 
         root_console = tcod.Console(screen_width, screen_height, order="F")
-        engine = HerculesGame(screen_width, screen_height)
+        engine = HerculesGame(save_path, screen_width, screen_height)
 
         cycle = 0
         while True:

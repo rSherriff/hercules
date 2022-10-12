@@ -6,8 +6,8 @@ from pygame import mixer
 from engine import Engine, GameState
 
 class HerculesGame(Engine):
-    def __init__(self, teminal_width: int, terminal_height: int):
-        super().__init__(teminal_width, terminal_height)
+    def __init__(self, save_path, teminal_width: int, terminal_height: int):
+        super().__init__(save_path, teminal_width, terminal_height)
 
     def create_new_save_data(self):
         super().create_new_save_data()
@@ -25,7 +25,7 @@ class HerculesGame(Engine):
         self.font_manager.add_font("number_font")
 
     def award_crowns(self, num_crowns, total_level_crowns, level_name):
-        with open("game_data/game_save.json", "w") as f:
+        with open(self.save_path, "w") as f:
             if not "total_crowns" in self.save_data:
                 self.save_data["total_crowns"] = 0
 

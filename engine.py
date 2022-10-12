@@ -32,13 +32,15 @@ class GameState(Enum):
     IN_GAME = auto()
 
 class Engine(abc.ABC):
-    def __init__(self, teminal_width: int, terminal_height: int):
+    def __init__(self, save_path, teminal_width: int, terminal_height: int):
 
         mixer.init()
 
+        self.save_path = save_path
+
         self.save_data = None
-        if os.path.isfile("game_data/game_save.json"):
-            with open("game_data/game_save.json") as f:
+        if os.path.isfile(self.save_path):
+            with open(self.save_path) as f:
                 self.save_data = json.load(f)
                 self.set_mixer_volume(self.save_data["volume"])
         else:
@@ -255,7 +257,7 @@ class Engine(abc.ABC):
         raise SystemExit()
 
     def toggle_fullscreen(self):
-        with open("game_data/game_save.json", "w") as f:
+        with open(self.save_path, "w") as f:
             self.save_data["fullscreen"] = not self.save_data["fullscreen"]
             json.dump(self.save_data, f, indent=2)
 
@@ -311,6 +313,6 @@ class Engine(abc.ABC):
 
     def set_mixer_volume(self, volume):
         mixer.music.set_volume(volume)
-        with open("game_data/game_save.json", "w") as f:
+        with open(self.save_path, "w") as f:
             self.save_data["volume"] = volume
             json.dump(self.save_data, f, indent=2)
