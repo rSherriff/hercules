@@ -517,14 +517,7 @@ class StatueSection(Section):
                 self.mousedown_point = (x,y)
                 self.spotting = not self.spotting
 
-    def keydown(self, key):
-        #TEMP
-        if key == tcod.event.K_p:
-            self.entities = [x for x in self.entities if not isinstance(x, BlockMaterial) and not isinstance(x, StatueMaterial)]
-            self.remaining_blocks = 0
-            self.remaining_statue = 0
-            self.remove_entity(None)
-            
+    def keydown(self, key):            
         if key == tcod.event.K_ESCAPE and self.state == StatueState.IN_PROGRESS and self.total_remaining_blocks() > 0:
             OpenConfirmationDialog(self.engine, "       Return to menu?\n(progress will not be saved)", LevelLeaveAction(self.engine), "statue_section").perform()
             self.spotting = False
