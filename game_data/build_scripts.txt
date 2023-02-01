@@ -1,5 +1,5 @@
 Windows
-pyinstaller --add-data '.\game_data\levels.json;game_data\' --add-data '.\game_data\summary_layout.json;game_data\' --add-data '.\fonts\polyducks_12x12.png;fonts' --add-data './fonts/number_font.xp;fonts' --add-data '.\images\*;images' --add-data './sounds/*.ogg;sounds' --add-data './sounds/music/*;sounds/music' --icon './game_data/hercules.ico' -n 'Hercules' --paths=.venv/Lib/site-packages  -w main.py
+pyinstaller --add-data '.\game_data\levels.json;game_data\' --add-data '.\game_data\levels_demo.json;game_data\' --add-data '.\game_data\summary_layout.json;game_data\' --add-data '.\fonts\polyducks_12x12.png;fonts' --add-data './fonts/number_font.xp;fonts' --add-data '.\images\*;images' --add-data './sounds/*.ogg;sounds' --add-data './sounds/music/*;sounds/music' --icon './game_data/hercules.ico' -n 'Hercules' --paths=.venv/Lib/site-packages  -w main.py
 
 pipMac
 pyinstaller --add-data 'game_data/pages.json;data' --add-data 'fonts/polyducks_12x12.png:fonts' --add-data 'images/*:images' --add-data 'sounds/*:sounds' -n 'Name' -w main.py

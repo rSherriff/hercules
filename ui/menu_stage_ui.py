@@ -22,10 +22,11 @@ class MenuStageUI(UI):
         self.tiles = tiles
 
 
-    def setup_level_buttons(self, start_pos):
+    def setup_level_buttons(self, start_pos, demo):
         self.elements.clear()
 
-        self.elements += self.stage_buttons
+        if not demo:
+            self.elements += self.stage_buttons
 
         bd = [start_pos[0], start_pos[1], 34, 1]
         for i in range(0,6):

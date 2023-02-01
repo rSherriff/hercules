@@ -36,7 +36,8 @@ class MenuSection(Section):
         self.disabled_level_colour = (40,40,40)
 
         self.stage_tiles = []
-        with open ( "game_data/levels.json" ) as f:
+        levels_path = "game_data/levels_demo.json" if self.engine.is_demo() else "game_data/levels.json"
+        with open ( levels_path ) as f:
             data = json.load(f)
             for stage in data["stages"]:
                 self.stages.append(stage)
@@ -48,13 +49,14 @@ class MenuSection(Section):
         self.load_tiles("options", self.options_tiles)
         self.options_ui = MenuOptionsUI(self, self.tiles["graphic"])
 
-        self.main_tiles = self.load_xp_data("menu_main.xp")
+        main_tiles_path = "menu_main_demo.xp" if self.engine.is_demo() else "menu_main.xp"
+        self.main_tiles = self.load_xp_data(main_tiles_path)
         self.load_tiles("main", self.main_tiles)
-        self.main_ui = MenuMainUI(self, self.tiles["graphic"])
+        self.main_ui = MenuMainUI(self, self.tiles["graphic"], self.engine.is_demo())
         self.ui = self.main_ui
 
         self.transition_effect = HorizontalWipeEffect(self.engine,0,0,self.width, self.height)
-        
+       
 
     def update(self):
         if "Menu" in self.engine.disabled_ui_sections and not self.transition_effect.in_effect and "notificationDialog" in self.engine.disabled_sections:
@@ -88,23 +90,25 @@ class MenuSection(Section):
                 count += 1
 
             #Indicate you can move to the next stage when all the levels in a stage are complete
-            if "levels_completed" in self.engine.save_data and self.engine.save_data["levels_completed"] == self.stages[self.selected_stage_index]["levels"][-1]["number"] and self.stages[self.selected_stage_index]["name"] != "Epilogue":
-                
-                width = 3
-                height = 1
+            if not self.engine.is_demo():
+                if "levels_completed" in self.engine.save_data and self.engine.save_data["levels_completed"] == self.stages[self.selected_stage_index]["levels"][-1]["number"] and self.stages[self.selected_stage_index]["name"] != "Epilogue":
+                    
+                    width = 3
+                    height = 1
 
-                w = int(self.button_decoration_index) % width
-                h = int(int(self.button_decoration_index - w) / width)
+                    w = int(self.button_decoration_index) % width
+                    h = int(int(self.button_decoration_index - w) / width)
 
-                console.print(47 + w, 23 + h, string='*', fg=(255,255,255))
+                    console.print(47 + w, 23 + h, string='*', fg=(255,255,255))
 
-                self.button_decoration_index += (self.engine.get_delta_time() * width) 
-                self.button_decoration_index %= width * height
+                    self.button_decoration_index += (self.engine.get_delta_time() * width) 
+                    self.button_decoration_index %= width * height
 
         if self.transition_effect.in_effect == True:
             self.transition_effect.render(console)
         elif self.state == MenuState.OPTIONS:
             self.transition_effect.set_tiles(console.tiles_rgb)
+
 
 
     def mousedown(self,button,x,y):
@@ -129,7 +133,7 @@ class MenuSection(Section):
                 self.change_state(MenuState.MAIN)
                 self.selected_level = 0
         elif self.state == MenuState.MAIN:
-            if key == tcod.event.K_ESCAPE:
+            if key == tcod.event.K_ESCAPE and not self.engine.is_demo():
                 EscapeAction(self.engine).perform()
         elif self.state == MenuState.OPTIONS:
             if key == tcod.event.K_ESCAPE:
@@ -176,7 +180,7 @@ class MenuSection(Section):
         self.selected_level = 0
 
         self.ui.tiles = self.tiles["graphic"]
-        self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"])
+        self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"], self.engine.is_demo())
 
     def change_state(self, new_state):
         if new_state == MenuState.MAIN:
@@ -193,7 +197,7 @@ class MenuSection(Section):
             self.transition_effect.set_tiles(self.tiles["graphic"])
             self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
             self.ui = self.stage_ui
-            self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"])
+            self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"], self.engine.is_demo())
 
             if self.state == MenuState.MAIN:
                 self.transition_effect.start(HorizontalWipeDirection.LEFT)

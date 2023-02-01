@@ -46,6 +46,8 @@ class Engine(abc.ABC):
         else:
             self.create_new_save_data()
 
+        self.demo = True
+
         self.screen_width = teminal_width
         self.screen_height = terminal_height
         self.delta_time = DeltaTime()
@@ -69,7 +71,8 @@ class Engine(abc.ABC):
         self.in_stage_music_queue = False
         self.playing_menu_music = False
 
-        with open ( "game_data/levels.json" ) as f:
+        levels_path = "game_data/levels_demo.json" if self.demo else "game_data/levels.json"
+        with open ( levels_path ) as f:
             data = json.load(f)
 
             self.intro_sections["introSection"].load_splashes(data["intro_splashes"])
@@ -316,3 +319,6 @@ class Engine(abc.ABC):
         with open(self.save_path, "w") as f:
             self.save_data["volume"] = volume
             json.dump(self.save_data, f, indent=2)
+
+    def is_demo(self):
+        return self.demo
