@@ -72,6 +72,8 @@ class MenuSection(Section):
             """
 
             level_name_pos = copy.copy(self.stages[self.selected_stage_index]["level_names_pos"])
+            if self.engine.is_demo():
+                level_name_pos[0] += 9
             crowns_awarded_pos = copy.copy(self.stages[self.selected_stage_index]["crowns_awarded_pos"])
             count = 0
             for level in self.stages[self.selected_stage_index]["levels"]:
@@ -82,8 +84,10 @@ class MenuSection(Section):
                     console.print(level_name_pos[0] - 3,level_name_pos[1], level_indicator, level_colour)
                 
                 console.print(level_name_pos[0],level_name_pos[1], level["name"], level_colour)
-                crowns_text = str(self.engine.get_awarded_crowns(level["name"])) + "/" + str(level["num_crowns"])
-                console.print(crowns_awarded_pos[0],crowns_awarded_pos[1], crowns_text, level_colour)
+
+                if not self.engine.is_demo():
+                    crowns_text = str(self.engine.get_awarded_crowns(level["name"])) + "/" + str(level["num_crowns"])
+                    console.print(crowns_awarded_pos[0],crowns_awarded_pos[1], crowns_text, level_colour)
                 
                 level_name_pos[1] += 2
                 crowns_awarded_pos[1] += 2
