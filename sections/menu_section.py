@@ -74,6 +74,7 @@ class MenuSection(Section):
             level_name_pos = copy.copy(self.stages[self.selected_stage_index]["level_names_pos"])
             if self.engine.is_demo():
                 level_name_pos[0] += 9
+                level_name_pos[1] -= 1
             crowns_awarded_pos = copy.copy(self.stages[self.selected_stage_index]["crowns_awarded_pos"])
             count = 0
             for level in self.stages[self.selected_stage_index]["levels"]:
@@ -184,7 +185,11 @@ class MenuSection(Section):
         self.selected_level = 0
 
         self.ui.tiles = self.tiles["graphic"]
-        self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"], self.engine.is_demo())
+        level_name_pos = copy.copy(self.stages[self.selected_stage_index]["level_names_pos"])
+        if self.engine.is_demo():
+            level_name_pos[0] += 9
+            level_name_pos[1] -= 1
+        self.ui.setup_level_buttons(level_name_pos, self.engine.is_demo())
 
     def change_state(self, new_state):
         if new_state == MenuState.MAIN:
@@ -201,7 +206,11 @@ class MenuSection(Section):
             self.transition_effect.set_tiles(self.tiles["graphic"])
             self.load_tiles("stage", self.stage_tiles[self.selected_stage_index])
             self.ui = self.stage_ui
-            self.ui.setup_level_buttons(self.stages[self.selected_stage_index]["level_names_pos"], self.engine.is_demo())
+            level_name_pos = copy.copy(self.stages[self.selected_stage_index]["level_names_pos"])
+            if self.engine.is_demo():
+                level_name_pos[0] += 9
+                level_name_pos[1] -= 1
+            self.ui.setup_level_buttons(level_name_pos, self.engine.is_demo())
 
             if self.state == MenuState.MAIN:
                 self.transition_effect.start(HorizontalWipeDirection.LEFT)
